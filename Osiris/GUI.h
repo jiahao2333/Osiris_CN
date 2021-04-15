@@ -40,7 +40,7 @@ private:
     } window;
 
     struct {
-        ImFont* normal15px = nullptr;
+        ImFont* msyh = nullptr;
     } fonts;
 
     float timeToNextConfigRefresh = 0.1f;
