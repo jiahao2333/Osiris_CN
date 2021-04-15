@@ -52,7 +52,7 @@ void Sound::modulateSound(std::string_view name, int entityIndex, float& volume)
 
 void Sound::tabItem() noexcept
 {
-    if (ImGui::BeginTabItem("Sound")) {
+    if (ImGui::BeginTabItem("声音")) {
         drawGUI(true);
         ImGui::EndTabItem();
     }
@@ -62,12 +62,13 @@ static bool soundWindowOpen = false;
 
 void Sound::menuBarItem() noexcept
 {
-    if (ImGui::MenuItem("Sound")) {
+    if (ImGui::MenuItem("声音")) {
         soundWindowOpen = true;
         ImGui::SetWindowFocus("Sound");
         ImGui::SetWindowPos("Sound", { 100.0f, 100.0f });
     }
 }
+
 
 void Sound::drawGUI(bool contentOnly) noexcept
 {
@@ -79,16 +80,16 @@ void Sound::drawGUI(bool contentOnly) noexcept
     }
 
     ImGui::PushID("Sound");
-    ImGui::SliderInt("Chicken volume", &soundConfig.chickenVolume, 0, 200, "%d%%");
+    ImGui::SliderInt("鸡音量", &soundConfig.chickenVolume, 0, 200, "%d%%");
 
     static int currentCategory{ 0 };
     ImGui::PushItemWidth(110.0f);
-    ImGui::Combo("", &currentCategory, "Local player\0Allies\0Enemies\0");
+    ImGui::Combo("", &currentCategory, "自己\0队友\0敌人\0");
     ImGui::PopItemWidth();
-    ImGui::SliderInt("Master volume", &soundConfig.players[currentCategory].masterVolume, 0, 200, "%d%%");
-    ImGui::SliderInt("Headshot volume", &soundConfig.players[currentCategory].headshotVolume, 0, 200, "%d%%");
-    ImGui::SliderInt("Weapon volume", &soundConfig.players[currentCategory].weaponVolume, 0, 200, "%d%%");
-    ImGui::SliderInt("Footstep volume", &soundConfig.players[currentCategory].footstepVolume, 0, 200, "%d%%");
+    ImGui::SliderInt("主音量", &soundConfig.players[currentCategory].masterVolume, 0, 200, "%d%%");
+    ImGui::SliderInt("爆头音量", &soundConfig.players[currentCategory].headshotVolume, 0, 200, "%d%%");
+    ImGui::SliderInt("武器音量", &soundConfig.players[currentCategory].weaponVolume, 0, 200, "%d%%");
+    ImGui::SliderInt("脚步音量", &soundConfig.players[currentCategory].footstepVolume, 0, 200, "%d%%");
     ImGui::PopID();
 
     if (!contentOnly)
