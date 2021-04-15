@@ -40,7 +40,7 @@ static bool antiAimOpen = false;
 
 void AntiAim::menuBarItem() noexcept
 {
-    if (ImGui::MenuItem("Anti aim")) {
+    if (ImGui::MenuItem("反自瞄")) {
         antiAimOpen = true;
         ImGui::SetWindowFocus("Anti aim");
         ImGui::SetWindowPos("Anti aim", { 100.0f, 100.0f });
@@ -49,7 +49,7 @@ void AntiAim::menuBarItem() noexcept
 
 void AntiAim::tabItem() noexcept
 {
-    if (ImGui::BeginTabItem("Anti aim")) {
+    if (ImGui::BeginTabItem("反自瞄")) {
         drawGUI(true);
         ImGui::EndTabItem();
     }
@@ -61,13 +61,13 @@ void AntiAim::drawGUI(bool contentOnly) noexcept
         if (!antiAimOpen)
             return;
         ImGui::SetNextWindowSize({ 0.0f, 0.0f });
-        ImGui::Begin("Anti aim", &antiAimOpen, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+        ImGui::Begin("反自瞄", &antiAimOpen, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
     }
-    ImGui::Checkbox("Enabled", &antiAimConfig.enabled);
+    ImGui::Checkbox("启用", &antiAimConfig.enabled);
     ImGui::Checkbox("##pitch", &antiAimConfig.pitch);
     ImGui::SameLine();
-    ImGui::SliderFloat("Pitch", &antiAimConfig.pitchAngle, -89.0f, 89.0f, "%.2f");
-    ImGui::Checkbox("Yaw", &antiAimConfig.yaw);
+    ImGui::SliderFloat("倾斜度", &antiAimConfig.pitchAngle, -89.0f, 89.0f, "%.2f");
+    ImGui::Checkbox("偏移", &antiAimConfig.yaw);
     if (!contentOnly)
         ImGui::End();
 }
