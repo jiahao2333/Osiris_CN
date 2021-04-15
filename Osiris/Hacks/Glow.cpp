@@ -114,20 +114,20 @@ void Glow::render() noexcept
             if (!entity->isAlive())
                 break;
             if (auto activeWeapon{ entity->getActiveWeapon() }; activeWeapon && activeWeapon->getClientClass()->classId == ClassId::C4 && activeWeapon->c4StartedArming())
-                applyPlayerGlow("Planting", entity);
+                applyPlayerGlow("正在安放", entity);
             else if (entity->isDefusing())
-                applyPlayerGlow("Defusing", entity);
+                applyPlayerGlow("正在拆除", entity);
             else if (entity == localPlayer.get())
-                applyGlow(glow["Local Player"], entity->health());
+                applyGlow(glow["自己"], entity->health());
             else if (entity->isOtherEnemy(localPlayer.get()))
-                applyPlayerGlow("Enemies", entity);
+                applyPlayerGlow("敌人", entity);
             else
-                applyPlayerGlow("Allies", entity);
+                applyPlayerGlow("队友", entity);
             break;
-        case ClassId::C4: applyGlow(glow["C4"]); break;
-        case ClassId::PlantedC4: applyGlow(glow["Planted C4"]); break;
-        case ClassId::Chicken: applyGlow(glow["Chickens"]); break;
-        case ClassId::EconEntity: applyGlow(glow["Defuse Kits"]); break;
+        case ClassId::C4: applyGlow(glow["C4 炸弹"]); break;
+        case ClassId::PlantedC4: applyGlow(glow["已安放的 C4 炸弹"]); break;
+        case ClassId::Chicken: applyGlow(glow["鸡"]); break;
+        case ClassId::EconEntity: applyGlow(glow["拆弹器"]); break;
 
         case ClassId::BaseCSGrenadeProjectile:
         case ClassId::BreachChargeProjectile:
@@ -137,10 +137,10 @@ void Glow::render() noexcept
         case ClassId::SensorGrenadeProjectile:
         case ClassId::SmokeGrenadeProjectile:
         case ClassId::SnowballProjectile:
-            applyGlow(glow["Projectiles"]); break;
+            applyGlow(glow["已投掷物"]); break;
 
-        case ClassId::Hostage: applyGlow(glow["Hostages"]); break;
-        case ClassId::CSRagdoll: applyGlow(glow["Ragdolls"]); break;
+        case ClassId::Hostage: applyGlow(glow["人质"]); break;
+        case ClassId::CSRagdoll: applyGlow(glow["已死亡人物"]); break;
         default:
            if (entity->isWeapon()) {
                 applyGlow(glow["Weapons"]);
@@ -167,7 +167,7 @@ static bool glowWindowOpen = false;
 
 void Glow::menuBarItem() noexcept
 {
-    if (ImGui::MenuItem("Glow")) {
+    if (ImGui::MenuItem("发光")) {
         glowWindowOpen = true;
         ImGui::SetWindowFocus("Glow");
         ImGui::SetWindowPos("Glow", { 100.0f, 100.0f });
@@ -176,7 +176,7 @@ void Glow::menuBarItem() noexcept
 
 void Glow::tabItem() noexcept
 {
-    if (ImGui::BeginTabItem("Glow")) {
+    if (ImGui::BeginTabItem("发光")) {
         drawGUI(true);
         ImGui::EndTabItem();
     }
@@ -188,17 +188,17 @@ void Glow::drawGUI(bool contentOnly) noexcept
         if (!glowWindowOpen)
             return;
         ImGui::SetNextWindowSize({ 450.0f, 0.0f });
-        ImGui::Begin("Glow", &glowWindowOpen, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+        ImGui::Begin("发光", &glowWindowOpen, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
     }
 
-    ImGui::hotkey("Toggle Key", glowToggleKey, 80.0f);
-    ImGui::hotkey("Hold Key", glowHoldKey, 80.0f);
+    ImGui::hotkey("切换按键", glowToggleKey, 80.0f);
+    ImGui::hotkey("保持按键", glowHoldKey, 80.0f);
     ImGui::Separator();
 
     static int currentCategory{ 0 };
     ImGui::PushItemWidth(110.0f);
     ImGui::PushID(0);
-    constexpr std::array categories{ "Allies", "Enemies", "Planting", "Defusing", "Local Player", "Weapons", "C4", "Planted C4", "Chickens", "Defuse Kits", "Projectiles", "Hostages", "Ragdolls" };
+    constexpr std::array categories{ "队友", "敌人", "正在安放", "正在拆除", "自己", "武器", "C4 炸弹", "已安装的 C4 炸弹", "鸡", "拆弹器", "已投掷物", "人质", "已死亡人物" };
     ImGui::Combo("", &currentCategory, categories.data(), categories.size());
     ImGui::PopID();
     GlowItem* currentItem;
@@ -206,7 +206,7 @@ void Glow::drawGUI(bool contentOnly) noexcept
         ImGui::SameLine();
         static int currentType{ 0 };
         ImGui::PushID(1);
-        ImGui::Combo("", &currentType, "All\0Visible\0Occluded\0");
+        ImGui::Combo("", &currentType, "全部\0可见时\0不可见时\0");
         ImGui::PopID();
         auto& cfg = playerGlowConfig[categories[currentCategory]];
         switch (currentType) {
@@ -219,17 +219,17 @@ void Glow::drawGUI(bool contentOnly) noexcept
     }
 
     ImGui::SameLine();
-    ImGui::Checkbox("Enabled", &currentItem->enabled);
+    ImGui::Checkbox("启用", &currentItem->enabled);
     ImGui::Separator();
     ImGui::Columns(2, nullptr, false);
     ImGui::SetColumnOffset(1, 150.0f);
-    ImGui::Checkbox("Health based", &currentItem->healthBased);
+    ImGui::Checkbox("根据生命值", &currentItem->healthBased);
 
-    ImGuiCustom::colorPicker("Color", *currentItem);
+    ImGuiCustom::colorPicker("颜色", *currentItem);
 
     ImGui::NextColumn();
     ImGui::SetNextItemWidth(100.0f);
-    ImGui::Combo("Style", &currentItem->style, "Default\0Rim3d\0Edge\0Edge Pulse\0");
+    ImGui::Combo("样式", &currentItem->style, "默认\0边缘3D\0边缘\0边缘脉冲\0");
 
     ImGui::Columns(1);
     if (!contentOnly)
