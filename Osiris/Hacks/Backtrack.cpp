@@ -176,7 +176,7 @@ static bool backtrackWindowOpen = false;
 
 void Backtrack::menuBarItem() noexcept
 {
-    if (ImGui::MenuItem("Backtrack")) {
+    if (ImGui::MenuItem("回溯")) {
         backtrackWindowOpen = true;
         ImGui::SetWindowFocus("Backtrack");
         ImGui::SetWindowPos("Backtrack", { 100.0f, 100.0f });
@@ -185,7 +185,7 @@ void Backtrack::menuBarItem() noexcept
 
 void Backtrack::tabItem() noexcept
 {
-    if (ImGui::BeginTabItem("Backtrack")) {
+    if (ImGui::BeginTabItem("回溯")) {
         drawGUI(true);
         ImGui::EndTabItem();
     }
@@ -197,13 +197,13 @@ void Backtrack::drawGUI(bool contentOnly) noexcept
         if (!backtrackWindowOpen)
             return;
         ImGui::SetNextWindowSize({ 0.0f, 0.0f });
-        ImGui::Begin("Backtrack", &backtrackWindowOpen, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+        ImGui::Begin("回溯", &backtrackWindowOpen, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
     }
-    ImGui::Checkbox("Enabled", &backtrackConfig.enabled);
-    ImGui::Checkbox("Ignore smoke", &backtrackConfig.ignoreSmoke);
-    ImGui::Checkbox("Recoil based fov", &backtrackConfig.recoilBasedFov);
+    ImGui::Checkbox("启用", &backtrackConfig.enabled);
+    ImGui::Checkbox("无视烟雾", &backtrackConfig.ignoreSmoke);
+    ImGui::Checkbox("后座基于视角", &backtrackConfig.recoilBasedFov);
     ImGui::PushItemWidth(220.0f);
-    ImGui::SliderInt("Time limit", &backtrackConfig.timeLimit, 1, 200, "%d ms");
+    ImGui::SliderInt("延迟", &backtrackConfig.timeLimit, 1, 200, "%d 毫秒");
     ImGui::PopItemWidth();
     if (!contentOnly)
         ImGui::End();
