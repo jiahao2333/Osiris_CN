@@ -315,16 +315,16 @@ EntityData::EntityData(Entity* entity) noexcept : BaseData{ entity }
 {
     name = [](Entity* entity) {
         switch (entity->getClientClass()->classId) {
-        case ClassId::EconEntity: return "Defuse Kit";
-        case ClassId::Chicken: return "Chicken";
-        case ClassId::PlantedC4: return "Planted C4";
-        case ClassId::Hostage: return "Hostage";
-        case ClassId::Dronegun: return "Sentry";
-        case ClassId::Cash: return "Cash";
-        case ClassId::AmmoBox: return "Ammo Box";
-        case ClassId::RadarJammer: return "Radar Jammer";
-        case ClassId::SnowballPile: return "Snowball Pile";
-        case ClassId::DynamicProp: return "Collectable Coin";
+        case ClassId::EconEntity: return "拆弹器";
+        case ClassId::Chicken: return "鸡";
+        case ClassId::PlantedC4: return "已安装的 C4 炸弹";
+        case ClassId::Hostage: return "人质";
+        case ClassId::Dronegun: return "自动哨兵";
+        case ClassId::Cash: return "金钱";
+        case ClassId::AmmoBox: return "弹药盒";
+        case ClassId::RadarJammer: return "雷达干扰器";
+        case ClassId::SnowballPile: return "雪球桩";
+        case ClassId::DynamicProp: return "收藏币";
         default: assert(false); return "unknown";
         }
     }(entity);
@@ -336,16 +336,16 @@ ProjectileData::ProjectileData(Entity* projectile) noexcept : BaseData { project
         switch (projectile->getClientClass()->classId) {
         case ClassId::BaseCSGrenadeProjectile:
             if (const auto model = projectile->getModel(); model && strstr(model->name, "flashbang"))
-                return "Flashbang";
+                return "闪光震撼弹";
             else
-                return "HE Grenade";
-        case ClassId::BreachChargeProjectile: return "Breach Charge";
-        case ClassId::BumpMineProjectile: return "Bump Mine";
-        case ClassId::DecoyProjectile: return "Decoy Grenade";
-        case ClassId::MolotovProjectile: return "Molotov";
-        case ClassId::SensorGrenadeProjectile: return "TA Grenade";
-        case ClassId::SmokeGrenadeProjectile: return "Smoke Grenade";
-        case ClassId::SnowballProjectile: return "Snowball";
+                return "高爆手雷";
+        case ClassId::BreachChargeProjectile: return "遥控炸弹";
+        case ClassId::BumpMineProjectile: return "弹射地雷";
+        case ClassId::DecoyProjectile: return "诱饵手雷";
+        case ClassId::MolotovProjectile: return "燃烧瓶";
+        case ClassId::SensorGrenadeProjectile: return "战术探测手雷";
+        case ClassId::SmokeGrenadeProjectile: return "烟雾弹";
+        case ClassId::SnowballProjectile: return "雪球";
         default: assert(false); return "unknown";
         }
     }(projectile);
@@ -520,14 +520,14 @@ WeaponData::WeaponData(Entity* entity) noexcept : BaseData{ entity }
     if (const auto weaponInfo = entity->getWeaponData()) {
         group = [](WeaponType type, WeaponId weaponId) {
             switch (type) {
-            case WeaponType::Pistol: return "Pistols";
-            case WeaponType::SubMachinegun: return "SMGs";
-            case WeaponType::Rifle: return "Rifles";
-            case WeaponType::SniperRifle: return "Sniper Rifles";
-            case WeaponType::Shotgun: return "Shotguns";
-            case WeaponType::Machinegun: return "Machineguns";
-            case WeaponType::Grenade: return "Grenades";
-            case WeaponType::Melee: return "Melee";
+            case WeaponType::Pistol: return "手枪";
+            case WeaponType::SubMachinegun: return "微型冲锋枪";
+            case WeaponType::Rifle: return "步枪";
+            case WeaponType::SniperRifle: return "狙击步枪";
+            case WeaponType::Shotgun: return "霰弹枪";
+            case WeaponType::Machinegun: return "重型武器";
+            case WeaponType::Grenade: return "手雷";
+            case WeaponType::Melee: return "近战武器";
             default:
                 switch (weaponId) {
                 case WeaponId::C4:
@@ -535,7 +535,7 @@ WeaponData::WeaponData(Entity* entity) noexcept : BaseData{ entity }
                 case WeaponId::BumpMine:
                 case WeaponId::ZoneRepulsor:
                 case WeaponId::Shield:
-                    return "Other";
+                    return "其他";
                 default: return "All";
                 }
             }
@@ -544,16 +544,16 @@ WeaponData::WeaponData(Entity* entity) noexcept : BaseData{ entity }
             switch (weaponId) {
             default: return "All";
 
-            case WeaponId::Glock: return "Glock-18";
+            case WeaponId::Glock: return "格洛克 18 型";
             case WeaponId::Hkp2000: return "P2000";
-            case WeaponId::Usp_s: return "USP-S";
-            case WeaponId::Elite: return "Dual Berettas";
+            case WeaponId::Usp_s: return "USP 消音型";
+            case WeaponId::Elite: return "双持贝瑞塔";
             case WeaponId::P250: return "P250";
             case WeaponId::Tec9: return "Tec-9";
-            case WeaponId::Fiveseven: return "Five-SeveN";
-            case WeaponId::Cz75a: return "CZ75-Auto";
-            case WeaponId::Deagle: return "Desert Eagle";
-            case WeaponId::Revolver: return "R8 Revolver";
+            case WeaponId::Fiveseven: return "FN57";
+            case WeaponId::Cz75a: return "CZ75";
+            case WeaponId::Deagle: return "沙漠之鹰";
+            case WeaponId::Revolver: return "R8 左轮手枪";
 
             case WeaponId::Mac10: return "MAC-10";
             case WeaponId::Mp9: return "MP9";
@@ -561,13 +561,13 @@ WeaponData::WeaponData(Entity* entity) noexcept : BaseData{ entity }
             case WeaponId::Mp5sd: return "MP5-SD";
             case WeaponId::Ump45: return "UMP-45";
             case WeaponId::P90: return "P90";
-            case WeaponId::Bizon: return "PP-Bizon";
+            case WeaponId::Bizon: return "PP-野牛";
 
-            case WeaponId::GalilAr: return "Galil AR";
-            case WeaponId::Famas: return "FAMAS";
+            case WeaponId::GalilAr: return "加利尔 AR";
+            case WeaponId::Famas: return "法玛斯";
             case WeaponId::Ak47: return "AK-47";
             case WeaponId::M4A1: return "M4A4";
-            case WeaponId::M4a1_s: return "M4A1-S";
+            case WeaponId::M4a1_s: return "M4A1 消音型";
             case WeaponId::Sg553: return "SG 553";
             case WeaponId::Aug: return "AUG";
 
@@ -576,35 +576,35 @@ WeaponData::WeaponData(Entity* entity) noexcept : BaseData{ entity }
             case WeaponId::G3SG1: return "G3SG1";
             case WeaponId::Scar20: return "SCAR-20";
 
-            case WeaponId::Nova: return "Nova";
+            case WeaponId::Nova: return "新星";
             case WeaponId::Xm1014: return "XM1014";
-            case WeaponId::Sawedoff: return "Sawed-Off";
+            case WeaponId::Sawedoff: return "截短霰弹枪";
             case WeaponId::Mag7: return "MAG-7";
 
             case WeaponId::M249: return "M249";
-            case WeaponId::Negev: return "Negev";
+            case WeaponId::Negev: return "内格夫";
 
-            case WeaponId::Flashbang: return "Flashbang";
-            case WeaponId::HeGrenade: return "HE Grenade";
-            case WeaponId::SmokeGrenade: return "Smoke Grenade";
-            case WeaponId::Molotov: return "Molotov";
-            case WeaponId::Decoy: return "Decoy Grenade";
-            case WeaponId::IncGrenade: return "Incendiary";
-            case WeaponId::TaGrenade: return "TA Grenade";
-            case WeaponId::Firebomb: return "Fire Bomb";
-            case WeaponId::Diversion: return "Diversion";
-            case WeaponId::FragGrenade: return "Frag Grenade";
-            case WeaponId::Snowball: return "Snowball";
+            case WeaponId::Flashbang: return "闪光震撼弹";
+            case WeaponId::HeGrenade: return "高爆手雷";
+            case WeaponId::SmokeGrenade: return "烟雾弹";
+            case WeaponId::Molotov: return "燃烧瓶";
+            case WeaponId::Decoy: return "诱饵弹";
+            case WeaponId::IncGrenade: return "燃烧弹";
+            case WeaponId::TaGrenade: return "战术探测手雷";
+            case WeaponId::Firebomb: return "火焰弹";
+            case WeaponId::Diversion: return "干扰型武器";
+            case WeaponId::FragGrenade: return "破片手雷";
+            case WeaponId::Snowball: return "雪球";
 
-            case WeaponId::Axe: return "Axe";
-            case WeaponId::Hammer: return "Hammer";
-            case WeaponId::Spanner: return "Wrench";
+            case WeaponId::Axe: return "斧头";
+            case WeaponId::Hammer: return "锤子";
+            case WeaponId::Spanner: return "扳手";
 
-            case WeaponId::C4: return "C4";
-            case WeaponId::Healthshot: return "Healthshot";
-            case WeaponId::BumpMine: return "Bump Mine";
-            case WeaponId::ZoneRepulsor: return "Zone Repulsor";
-            case WeaponId::Shield: return "Shield";
+            case WeaponId::C4: return "C4 炸弹";
+            case WeaponId::Healthshot: return "医疗针";
+            case WeaponId::BumpMine: return "弹射地雷";
+            case WeaponId::ZoneRepulsor: return "排斥装置";
+            case WeaponId::Shield: return "防弹盾";
             }
         }(entity->itemDefinitionIndex2());
 
@@ -620,12 +620,12 @@ LootCrateData::LootCrateData(Entity* entity) noexcept : BaseData{ entity }
 
     name = [](const char* modelName) -> const char* {
         switch (fnv::hashRuntime(modelName)) {
-        case fnv::hash("models/props_survival/cases/case_pistol.mdl"): return "Pistol Case";
-        case fnv::hash("models/props_survival/cases/case_light_weapon.mdl"): return "Light Case";
-        case fnv::hash("models/props_survival/cases/case_heavy_weapon.mdl"): return "Heavy Case";
-        case fnv::hash("models/props_survival/cases/case_explosive.mdl"): return "Explosive Case";
-        case fnv::hash("models/props_survival/cases/case_tools.mdl"): return "Tools Case";
-        case fnv::hash("models/props_survival/cash/dufflebag.mdl"): return "Cash Dufflebag";
+        case fnv::hash("models/props_survival/cases/case_pistol.mdl"): return "手枪盒";
+        case fnv::hash("models/props_survival/cases/case_light_weapon.mdl"): return "闪光盒";
+        case fnv::hash("models/props_survival/cases/case_heavy_weapon.mdl"): return "重型盒";
+        case fnv::hash("models/props_survival/cases/case_explosive.mdl"): return "炸药盒";
+        case fnv::hash("models/props_survival/cases/case_tools.mdl"): return "工具盒";
+        case fnv::hash("models/props_survival/cash/dufflebag.mdl"): return "现金行李袋";
         default: return nullptr;
         }
     }(model->name);
