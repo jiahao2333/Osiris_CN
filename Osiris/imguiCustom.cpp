@@ -50,21 +50,21 @@ void ImGuiCustom::colorPicker(const char* name, float color[3], float* alpha, bo
             ImGui::SameLine();
             if (ImGui::BeginChild("##child", { 150.0f, 0.0f })) {
                 if (rainbow)
-                    ImGui::Checkbox("Rainbow", rainbow);
+                    ImGui::Checkbox("渐变", rainbow);
                 ImGui::PushItemWidth(85.0f);
                 if (rainbowSpeed)
-                    ImGui::InputFloat("Speed", rainbowSpeed, 0.01f, 0.15f, "%.2f");
+                    ImGui::InputFloat("速度", rainbowSpeed, 0.01f, 0.15f, "%.2f");
 
                 if (rounding || thickness)
                     ImGui::Separator();
 
                 if (rounding) {
-                    ImGui::InputFloat("Rounding", rounding, 0.1f, 0.0f, "%.1f");
+                    ImGui::InputFloat("圆角", rounding, 0.1f, 0.0f, "%.1f");
                     *rounding = std::max(*rounding, 0.0f);
                 }
 
                 if (thickness) {
-                    ImGui::InputFloat("Thickness", thickness, 0.1f, 0.0f, "%.1f");
+                    ImGui::InputFloat("厚度", thickness, 0.1f, 0.0f, "%.1f");
                     *thickness = std::max(*thickness, 1.0f);
                 }
 
