@@ -1,9 +1,11 @@
+#include <algorithm>
 #include <array>
 #include <cwchar>
 #include <fstream>
 #include <iterator>
 #include <string>
 #include <string_view>
+#include <unordered_map>
 #include <vector>
 
 #ifdef _WIN32
@@ -19,6 +21,7 @@
 
 #include "GUI.h"
 #include "Config.h"
+#include "ConfigStructs.h"
 #include "Hacks/Misc.h"
 #include "Hacks/SkinChanger.h"
 #include "Helpers.h"
@@ -856,7 +859,7 @@ void GUI::renderStreamProofESPWindow(bool contentOnly) noexcept
 
             if (ImGui::BeginPopup("")) {
                 ImGui::SetNextItemWidth(95.0f);
-                ImGui::Combo("类型", &playerConfig.healthBar.type, "渐变\0填充\0");
+                ImGui::Combo("类型", &playerConfig.healthBar.type, "渐变\0填充\0基于生命值\0");
                 if (playerConfig.healthBar.type == HealthBar::Solid) {
                     ImGui::SameLine();
                     ImGuiCustom::colorPicker("", static_cast<Color4&>(playerConfig.healthBar));
