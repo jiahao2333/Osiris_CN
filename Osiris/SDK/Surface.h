@@ -34,9 +34,9 @@ public:
 
     VIRTUAL_METHOD(void, printText, 28, (const std::wstring_view text, int drawType = 0), (this, text.data(), text.length(), drawType))
     
-    VIRTUAL_METHOD(void, getScreenSize, 44, (int& w, int& h), (this, std::ref(w), std::ref(h)))
+    [[deprecated]] VIRTUAL_METHOD(void, getScreenSize, 44, (int& w, int& h), (this, std::ref(w), std::ref(h)))
 
-    auto getScreenSize() noexcept
+    [[deprecated]] auto getScreenSize() noexcept
     {
         int w, h;
         getScreenSize(w, h);
@@ -56,19 +56,4 @@ public:
 
     template <typename T>
     VIRTUAL_METHOD(void, drawOutlinedCircle, 103, (T x, T y, int r, int seg), (this, static_cast<int>(x), static_cast<int>(y), r, seg))
-
-    template <typename T>
-    void drawCircle(T x, T y, int startRadius, int radius) noexcept
-    {
-        int xs[12];
-        int ys[12];
-
-        for (int i = startRadius; i <= radius; ++i) {
-            for (int j = 0; j < 12; ++j) {
-                xs[j] = static_cast<int>(std::cos(degreesToRadians(static_cast<float>(j * 30))) * i + x);
-                ys[j] = static_cast<int>(std::sin(degreesToRadians(static_cast<float>(j * 30))) * i + y);
-            }
-            interfaces->surface->drawPolyLine(xs, ys, 12);
-        }
-    }
 };
