@@ -9,7 +9,7 @@
 <br>![Windows](https://github.com/danielkrupinski/Osiris/workflows/Windows/badge.svg?branch=master&event=push)
 ![Linux](https://github.com/danielkrupinski/Osiris/workflows/Linux/badge.svg?branch=master&event=push)
 
-免费开源的跨平台作弊软件，适用于 **反恐精英: 全球攻势** 游戏。 设计为内部作弊 - [动态链接库](https://zh.wikipedia.org/wiki/%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%BA%93) (DLL) 可加载到游戏进程中。 与游戏的Steam版本兼容。 适用于 Windows 和 Linux 系统。 
+免费开源的跨平台作弊软件，适用于 **反恐精英: 全球攻势** 游戏。设计为内部作弊 - [动态链接库](https://zh.wikipedia.org/wiki/%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%BA%93) (DLL) 可加载到游戏进程中。与游戏的Steam版本兼容。适用于 Windows 和 Linux 系统。 
 
 ## 特征
 *   **自瞄** - 辅助瞄准
@@ -244,9 +244,9 @@
 ## 入门
 
 ### 先决条件
-Microsoft Visual Studio 2019 (preferably the latest version), platform toolset v142 and Windows SDK 10.0.x.x are required in order to compile Osiris. If you don't have ones, you can download VS [here](https://visualstudio.microsoft.com/) (Windows SDK is installed during Visual Studio Setup).
 
-为了编译Osiris，需要 Microsoft Visual Studio 2019 (最好是最新版本)，平台工具集v142 和 Windows SDK10.0.x.x。 如果您没有VS，则可以在[此处](https://visualstudio.microsoft.com/) 下载 VS (在 Visual Studio 安装过程中安装 Windows SDK )。
+为了编译 Osiris_CHS，需要 Microsoft Visual Studio 2019 (最好是最新版本)，平台工具集v142 和 Windows SDK10.0.x.x。 如果您没有VS，则可以在 [此处](https://visualstudio.microsoft.com/) 下载 VS (在 Visual Studio 安装过程中会安装 Windows SDK)。
+
 ### 下载
 
 有两种下载源代码的选项：
@@ -255,11 +255,11 @@ Microsoft Visual Studio 2019 (preferably the latest version), platform toolset v
 
 如果您想使用纯资源并且不打算回购，请选择此选项。 下载大小 ~600 kB。
 
-以这种方式下载源代码 [点击此处](https://github.com/H-xiaoH/Osiris_CHS/archive/master.zip).
+以这种方式下载源代码 [点击此处](https://github.com/H-xiaoH/Osiris_CHS/archive/master.zip)。
 
-#### 有 [git](https://git-scm.com)
+#### 使用 [git](https://git-scm.com)
 
-如果您要为回购做贡献或要使用版本控制系统，请选择此选项。 下载大小约 ~4MB。  如果未安装Git，则需要进一步进行操作，请在 [此处](https://git-scm.com) 下载。
+如果您要为回购做贡献或要使用版本控制系统，请选择此选项。下载大小约 ~4MB。如果未安装Git，则需要进一步进行操作，请在 [此处](https://git-scm.com) 下载。
 
 打开git命令提示符并输入以下命令：
 
@@ -282,7 +282,7 @@ Microsoft Visual Studio 2019 (preferably the latest version), platform toolset v
 注入后，可以按下 `INSERT` 键打开菜单。 
 
 ### 进一步优化
-如果您的CPU支持 AVX / AVX2 / AVX-512 指令集，则可以在项目设置中启用它。 这将产生更多性能更好的代码，并为您的CPU优化。 当前在项目设置中选择了 AVX2 指令。
+如果您的CPU支持 AVX / AVX2 / AVX-512 指令集，则可以在项目设置中启用它。 这将产生更多性能更好的代码，并为您的 CPU 优化。 当前在项目设置中选择了 AVX2 指令。
 
 ## 常问问题
 
@@ -290,11 +290,9 @@ Microsoft Visual Studio 2019 (preferably the latest version), platform toolset v
 在 CS:GO 窗口中，按 <kbd>INSERT</kbd> 键。
 
 ### 我的配置文件保存在哪里？
-Configuration files are saved inside `Osiris` folder in your `Documents` folder (`%USERPROFILE%\Documents\Osiris`). The config is in human readable format and can be edited (e.g, using notepad). Sometimes after updates configuration file needs to be deleted and recreated.
+配置文件保存在 Documents 文件夹的 Osiris 文件夹中 (％USERPROFILE％\Documents\Osiris) 。该配置采用人类可读的格式，并且可以进行编辑（例如，使用记事本。)有时，更新后需要删除并重新创建配置文件。
 
-配置文件保存在 Documents 文件夹的 Osiris 文件夹中 (％USERPROFILE％\Documents\Osiris) 。该配置采用人类可读的格式，并且可以进行编辑（例如，使用记事本。有时，更新后需要删除并重新创建配置文件。
-
-### Osiris 使用什么挂钩方法？
+### Osiris_CHS 使用什么挂钩方法？
 当前实现的挂钩方法是：
 *   MinHook - trampoline hook
 *   VmtHook - hook a function directly in a vtable
@@ -304,12 +302,12 @@ Configuration files are saved inside `Osiris` folder in your `Documents` folder 
 
 ## 致谢
 
-*   [ocornut](https://github.com/ocornut) 和 [contributors](https://github.com/ocornut/imgui/graphs/contributors) 创建和维护出色的GUI库 - [Dear imgui](https://github.com/ocornut/imgui).
+*   [ocornut](https://github.com/ocornut) 和 [contributors](https://github.com/ocornut/imgui/graphs/contributors) 创建和维护出色的 GUI 库 - [Dear imgui](https://github.com/ocornut/imgui).
 *   [Zer0Mem0ry](https://github.com/Zer0Mem0ry) - 有关逆向工程和游戏黑客的出色教程
 
-## License
+## 许可
 
-> Copyright (c) 2018-2021 Daniel Krupiński
+> 版权所有 (c) 2018-2021 Daniel Krupiński
 
 该项目已获得 [MIT 许可](https://opensource.org/licenses/mit-license.php) - 请参阅 [LICENSE](https://github.com/danielkrupinski/Osiris/blob/master/LICENSE) 文件以了解详细信息。 
 
