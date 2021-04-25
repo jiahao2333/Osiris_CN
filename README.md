@@ -9,21 +9,21 @@
 <br>![Windows](https://github.com/danielkrupinski/Osiris/workflows/Windows/badge.svg?branch=master&event=push)
 ![Linux](https://github.com/danielkrupinski/Osiris/workflows/Linux/badge.svg?branch=master&event=push)
 
-免费开源的跨平台作弊软件，适用于 **反恐精英: 全球攻势** 游戏. 设计为内部作弊 - [动态链接库](https://zh.wikipedia.org/wiki/%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%BA%93) (DLL) 可加载到游戏进程中。 与游戏的Steam版本兼容。 适用于 Windows 和 Linux 系统。 
+免费开源的跨平台作弊软件，适用于 **反恐精英: 全球攻势** 游戏。 设计为内部作弊 - [动态链接库](https://zh.wikipedia.org/wiki/%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%BA%93) (DLL) 可加载到游戏进程中。 与游戏的Steam版本兼容。 适用于 Windows 和 Linux 系统。 
 
 ## 特征
-*   **自瞄** - aim assistance
-*   **自动开火** - automatically fires when crosshair is on enemy
-*   **回溯** - abuse lag compensation to move players back in time
-*   **发光** - render glow effect on entities
-*   **实体** - color player models to improve visibility
-*   **ESP** - show information about players, dropped weapons and projectiles
-*   **视觉** - miscellaneous visual options
-*   **皮肤修改** - change weapon skins, knives and stickers
-*   **声音** - modify volume of certain sound effects
-*   **样式** - select menu window layout and colors
-*   **杂项** - miscellaneous features
-*   **配置** - JSON-based configuration system
+*   **自瞄** - 辅助瞄准
+*   **自动开火** - 准星对准敌人时自动开火
+*   **回溯** - 滥用滞后补偿以使玩家回到过去
+*   **发光** - 对实体渲染发光效果
+*   **实体** - 彩色玩家模型以提高可见度
+*   **ESP** - 显示有关玩家，掉落的武器和投掷物的信息
+*   **视觉** - 其他视觉选择
+*   **皮肤修改** - 更换武器的皮肤，匕首和贴纸
+*   **声音** - 修改某些声音效果的音量
+*   **样式** - 选择菜单窗口的布局和颜色
+*   **杂项** - 杂项功能
+*   **配置** - 基于 JSON 的配置系统
 
 <details>
 
