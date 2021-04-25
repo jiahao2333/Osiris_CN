@@ -1,4 +1,4 @@
-# Osiris 
+# Osiris_CHS
 [![C++](https://img.shields.io/badge/language-C%2B%2B-%23f34b7d.svg?style=plastic)](https://en.wikipedia.org/wiki/C%2B%2B) 
 [![CS:GO](https://img.shields.io/badge/game-CS%3AGO-yellow.svg?style=plastic)](https://store.steampowered.com/app/730/CounterStrike_Global_Offensive/) 
 [![Windows](https://img.shields.io/badge/platform-Windows-0078d7.svg?style=plastic)](https://en.wikipedia.org/wiki/Microsoft_Windows) 
@@ -9,21 +9,21 @@
 <br>![Windows](https://github.com/danielkrupinski/Osiris/workflows/Windows/badge.svg?branch=master&event=push)
 ![Linux](https://github.com/danielkrupinski/Osiris/workflows/Linux/badge.svg?branch=master&event=push)
 
-Free open-source cross-platform cheat software for **Counter-Strike: Global Offensive** game. Designed as an internal cheat - [Dynamic-link library](https://en.wikipedia.org/wiki/Dynamic-link_library) (DLL) loadable into game process. Compatible with the Steam version of the game. Available for Windows and Linux systems.
+免费开源的跨平台作弊软件，适用于 **反恐精英: 全球攻势** 游戏. 设计为内部作弊 - [动态链接库](https://zh.wikipedia.org/wiki/%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%BA%93) (DLL) 可加载到游戏进程中。 与游戏的Steam版本兼容。 适用于 Windows 和 Linux 系统。 
 
-## Features
-*   **Aimbot** - aim assistance
-*   **Triggerbot** - automatically fires when crosshair is on enemy
-*   **Backtrack** - abuse lag compensation to move players back in time
-*   **Glow** - render glow effect on entities
-*   **Chams** - color player models to improve visibility
-*   **Stream Proof ESP** - show information about players, dropped weapons and projectiles
-*   **Visuals** - miscellaneous visual options
-*   **Skin changer** - change weapon skins, knives and stickers
-*   **Sound** - modify volume of certain sound effects
-*   **Style** - select menu window layout and colors
-*   **Misc** - miscellaneous features
-*   **Config** - JSON-based configuration system
+## 特征
+*   **自瞄** - aim assistance
+*   **自动开火** - automatically fires when crosshair is on enemy
+*   **回溯** - abuse lag compensation to move players back in time
+*   **发光** - render glow effect on entities
+*   **实体** - color player models to improve visibility
+*   **ESP** - show information about players, dropped weapons and projectiles
+*   **视觉** - miscellaneous visual options
+*   **皮肤修改** - change weapon skins, knives and stickers
+*   **声音** - modify volume of certain sound effects
+*   **样式** - select menu window layout and colors
+*   **杂项** - miscellaneous features
+*   **配置** - JSON-based configuration system
 
 <details>
 
@@ -241,75 +241,78 @@ Free open-source cross-platform cheat software for **Counter-Strike: Global Offe
     *   **Reload configs** - reload configs list
 </details>
 
-## Getting started
+## 入门
 
-### Prerequisites
+### 先决条件
 Microsoft Visual Studio 2019 (preferably the latest version), platform toolset v142 and Windows SDK 10.0.x.x are required in order to compile Osiris. If you don't have ones, you can download VS [here](https://visualstudio.microsoft.com/) (Windows SDK is installed during Visual Studio Setup).
 
-### Downloading
+为了编译Osiris，需要 Microsoft Visual Studio 2019 (最好是最新版本)，平台工具集v142 和 Windows SDK10.0.x.x。 如果您没有VS，则可以在[此处](https://visualstudio.microsoft.com/) 下载 VS (在 Visual Studio 安装过程中安装 Windows SDK )。
+### 下载
 
-There are two options of downloading the source code:
+有两种下载源代码的选项：
 
-#### Without [git](https://git-scm.com)
+#### 没有 [git](https://git-scm.com)
 
-Choose this option if you want pure source and you're not going to contribute to the repo. Download size ~600 kB.
+如果您想使用纯资源并且不打算回购，请选择此选项。 下载大小 ~600 kB。
 
-To download source code this way [click here](https://github.com/danielkrupinski/Osiris/archive/master.zip).
+以这种方式下载源代码 [点击此处](https://github.com/H-xiaoH/Osiris_CHS/archive/master.zip).
 
-#### With [git](https://git-scm.com)
+#### 有 [git](https://git-scm.com)
 
-Choose this option if you're going to contribute to the repo or you want to use version control system. Download size ~4 MB. Git is required to step further, if not installed download it [here](https://git-scm.com).
+如果您要为回购做贡献或要使用版本控制系统，请选择此选项。 下载大小约 ~4MB。  如果未安装Git，则需要进一步进行操作，请在 [此处](https://git-scm.com) 下载。
 
-Open git command prompt and enter following command:
+打开git命令提示符并输入以下命令：
 
-    git clone --depth=1 https://github.com/danielkrupinski/Osiris.git
+    git clone --depth=1 https://github.com/H-xiaoH/Osiris_CHS.git
 
-`Osiris` folder should have been successfully created, containing all the source files.
+`Osiris_CHS` 文件夹应该已经成功创建，其中包含所有源文件。 
 
-### Compiling from source
+### 从源代码编译
 
-When you have equipped a copy of the source code, next step is opening **Osiris.sln** in Microsoft Visual Studio 2019.
+配备源代码副本后，下一步是在 Microsoft Visual Studio 2019 中打开 **Osiris.sln**。
 
-Then change build configuration to `Release | x86` and simply press **Build solution**.
+然后将构建配置更改为 `Release | x86` ，然后只需按 **生成解决方案** 即可。
 
-If everything went right you should receive `Osiris.dll`  binary file.
+如果一切顺利，您应该得到 `Osiris.dll` 二进制文件。 
 
-### Loading / Injecting into game process
+### 加载/注入游戏
 
-Open your favorite [DLL injector](https://en.wikipedia.org/wiki/DLL_injection) and just inject `Osiris.dll` into `csgo.exe` process.
+打开您喜欢的 [DLL注入](https://zh.wikipedia.org/wiki/DLL%E6%B3%A8%E5%85%A5) 然后将 `Osiris.dll` 注入到 `csgo.exe` 进程中。
 
-When injected, menu is openable under `INSERT` key.
+注入后，可以按下 `INSERT` 键打开菜单。 
 
-### Further optimizations
-If your CPU supports AVX / AVX2 / AVX-512 instruction set, you can enable it in project settings. This should result in more performant code, optimized for your CPU. Currently SSE2 instructions are selected in project settings.
+### 进一步优化
+如果您的CPU支持 AVX / AVX2 / AVX-512 指令集，则可以在项目设置中启用它。 这将产生更多性能更好的代码，并为您的CPU优化。 当前在项目设置中选择了 AVX2 指令。
 
-## FAQ
+## 常问问题
 
-### How do I open menu?
-Press <kbd>INSERT</kbd> while focused on CS:GO window.
+### 如何打开菜单？
+在 CS:GO 窗口中，按 <kbd>INSERT</kbd> 键。
 
-### Where is my config file saved?
+### 我的配置文件保存在哪里？
 Configuration files are saved inside `Osiris` folder in your `Documents` folder (`%USERPROFILE%\Documents\Osiris`). The config is in human readable format and can be edited (e.g, using notepad). Sometimes after updates configuration file needs to be deleted and recreated.
 
-### What hooking methods Osiris uses?
-Currently implemented hooking methods are:
+配置文件保存在 Documents 文件夹的 Osiris 文件夹中 (％USERPROFILE％\Documents\Osiris) 。该配置采用人类可读的格式，并且可以进行编辑（例如，使用记事本。有时，更新后需要删除并重新创建配置文件。
+
+### Osiris 使用什么挂钩方法？
+当前实现的挂钩方法是：
 *   MinHook - trampoline hook
 *   VmtHook - hook a function directly in a vtable
 *   VmtSwap - create a copy of a vtable and swap the pointer on the class instance
 
-Hooking implementation files are located in [Hooks](https://github.com/danielkrupinski/Osiris/tree/master/Osiris/Hooks) directory.
+挂钩实现文件位于 [Hooks](https://github.com/H-xiaoH/Osiris_CHS/tree/master/Osiris/Hooks) 目录.
 
-## Acknowledgments
+## 致谢
 
-*   [ocornut](https://github.com/ocornut) and [contributors](https://github.com/ocornut/imgui/graphs/contributors) for creating and maintaining an amazing GUI library - [Dear imgui](https://github.com/ocornut/imgui).
-*   [Zer0Mem0ry](https://github.com/Zer0Mem0ry) - for great tutorials on reverse engineering and game hacking
+*   [ocornut](https://github.com/ocornut) 和 [contributors](https://github.com/ocornut/imgui/graphs/contributors) 创建和维护出色的GUI库 - [Dear imgui](https://github.com/ocornut/imgui).
+*   [Zer0Mem0ry](https://github.com/Zer0Mem0ry) - 有关逆向工程和游戏黑客的出色教程
 
 ## License
 
 > Copyright (c) 2018-2021 Daniel Krupiński
 
-This project is licensed under the [MIT License](https://opensource.org/licenses/mit-license.php) - see the [LICENSE](https://github.com/danielkrupinski/Osiris/blob/master/LICENSE) file for details.
+该项目已获得 [MIT 许可](https://opensource.org/licenses/mit-license.php) - 请参阅 [LICENSE](https://github.com/danielkrupinski/Osiris/blob/master/LICENSE) 文件以了解详细信息。 
 
-## See also
-*   [Anubis](https://github.com/danielkrupinski/Anubis) - free and open source cheat for CS:GO with configuration compatible with Osiris
-*   [GOESP](https://github.com/danielkrupinski/GOESP) - free and open source cross-platform streamproof ESP hack for Counter-Strike: Global Offensive, written in modern C++
+## 也可以看看
+*   [Anubis](https://github.com/danielkrupinski/Anubis) - 具有与 Osiris 兼容的配置的 CS:GO 的免费和开源作弊
+*   [GOESP](https://github.com/danielkrupinski/GOESP) - 免费和开源的跨平台ESP作弊，适用于 《反恐精英:全球攻势》，以现代C++编写
