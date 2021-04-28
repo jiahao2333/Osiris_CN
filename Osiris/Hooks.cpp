@@ -56,7 +56,6 @@
 #include "SDK/InputSystem.h"
 #include "SDK/MaterialSystem.h"
 #include "SDK/ModelRender.h"
-#include "SDK/Panel.h"
 #include "SDK/Platform.h"
 #include "SDK/RenderContext.h"
 #include "SDK/SoundInfo.h"
@@ -133,8 +132,9 @@ static HRESULT __stdcall present(IDirect3DDevice9* device, const RECT* src, cons
         ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
         device->EndScene();
     }
-
+    
     GameData::clearUnusedAvatars();
+    SkinChanger::clearUnusedItemIconTextures();
 
     return hooks->originalPresent(device, src, dest, windowOverride, dirtyRegion);
 }
@@ -534,6 +534,7 @@ static void swapWindow(SDL_Window* window) noexcept
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
     GameData::clearUnusedAvatars();
+    SkinChanger::clearUnusedItemIconTextures();
 
     hooks->swapWindow(window);
 }
