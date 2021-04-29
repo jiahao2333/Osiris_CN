@@ -422,7 +422,7 @@ static bool windowOpen = false;
 
 void SkinChanger::menuBarItem() noexcept
 {
-    if (ImGui::MenuItem("Skin changer")) {
+    if (ImGui::MenuItem("皮肤修改")) {
         windowOpen = true;
         ImGui::SetWindowFocus("Skin changer");
         ImGui::SetWindowPos("Skin changer", { 100.0f, 100.0f });
@@ -431,7 +431,7 @@ void SkinChanger::menuBarItem() noexcept
 
 void SkinChanger::tabItem() noexcept
 {
-    if (ImGui::BeginTabItem("Skin changer")) {
+    if (ImGui::BeginTabItem("皮肤修改")) {
         drawGUI(true);
         ImGui::EndTabItem();
     }
@@ -583,24 +583,24 @@ void SkinChanger::drawGUI(bool contentOnly) noexcept
 
     {
         ImGui::SameLine();
-        ImGui::Checkbox("Enabled", &selected_entry.enabled);
+        ImGui::Checkbox("启用", &selected_entry.enabled);
         ImGui::Separator();
         ImGui::Columns(2, nullptr, false);
-        ImGui::InputInt("Seed", &selected_entry.seed);
+        ImGui::InputInt("种子", &selected_entry.seed);
         ImGui::InputInt("StatTrak\u2122", &selected_entry.stat_trak);
         selected_entry.stat_trak = (std::max)(selected_entry.stat_trak, -1);
-        ImGui::SliderFloat("Wear", &selected_entry.wear, FLT_MIN, 1.f, "%.10f", ImGuiSliderFlags_Logarithmic);
+        ImGui::SliderFloat("磨损", &selected_entry.wear, FLT_MIN, 1.f, "%.10f", ImGuiSliderFlags_Logarithmic);
 
         const auto& kits = itemIndex == 1 ? SkinChanger::getGloveKits() : SkinChanger::getSkinKits();
 
         ImGui::SetNextItemWidth(270.0f);
-        if (ImGui::BeginCombo("Paint Kit", kits[selected_entry.paint_kit_vector_index].name.c_str())) {
+        if (ImGui::BeginCombo("皮肤", kits[selected_entry.paint_kit_vector_index].name.c_str())) {
             ImGui::PushID("Paint Kit");
             ImGui::PushID("Search");
             ImGui::SetNextItemWidth(-1.0f);
             static std::array<std::string, SkinChanger::weapon_names.size()> filters;
             auto& filter = filters[itemIndex];
-            ImGui::InputTextWithHint("", "Search", &filter);
+            ImGui::InputTextWithHint("", "搜索", &filter);
             if (ImGui::IsItemHovered() || (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && !ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0)))
                 ImGui::SetKeyboardFocusHere(-1);
             ImGui::PopID();
@@ -626,28 +626,28 @@ void SkinChanger::drawGUI(bool contentOnly) noexcept
             ImGui::EndCombo();
         }
 
-        ImGui::Combo("Quality", &selected_entry.entity_quality_vector_index, [](void* data, int idx, const char** out_text) {
+        ImGui::Combo("类别", &selected_entry.entity_quality_vector_index, [](void* data, int idx, const char** out_text) {
             *out_text = SkinChanger::getQualities()[idx].name.c_str(); // safe within this lamba
             return true;
             }, nullptr, SkinChanger::getQualities().size(), 5);
 
         if (itemIndex == 0) {
-            ImGui::Combo("Knife", &selected_entry.definition_override_vector_index, [](void* data, int idx, const char** out_text) {
+            ImGui::Combo("匕首", &selected_entry.definition_override_vector_index, [](void* data, int idx, const char** out_text) {
                 *out_text = SkinChanger::getKnifeTypes()[idx].name.c_str();
                 return true;
                 }, nullptr, SkinChanger::getKnifeTypes().size(), 5);
         } else if (itemIndex == 1) {
-            ImGui::Combo("Glove", &selected_entry.definition_override_vector_index, [](void* data, int idx, const char** out_text) {
+            ImGui::Combo("手套", &selected_entry.definition_override_vector_index, [](void* data, int idx, const char** out_text) {
                 *out_text = SkinChanger::getGloveTypes()[idx].name.c_str();
                 return true;
                 }, nullptr, SkinChanger::getGloveTypes().size(), 5);
         } else {
             static auto unused_value = 0;
             selected_entry.definition_override_vector_index = 0;
-            ImGui::Combo("Unavailable", &unused_value, "For knives or gloves\0");
+            ImGui::Combo("不可用", &unused_value, "仅可用于匕首或手套\0");
         }
 
-        ImGui::InputText("Name Tag", selected_entry.custom_name, 32);
+        ImGui::InputText("标签名称", selected_entry.custom_name, 32);
     }
 
     ImGui::NextColumn();
@@ -683,13 +683,13 @@ void SkinChanger::drawGUI(bool contentOnly) noexcept
 
         const auto& kits = SkinChanger::getStickerKits();
         ImGui::SetNextItemWidth(270.0f);
-        if (ImGui::BeginCombo("Sticker", kits[selected_sticker.kit_vector_index].name.c_str())) {
+        if (ImGui::BeginCombo("印花", kits[selected_sticker.kit_vector_index].name.c_str())) {
             ImGui::PushID("Sticker");
             ImGui::PushID("Search");
             ImGui::SetNextItemWidth(-1.0f);
             static std::array<std::string, SkinChanger::weapon_names.size()> filters;
             auto& filter = filters[itemIndex];
-            ImGui::InputTextWithHint("", "Search", &filter);
+            ImGui::InputTextWithHint("", "搜索", &filter);
             if (ImGui::IsItemHovered() || (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && !ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0)))
                 ImGui::SetKeyboardFocusHere(-1);
             ImGui::PopID();
@@ -716,9 +716,9 @@ void SkinChanger::drawGUI(bool contentOnly) noexcept
             ImGui::EndCombo();
         }
 
-        ImGui::SliderFloat("Wear", &selected_sticker.wear, FLT_MIN, 1.0f, "%.10f", ImGuiSliderFlags_Logarithmic);
-        ImGui::SliderFloat("Scale", &selected_sticker.scale, 0.1f, 5.0f);
-        ImGui::SliderFloat("Rotation", &selected_sticker.rotation, 0.0f, 360.0f);
+        ImGui::SliderFloat("磨损", &selected_sticker.wear, FLT_MIN, 1.0f, "%.10f", ImGuiSliderFlags_Logarithmic);
+        ImGui::SliderFloat("尺寸", &selected_sticker.scale, 0.1f, 5.0f);
+        ImGui::SliderFloat("旋转", &selected_sticker.rotation, 0.0f, 360.0f);
 
         ImGui::PopID();
     }
@@ -728,7 +728,7 @@ void SkinChanger::drawGUI(bool contentOnly) noexcept
 
     ImGui::Separator();
 
-    if (ImGui::Button("Update", { 130.0f, 30.0f }))
+    if (ImGui::Button("更新", { 130.0f, 30.0f }))
         SkinChanger::scheduleHudUpdate();
 
     ImGui::TextUnformatted("nSkinz by namazso");
