@@ -107,9 +107,17 @@ static void initializeKits() noexcept
         if (const auto encoded = node.key; (encoded & 3) == 0)
             kitsWeapons.emplace_back(int((encoded & 0xFFFF) >> 2), WeaponId(encoded >> 16), node.value.simpleName.data());
     }
-
     std::ranges::sort(kitsWeapons, {}, &KitWeapon::paintKit);
+    
+    std::unordered_map<WeaponId, std::wstring> weaponNames;
+    for (const auto& kitWeapon : kitsWeapons) {
+        if (weaponNames.contains(kitWeapon.weaponId))
+            continue;
 
+        if (const auto itemDef = itemSchema->getItemDefinitionInterface(kitWeapon.weaponId))
+            weaponNames.emplace(kitWeapon.weaponId, interfaces->localize->findSafe(itemDef->getItemBaseName()));
+    }
+ 
     skinKits.reserve(itemSchema->paintKits.lastAlloc);
     gloveKits.reserve(itemSchema->paintKits.lastAlloc);
     for (const auto& node : itemSchema->paintKits) {
@@ -123,10 +131,8 @@ static void initializeKits() noexcept
             std::string iconPath;
 
             if (const auto it = std::ranges::lower_bound(std::as_const(kitsWeapons), paintKit->id, {}, &KitWeapon::paintKit); it != kitsWeapons.end() && it->paintKit == paintKit->id) {
-                if (const auto itemDef = itemSchema->getItemDefinitionInterface(it->weaponId)) {
-                    name = interfaces->localize->findSafe(itemDef->getItemBaseName());
-                    name += L" | ";
-                }
+                name = weaponNames[it->weaponId];
+                name += L" | ";
                 iconPath = it->iconPath;
             }
 
@@ -138,7 +144,7 @@ static void initializeKits() noexcept
                 if (!itemDef)
                     continue;
 
-                std::wstring name = interfaces->localize->findSafe(itemDef->getItemBaseName());
+                std::wstring name = weaponNames[it->weaponId];
                 name += L" | ";
                 name += interfaces->localize->findSafe(paintKit->itemName.data() + 1);
                 skinKits.emplace_back(paintKit->id, std::move(name), it->iconPath, std::clamp(itemDef->getRarity() + paintKit->rarity - 1, 0, (paintKit->rarity == 7) ? 7 : 6));
@@ -833,33 +839,30 @@ ImTextureID SkinChanger::getItemIconTexture(const std::string& iconpath) noexcep
     if (iconpath.empty())
         return 0;
 
-    if (iconTextures[iconpath].texture.get()) {
-        iconTextures[iconpath].lastReferencedFrame = ImGui::GetFrameCount();
-        return iconTextures[iconpath].texture.get();
-    }
+    auto& icon = iconTextures[iconpath];
+    if (!icon.texture.get()) {
+        if (const auto handle = interfaces->baseFileSystem->open(("resource/flash/" + iconpath + "_large.png").c_str(), "r", "GAME")) {
+            if (const auto size = interfaces->baseFileSystem->size(handle); size > 0) {
+                const auto buffer = std::make_unique<std::uint8_t[]>(size);
+                if (interfaces->baseFileSystem->read(buffer.get(), size, handle) > 0) {
+                    int width, height;
+                    stbi_set_flip_vertically_on_load_thread(false);
 
-    if (const auto handle = interfaces->baseFileSystem->open(("resource/flash/" + iconpath + "_large.png").c_str(), "r", "GAME")) {
-        if (const auto size = interfaces->baseFileSystem->size(handle); size > 0) {
-            const auto buffer = std::make_unique<std::uint8_t[]>(size);
-            if (interfaces->baseFileSystem->read(buffer.get(), size, handle) > 0) {
-                int width, height;
-                stbi_set_flip_vertically_on_load_thread(false);
-
-                if (const auto data = stbi_load_from_memory((const stbi_uc*)buffer.get(), size, &width, &height, nullptr, STBI_rgb_alpha)) {
-                    iconTextures[iconpath].texture.init(width, height, data);
-                    stbi_image_free(data);
-                } else {
-                    assert(false);
+                    if (const auto data = stbi_load_from_memory((const stbi_uc*)buffer.get(), size, &width, &height, nullptr, STBI_rgb_alpha)) {
+                        icon.texture.init(width, height, data);
+                        stbi_image_free(data);
+                    } else {
+                        assert(false);
+                    }
                 }
             }
+            interfaces->baseFileSystem->close(handle);
+        } else {
+            assert(false);
         }
-        interfaces->baseFileSystem->close(handle);
-    } else {
-        assert(false);
     }
-
-    iconTextures[iconpath].lastReferencedFrame = ImGui::GetFrameCount();
-    return iconTextures[iconpath].texture.get();
+    icon.lastReferencedFrame = ImGui::GetFrameCount();
+    return icon.texture.get();
 }
 
 void SkinChanger::clearItemIconTextures() noexcept
