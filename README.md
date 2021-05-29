@@ -21,7 +21,7 @@
 *   **实体** - 彩色玩家模型以提高可见度
 *   **ESP** - 显示有关玩家, 掉落的武器和投掷物的信息
 *   **视觉** - 其他视觉选择
-*   **皮肤修改** - 更换武器的皮肤, 匕首和贴纸
+*   **库存修改** - 在游戏中的库存中添加武器皮肤、印花、匕首、手套、勋章等
 *   **声音** - 修改某些声音效果的音量
 *   **样式** - 选择菜单窗口的布局和颜色
 *   **杂项** - 杂项功能
@@ -138,7 +138,7 @@
     * **命中效果** - 对敌人命中显示屏幕效果
     * **命中标记** - 显示敌人被击中时的交叉细节
 
-* **皮肤修改** - 更换匕首, 手套, 武器的皮肤和贴纸
+*   **库存修改** - 在游戏中的库存中添加武器皮肤、印花、匕首、手套、勋章等
 
 * **声音** - 修改某些声音效果的音量
     * **鸡的音量** - 鸡的声音的音量
@@ -314,5 +314,5 @@
 该项目已获得 [MIT 许可](https://opensource.org/licenses/mit-license.php) - 请参阅 [LICENSE](https://github.com/danielkrupinski/Osiris/blob/master/LICENSE) 文件以了解详细信息。 
 
 ## 也可以看看
-*   [Anubis](https://github.com/danielkrupinski/Anubis) - 具有与 Osiris 兼容的配置的 CS:GO 的免费和开源作弊
+*   [Anubis](https://github.com/danielkrupinski/Anubis) - 免费和开源的 CS:GO 作弊
 *   [GOESP](https://github.com/danielkrupinski/GOESP) - 免费和开源的跨平台ESP作弊, 适用于 《反恐精英:全球攻势》, 以现代C++编写

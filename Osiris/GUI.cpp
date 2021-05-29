@@ -23,7 +23,7 @@
 #include "Config.h"
 #include "ConfigStructs.h"
 #include "Hacks/Misc.h"
-#include "Hacks/SkinChanger.h"
+#include "Hacks/InventoryChanger.h"
 #include "Helpers.h"
 #include "Hooks.h"
 #include "Interfaces.h"
@@ -107,7 +107,7 @@ void GUI::render() noexcept
         renderChamsWindow();
         renderStreamProofESPWindow();
         renderVisualsWindow();
-        SkinChanger::drawGUI(false);
+        InventoryChanger::drawGUI(false);
         Sound::drawGUI(false);
         renderStyleWindow();
         renderMiscWindow();
@@ -183,7 +183,7 @@ void GUI::renderMenuBar() noexcept
         menuBarItem("实体", window.chams);
         menuBarItem("ESP", window.streamProofESP);
         menuBarItem("视觉", window.visuals);
-        SkinChanger::menuBarItem();
+        InventoryChanger::menuBarItem();
         Sound::menuBarItem();
         menuBarItem("样式", window.style);
         menuBarItem("杂项", window.misc);
@@ -1074,7 +1074,6 @@ void GUI::renderMiscWindow(bool contentOnly) noexcept
     ImGui::Checkbox("显示金钱", &config->misc.revealMoney);
     ImGui::Checkbox("揭露嫌疑人", &config->misc.revealSuspect);
     ImGui::Checkbox("揭露投票", &config->misc.revealVotes);
-    ImGui::Checkbox("死亡竞赛无敌状态", &config->misc.deathmatchGod);
 
     ImGui::Checkbox("观看列表", &config->misc.spectatorList.enabled);
     ImGui::SameLine();
@@ -1311,13 +1310,13 @@ void GUI::renderConfigWindow(bool contentOnly) noexcept
             ImGui::OpenPopup("Config to reset");
 
         if (ImGui::BeginPopup("Config to reset")) {
-            static constexpr const char* names[]{ "Whole", "Aimbot", "Triggerbot", "Backtrack", "Anti aim", "Glow", "Chams", "ESP", "Visuals", "Skin changer", "Sound", "Style", "Misc" };
+            static constexpr const char* names[]{ "Whole", "Aimbot", "Triggerbot", "Backtrack", "Anti aim", "Glow", "Chams", "ESP", "Visuals", "Inventory Changer", "Sound", "Style", "Misc" };
             for (int i = 0; i < IM_ARRAYSIZE(names); i++) {
                 if (i == 1) ImGui::Separator();
 
                 if (ImGui::Selectable(names[i])) {
                     switch (i) {
-                    case 0: config->reset(); updateColors(); Misc::updateClanTag(true); SkinChanger::scheduleHudUpdate(); break;
+                    case 0: config->reset(); updateColors(); Misc::updateClanTag(true); InventoryChanger::scheduleHudUpdate(); break;
                     case 1: config->aimbot = { }; break;
                     case 2: config->triggerbot = { }; break;
                     case 3: Backtrack::resetConfig(); break;
@@ -1326,7 +1325,7 @@ void GUI::renderConfigWindow(bool contentOnly) noexcept
                     case 6: config->chams = { }; break;
                     case 7: config->streamProofESP = { }; break;
                     case 8: config->visuals = { }; break;
-                    case 9: SkinChanger::resetConfig(); SkinChanger::scheduleHudUpdate(); break;
+                    case 9: InventoryChanger::resetConfig(); InventoryChanger::scheduleHudUpdate(); break;
                     case 10: Sound::resetConfig(); break;
                     case 11: config->style = { }; updateColors(); break;
                     case 12: config->misc = { };  Misc::updateClanTag(true); break;
@@ -1339,7 +1338,7 @@ void GUI::renderConfigWindow(bool contentOnly) noexcept
             if (ImGui::Button("载入选中", { 100.0f, 25.0f })) {
                 config->load(currentConfig, incrementalLoad);
                 updateColors();
-                SkinChanger::scheduleHudUpdate();
+                InventoryChanger::scheduleHudUpdate();
                 Misc::updateClanTag(true);
             }
             if (ImGui::Button("保存选中", { 100.0f, 25.0f }))
@@ -1386,7 +1385,7 @@ void GUI::renderGuiStyle2() noexcept
             renderVisualsWindow(true);
             ImGui::EndTabItem();
         }
-        SkinChanger::tabItem();
+        InventoryChanger::tabItem();
         Sound::tabItem();
         if (ImGui::BeginTabItem("样式")) {
             renderStyleWindow(true);
