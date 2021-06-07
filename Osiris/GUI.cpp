@@ -1181,7 +1181,6 @@ void GUI::renderMiscWindow(bool contentOnly) noexcept
     ImGui::Checkbox("修复平板电脑信号", &config->misc.fixTabletSignal);
     ImGui::SetNextItemWidth(120.0f);
     ImGui::SliderFloat("最大角度增量", &config->misc.maxAngleDelta, 0.0f, 255.0f, "%.2f");
-    ImGui::Checkbox("虚假优先状态", &config->misc.fakePrime);
     ImGui::Checkbox("镜像持刀手部", &config->misc.oppositeHandKnife);
     ImGui::Checkbox("保留击杀信息", &config->misc.preserveKillfeed.enabled);
     ImGui::SameLine();
