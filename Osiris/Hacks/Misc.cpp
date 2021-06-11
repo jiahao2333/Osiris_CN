@@ -99,12 +99,6 @@ void Misc::slowwalk(UserCmd* cmd) noexcept
     }
 }
 
-void Misc::inverseRagdollGravity() noexcept
-{
-    static auto ragdollGravity = interfaces->cvar->findVar("cl_ragdoll_gravity");
-    ragdollGravity->setValue(config->visuals.inverseRagdollGravity ? -600 : 600);
-}
-
 void Misc::updateClanTag(bool tagChanged) noexcept
 {
     static std::string clanTag;
@@ -1101,7 +1095,7 @@ void Misc::updateEventListeners(bool forceRemove) noexcept
 {
     class PurchaseEventListener : public GameEventListener {
     public:
-        void fireGameEvent(GameEvent* event) { purchaseList(event); }
+        void fireGameEvent(GameEvent* event) override { purchaseList(event); }
     };
 
     static PurchaseEventListener listener;

@@ -106,7 +106,7 @@ void GUI::render() noexcept
         Glow::drawGUI(false);
         renderChamsWindow();
         renderStreamProofESPWindow();
-        renderVisualsWindow();
+        Visuals::drawGUI(false);
         InventoryChanger::drawGUI(false);
         Sound::drawGUI(false);
         renderStyleWindow();
@@ -124,31 +124,6 @@ void GUI::updateColors() const noexcept
     case 1: ImGui::StyleColorsLight(); break;
     case 2: ImGui::StyleColorsClassic(); break;
     }
-}
-
-#include "InputUtil.h"
-
-static void hotkey2(const char* label, KeyBind& key, float samelineOffset = 0.0f, const ImVec2& size = { 100.0f, 0.0f }) noexcept
-{
-    const auto id = ImGui::GetID(label);
-    ImGui::PushID(label);
-
-    ImGui::TextUnformatted(label);
-    ImGui::SameLine(samelineOffset);
-
-    if (ImGui::GetActiveID() == id) {
-        ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetColorU32(ImGuiCol_ButtonActive));
-        ImGui::Button("...", size);
-        ImGui::PopStyleColor();
-
-        ImGui::GetCurrentContext()->ActiveIdAllowOverlap = true;
-        if ((!ImGui::IsItemHovered() && ImGui::GetIO().MouseClicked[0]) || key.setToPressedKey())
-            ImGui::ClearActiveID();
-    } else if (ImGui::Button(key.toString(), size)) {
-        ImGui::SetActiveID(id, ImGui::GetCurrentWindow());
-    }
-
-    ImGui::PopID();
 }
 
 void GUI::handleToggle() noexcept
@@ -182,7 +157,7 @@ void GUI::renderMenuBar() noexcept
         Glow::menuBarItem();
         menuBarItem("实体", window.chams);
         menuBarItem("ESP", window.streamProofESP);
-        menuBarItem("视觉", window.visuals);
+        Visuals::menuBarItem();
         InventoryChanger::menuBarItem();
         Sound::menuBarItem();
         menuBarItem("样式", window.style);
@@ -203,7 +178,7 @@ void GUI::renderAimbotWindow(bool contentOnly) noexcept
     ImGui::Checkbox("绑定按键", &config->aimbotOnKey);
     ImGui::SameLine();
     ImGui::PushID("Aimbot Key");
-    hotkey2("", config->aimbotKey);
+    ImGui::hotkey("", config->aimbotKey);
     ImGui::PopID();
     ImGui::SameLine();
     ImGui::PushID(2);
@@ -432,7 +407,7 @@ void GUI::renderTriggerbotWindow(bool contentOnly) noexcept
     ImGui::SameLine();
     ImGui::Checkbox("启用", &config->triggerbot[currentWeapon].enabled);
     ImGui::Separator();
-    hotkey2("保持按键", config->triggerbotHoldKey);
+    ImGui::hotkey("保持按键", config->triggerbotHoldKey);
     ImGui::Checkbox("无视队友", &config->triggerbot[currentWeapon].friendlyFire);
     ImGui::Checkbox("仅开镜时", &config->triggerbot[currentWeapon].scopedOnly);
     ImGui::Checkbox("无视闪光", &config->triggerbot[currentWeapon].ignoreFlash);
@@ -459,8 +434,8 @@ void GUI::renderChamsWindow(bool contentOnly) noexcept
         ImGui::Begin("实体", &window.chams, windowFlags);
     }
 
-    hotkey2("切换按键", config->chamsToggleKey, 80.0f);
-    hotkey2("保持按键", config->chamsHoldKey, 80.0f);
+    ImGui::hotkey("切换按键", config->chamsToggleKey, 80.0f);
+    ImGui::hotkey("保持按键", config->chamsHoldKey, 80.0f);
     ImGui::Separator();
 
     static int currentCategory{ 0 };
@@ -521,8 +496,8 @@ void GUI::renderStreamProofESPWindow(bool contentOnly) noexcept
         ImGui::Begin("ESP", &window.streamProofESP, windowFlags);
     }
 
-    hotkey2("切换按键", config->streamProofESP.toggleKey, 80.0f);
-    hotkey2("保持按键", config->streamProofESP.holdKey, 80.0f);
+    ImGui::hotkey("切换按键", config->streamProofESP.toggleKey, 80.0f);
+    ImGui::hotkey("保持按键", config->streamProofESP.holdKey, 80.0f);
     ImGui::Separator();
 
     static std::size_t currentCategory;
@@ -915,100 +890,6 @@ void GUI::renderStreamProofESPWindow(bool contentOnly) noexcept
         ImGui::End();
 }
 
-void GUI::renderVisualsWindow(bool contentOnly) noexcept
-{
-    if (!contentOnly) {
-        if (!window.visuals)
-            return;
-        ImGui::SetNextWindowSize({ 680.0f, 0.0f });
-        ImGui::Begin("视觉", &window.visuals, windowFlags);
-    }
-    ImGui::Columns(2, nullptr, false);
-    ImGui::SetColumnOffset(1, 280.0f);
-    constexpr auto playerModels = "默认\0Ava特工 | 联邦调查局（FBI）\0特种兵 | 联邦调查局（FBI）特警\0Markus Delrow | 联邦调查局（FBI）人质营救队\0迈克·赛弗斯 | 联邦调查局（FBI）狙击手\0B Squadron指挥官 | 英国空军特别部队\0海豹部队第六分队士兵 | 海军水面战中心海豹部队\0铅弹 | 海军水面战中心海豹部队\0陆军少尉长官里克索尔 | 海军水面战中心海豹部队\0第三特种兵连 | 德国特种部队突击队\0“两次”麦考伊 | 美国空军战术空中管制部队\0德拉戈米尔 | 军刀\0准备就绪的列赞 | 军刀\0“医生”罗曼诺夫 | 军刀\0马克西姆斯 | 军刀\0黑狼 | 军刀\0精英Muhlik先生 | 精锐分子\0地面叛军 | 精锐分子\0Osiris | 精锐分子\0Shahmat教授 | 精锐分子\0执行者 | 凤凰战士\0弹弓 | 凤凰战士\0街头士兵 | 凤凰战士\0海盗\0海盗 A\0海盗 B\0海盗 C\0海盗 D\0无政府主义者\0无政府主义者 A\0无政府主义者 B\0无政府主义者 C\0无政府主义者 D\0巴尔干武装份子 A\0巴尔干武装份子 B\0巴尔干武装份子 C\0巴尔干武装份子 D\0巴尔干武装份子 E\0连身裤 A\0连身裤 B\0连身裤 C\0街头士兵 | 凤凰战士\0“蓝莓” 铅弹 | 海军水面战中心海豹部队\0“两次”麦考伊 | 战术空中管制部队装甲兵\0红衫列赞 | 军刀\0德拉戈米尔 | 军刀勇士\0指挥官 梅 “极寒” 贾米森 | 特警\000第一中尉法洛 | 特警\0约翰 “范·海伦” 卡斯克 | 特警\0生物防害专家 | 特警\0军士长炸弹森 | 特警\0化学防害专家 | 特警\0残酷的达里尔爵士（迈阿密）| 专业人士\0残酷的达里尔爵士（沉默）| 专业人士\0残酷的达里尔爵士（头盖骨）| 专业人士\0残酷的达里尔爵士（皇家）| 专业人士\0残酷的达里尔爵士（聒噪）| 专业人士\0飞贼波兹曼 | 专业人士\0小凯夫 | 专业人士\0老K | 专业人士\0出逃的萨莉 | 专业人士\0";
-    ImGui::Combo("恐怖分子人物模型", &config->visuals.playerModelT, playerModels);
-    ImGui::Combo("反恐精英人物模型", &config->visuals.playerModelCT, playerModels);
-    ImGui::Checkbox("禁用后处理", &config->visuals.disablePostProcessing);
-    ImGui::Checkbox("反重力布娃娃", &config->visuals.inverseRagdollGravity);
-    ImGui::Checkbox("禁用雾", &config->visuals.noFog);
-    ImGui::Checkbox("禁用3D天空", &config->visuals.no3dSky);
-    ImGui::Checkbox("禁用瞄准抖动", &config->visuals.noAimPunch);
-    ImGui::Checkbox("禁用画面抖动", &config->visuals.noViewPunch);
-    ImGui::Checkbox("去除手", &config->visuals.noHands);
-    ImGui::Checkbox("去除手臂", &config->visuals.noSleeves);
-    ImGui::Checkbox("去除武器", &config->visuals.noWeapons);
-    ImGui::Checkbox("去除烟雾", &config->visuals.noSmoke);
-    ImGui::Checkbox("去除模糊", &config->visuals.noBlur);
-    ImGui::Checkbox("去除开镜覆盖", &config->visuals.noScopeOverlay);
-    ImGui::Checkbox("去除草", &config->visuals.noGrass);
-    ImGui::Checkbox("禁用阴影", &config->visuals.noShadows);
-    ImGui::Checkbox("线条烟雾", &config->visuals.wireframeSmoke);
-    ImGui::NextColumn();
-    ImGui::Checkbox("放大", &config->visuals.zoom);
-    ImGui::SameLine();
-    ImGui::PushID("Zoom Key");
-    hotkey2("", config->visuals.zoomKey);
-    ImGui::PopID();
-    ImGui::Checkbox("第三人称", &config->visuals.thirdperson);
-    ImGui::SameLine();
-    ImGui::PushID("Thirdperson Key");
-    hotkey2("", config->visuals.thirdpersonKey);
-    ImGui::PopID();
-    ImGui::PushItemWidth(290.0f);
-    ImGui::PushID(0);
-    ImGui::SliderInt("", &config->visuals.thirdpersonDistance, 0, 1000, "第三人称距离: %d");
-    ImGui::PopID();
-    ImGui::PushID(1);
-    ImGui::SliderInt("", &config->visuals.viewmodelFov, -60, 60, "模型范围: %d");
-    ImGui::PopID();
-    ImGui::PushID(2);
-    ImGui::SliderInt("", &config->visuals.fov, -60, 60, "视野范围: %d");
-    ImGui::PopID();
-    ImGui::PushID(3);
-    ImGui::SliderInt("", &config->visuals.farZ, 0, 2000, "远距Z轴: %d");
-    ImGui::PopID();
-    ImGui::PushID(4);
-    ImGui::SliderInt("", &config->visuals.flashReduction, 0, 100, "降低闪光效果: %d%%");
-    ImGui::PopID();
-    ImGui::PushID(5);
-    ImGui::SliderFloat("", &config->visuals.brightness, 0.0f, 1.0f, "亮度: %.2f");
-    ImGui::PopID();
-    ImGui::PopItemWidth();
-    ImGui::Combo("天空", &config->visuals.skybox, Visuals::skyboxList.data(), Visuals::skyboxList.size());
-    ImGuiCustom::colorPicker("世界颜色", config->visuals.world);
-    ImGuiCustom::colorPicker("天空颜色", config->visuals.sky);
-    ImGui::Checkbox("沙鹰旋转器", &config->visuals.deagleSpinner);
-    ImGui::Combo("屏幕效果", &config->visuals.screenEffect, "无\0旧电视\0被干扰的旧电视\0水里\0重甲\0危险区\0");
-    ImGui::Combo("击中效果", &config->visuals.hitEffect, "无\0旧电视\0被干扰的旧电视\0水里\0重甲\0危险区\0");
-    ImGui::SliderFloat("击中效果时间", &config->visuals.hitEffectTime, 0.1f, 1.5f, "%.2fs");
-    ImGui::Combo("击中标记", &config->visuals.hitMarker, "无\0默认 (交叉)\0");
-    ImGui::SliderFloat("击中标记时间", &config->visuals.hitMarkerTime, 0.1f, 1.5f, "%.2fs");
-    ImGuiCustom::colorPicker("子弹追踪线", config->visuals.bulletTracers.color.data(), &config->visuals.bulletTracers.color[3], nullptr, nullptr, &config->visuals.bulletTracers.enabled);
-    ImGuiCustom::colorPicker("燃烧瓶范围", config->visuals.molotovHull);
-
-    ImGui::Checkbox("色彩矫正", &config->visuals.colorCorrection.enabled);
-    ImGui::SameLine();
-    bool ccPopup = ImGui::Button("编辑");
-
-    if (ccPopup)
-        ImGui::OpenPopup("##popup");
-
-    if (ImGui::BeginPopup("##popup")) {
-        ImGui::VSliderFloat("##1", { 40.0f, 160.0f }, &config->visuals.colorCorrection.blue, 0.0f, 1.0f, "蓝色\n%.3f"); ImGui::SameLine();
-        ImGui::VSliderFloat("##2", { 40.0f, 160.0f }, &config->visuals.colorCorrection.red, 0.0f, 1.0f, "红色\n%.3f"); ImGui::SameLine();
-        ImGui::VSliderFloat("##3", { 40.0f, 160.0f }, &config->visuals.colorCorrection.mono, 0.0f, 1.0f, "单色\n%.3f"); ImGui::SameLine();
-        ImGui::VSliderFloat("##4", { 40.0f, 160.0f }, &config->visuals.colorCorrection.saturation, 0.0f, 1.0f, "饱和\n%.3f"); ImGui::SameLine();
-        ImGui::VSliderFloat("##5", { 40.0f, 160.0f }, &config->visuals.colorCorrection.ghost, 0.0f, 1.0f, "幽灵\n%.3f"); ImGui::SameLine();
-        ImGui::VSliderFloat("##6", { 40.0f, 160.0f }, &config->visuals.colorCorrection.green, 0.0f, 1.0f, "绿色\n%.3f"); ImGui::SameLine();
-        ImGui::VSliderFloat("##7", { 40.0f, 160.0f }, &config->visuals.colorCorrection.yellow, 0.0f, 1.0f, "黄色\n%.3f"); ImGui::SameLine();
-        ImGui::EndPopup();
-    }
-    ImGui::Columns(1);
-
-    if (!contentOnly)
-        ImGui::End();
-}
-
 void GUI::renderStyleWindow(bool contentOnly) noexcept
 {
     if (!contentOnly) {
@@ -1048,21 +929,21 @@ void GUI::renderMiscWindow(bool contentOnly) noexcept
     }
     ImGui::Columns(2, nullptr, false);
     ImGui::SetColumnOffset(1, 230.0f);
-    hotkey2("菜单按键", config->misc.menuKey);
-    ImGui::Checkbox("反AFK踢出", &config->misc.antiAfkKick);
+    ImGui::hotkey("菜单按键", config->misc.menuKey);
+    ImGui::Checkbox("反挂机踢出", &config->misc.antiAfkKick);
     ImGui::Checkbox("自动扫射", &config->misc.autoStrafe);
     ImGui::Checkbox("自动连跳", &config->misc.bunnyHop);
     ImGui::Checkbox("快速下蹲", &config->misc.fastDuck);
-    ImGui::Checkbox("太空漫步", &config->misc.moonwalk);
+    ImGui::Checkbox("滑步", &config->misc.moonwalk);
     ImGui::Checkbox("边缘跳", &config->misc.edgejump);
     ImGui::SameLine();
     ImGui::PushID("Edge Jump Key");
-    hotkey2("", config->misc.edgejumpkey);
+    ImGui::hotkey("", config->misc.edgejumpkey);
     ImGui::PopID();
     ImGui::Checkbox("慢走", &config->misc.slowwalk);
     ImGui::SameLine();
     ImGui::PushID("Slowwalk Key");
-    hotkey2("", config->misc.slowwalkKey);
+    ImGui::hotkey("", config->misc.slowwalkKey);
     ImGui::PopID();
     ImGuiCustom::colorPicker("狙击十字准星", config->misc.noscopeCrosshair);
     ImGuiCustom::colorPicker("后座十字准星", config->misc.recoilCrosshair);
@@ -1149,7 +1030,7 @@ void GUI::renderMiscWindow(bool contentOnly) noexcept
     ImGui::Checkbox("自动左轮手枪", &config->misc.prepareRevolver);
     ImGui::SameLine();
     ImGui::PushID("Prepare revolver Key");
-    hotkey2("", config->misc.prepareRevolverKey);
+    ImGui::hotkey("", config->misc.prepareRevolverKey);
     ImGui::PopID();
     ImGui::Combo("击中声音", &config->misc.hitSound, "无\0金属\0游戏感\0钟声\0玻璃\0自定义\0");
     if (config->misc.hitSound == 5) {
@@ -1170,7 +1051,7 @@ void GUI::renderMiscWindow(bool contentOnly) noexcept
     config->misc.chokedPackets = std::clamp(config->misc.chokedPackets, 0, 64);
     ImGui::SameLine();
     ImGui::PushID("Choked packets Key");
-    hotkey2("", config->misc.chokedPacketsKey);
+    ImGui::hotkey("", config->misc.chokedPacketsKey);
     ImGui::PopID();
     /*
     ImGui::Text("Quick healthshot");
@@ -1323,7 +1204,7 @@ void GUI::renderConfigWindow(bool contentOnly) noexcept
                     case 5: Glow::resetConfig(); break;
                     case 6: config->chams = { }; break;
                     case 7: config->streamProofESP = { }; break;
-                    case 8: config->visuals = { }; break;
+                    case 8: Visuals::resetConfig(); break;
                     case 9: InventoryChanger::resetConfig(); InventoryChanger::scheduleHudUpdate(); break;
                     case 10: Sound::resetConfig(); break;
                     case 11: config->style = { }; updateColors(); break;
@@ -1380,10 +1261,7 @@ void GUI::renderGuiStyle2() noexcept
             renderStreamProofESPWindow(true);
             ImGui::EndTabItem();
         }
-        if (ImGui::BeginTabItem("视觉")) {
-            renderVisualsWindow(true);
-            ImGui::EndTabItem();
-        }
+        Visuals::tabItem();
         InventoryChanger::tabItem();
         Sound::tabItem();
         if (ImGui::BeginTabItem("样式")) {

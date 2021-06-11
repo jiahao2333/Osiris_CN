@@ -67,6 +67,8 @@
 
 #ifdef _WIN32
 
+LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 static LRESULT __stdcall wndProc(HWND window, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
     [[maybe_unused]] static const auto once = [](HWND window) noexcept {
@@ -83,9 +85,7 @@ static LRESULT __stdcall wndProc(HWND window, UINT msg, WPARAM wParam, LPARAM lP
         return true;
     }(window);
 
-    LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
     ImGui_ImplWin32_WndProcHandler(window, msg, wParam, lParam);
-
     interfaces->inputSystem->enableInput(!gui->isOpen());
 
     return CallWindowProcW(hooks->originalWndProc, window, msg, wParam, lParam);
@@ -226,7 +226,7 @@ static void __STDCALL doPostScreenEffects(LINUX_ARGS(void* thisptr,) void* param
 {
     if (interfaces->engine->isInGame()) {
         Visuals::thirdperson();
-        Misc::inverseRagdollGravity();
+        Visuals::inverseRagdollGravity();
         Visuals::reduceFlashEffect();
         Visuals::updateBrightness();
         Visuals::remove3dSky();
@@ -237,7 +237,7 @@ static void __STDCALL doPostScreenEffects(LINUX_ARGS(void* thisptr,) void* param
 
 static float __STDCALL getViewModelFov(LINUX_ARGS(void* thisptr)) noexcept
 {
-    float additionalFov = static_cast<float>(config->visuals.viewmodelFov);
+    float additionalFov = Visuals::viewModelFov();
     if (localPlayer) {
         if (const auto activeWeapon = localPlayer->getActiveWeapon(); activeWeapon && activeWeapon->getClientClass()->classId == ClassId::Tablet)
             additionalFov = 0.0f;
@@ -263,7 +263,7 @@ static void __STDCALL drawModelExecute(LINUX_ARGS(void* thisptr,) void* ctx, voi
 
 static bool __FASTCALL svCheatsGetBool(void* _this) noexcept
 {
-    if (uintptr_t(RETURN_ADDRESS()) == memory->cameraThink && config->visuals.thirdperson)
+    if (uintptr_t(RETURN_ADDRESS()) == memory->cameraThink && Visuals::isThirdpersonOn())
         return true;
 
     return hooks->svCheats.getOriginal<bool, IS_WIN32() ? 13 : 16>()(_this);
@@ -292,7 +292,6 @@ static void __STDCALL frameStageNotify(LINUX_ARGS(void* thisptr,) FrameStage sta
         Misc::oppositeHandKnife(stage);
         Visuals::removeGrass(stage);
         Visuals::modifySmoke(stage);
-        Visuals::playerModel(stage);
         Visuals::disablePostProcessing(stage);
         Visuals::removeVisualRecoil(stage);
         Visuals::applyZoom(stage);
@@ -330,12 +329,12 @@ static bool __STDCALL shouldDrawFog(LINUX_ARGS(void* thisptr)) noexcept
     }
 #endif
     
-    return !config->visuals.noFog;
+    return !Visuals::shouldRemoveFog();
 }
 
 static bool __STDCALL shouldDrawViewModel(LINUX_ARGS(void* thisptr)) noexcept
 {
-    if (config->visuals.zoom && localPlayer && localPlayer->fov() < 45 && localPlayer->fovStart() < 45)
+    if (Visuals::isZoomOn() && localPlayer && localPlayer->fov() < 45 && localPlayer->fovStart() < 45)
         return false;
     return hooks->clientMode.callOriginal<bool, IS_WIN32() ? 27 : 28>();
 }
@@ -349,7 +348,7 @@ static void __STDCALL lockCursor() noexcept
 
 static void __STDCALL setDrawColor(LINUX_ARGS(void* thisptr,) int r, int g, int b, int a) noexcept
 {
-    if (config->visuals.noScopeOverlay && (RETURN_ADDRESS() == memory->scopeDust || RETURN_ADDRESS() == memory->scopeArc))
+    if (Visuals::shouldRemoveScopeOverlay() && (RETURN_ADDRESS() == memory->scopeDust || RETURN_ADDRESS() == memory->scopeArc))
         a = 0;
     hooks->surface.callOriginal<void, IS_WIN32() ? 15 : 14>(r, g, b, a);
 }
@@ -365,8 +364,8 @@ struct ViewSetup {
 static void __STDCALL overrideView(LINUX_ARGS(void* thisptr,) ViewSetup* setup) noexcept
 {
     if (localPlayer && !localPlayer->isScoped())
-        setup->fov += config->visuals.fov;
-    setup->farZ += config->visuals.farZ * 10;
+        setup->fov += Visuals::fov();
+    setup->farZ += Visuals::farZ() * 10;
     hooks->clientMode.callOriginal<void, IS_WIN32() ? 18 : 19>(setup);
 }
 
@@ -443,17 +442,8 @@ static void __STDCALL updateColorCorrectionWeights(LINUX_ARGS(void* thisptr)) no
 {
     hooks->clientMode.callOriginal<void, IS_WIN32() ? 58 : 61>();
 
-    if (const auto& cfg = config->visuals.colorCorrection; cfg.enabled) {
-        *reinterpret_cast<float*>(std::uintptr_t(memory->clientMode) + (IS_WIN32() ? 0x498 : 0x900)) = cfg.blue;
-        *reinterpret_cast<float*>(std::uintptr_t(memory->clientMode) + (IS_WIN32() ? 0x4A0 : 0x910)) = cfg.red;
-        *reinterpret_cast<float*>(std::uintptr_t(memory->clientMode) + (IS_WIN32() ? 0x4A8 : 0x920)) = cfg.mono;
-        *reinterpret_cast<float*>(std::uintptr_t(memory->clientMode) + (IS_WIN32() ? 0x4B0 : 0x930)) = cfg.saturation;
-        *reinterpret_cast<float*>(std::uintptr_t(memory->clientMode) + (IS_WIN32() ? 0x4C0 : 0x950)) = cfg.ghost;
-        *reinterpret_cast<float*>(std::uintptr_t(memory->clientMode) + (IS_WIN32() ? 0x4C8 : 0x960)) = cfg.green;
-        *reinterpret_cast<float*>(std::uintptr_t(memory->clientMode) + (IS_WIN32() ? 0x4D0 : 0x970)) = cfg.yellow;
-    }
-
-    if (config->visuals.noScopeOverlay)
+    Visuals::performColorCorrection();
+    if (Visuals::shouldRemoveScopeOverlay())
         *memory->vignette = 0.0f;
 }
 
@@ -466,7 +456,7 @@ static float __STDCALL getScreenAspectRatio(LINUX_ARGS(void* thisptr,) int width
 
 static void __STDCALL renderSmokeOverlay(LINUX_ARGS(void* thisptr,) bool update) noexcept
 {
-    if (config->visuals.noSmoke || config->visuals.wireframeSmoke)
+    if (Visuals::shouldRemoveSmoke() || Visuals::isSmokeWireframe())
         *reinterpret_cast<float*>(std::uintptr_t(memory->viewRender) + (IS_WIN32() ? 0x588 : 0x648)) = 0.0f;
     else
         hooks->viewRender.callOriginal<void, IS_WIN32() ? 41 : 42>(update);
@@ -515,19 +505,17 @@ static const char* __STDCALL getArgAsString(LINUX_ARGS(void* thisptr,) void* par
 
 #ifdef _WIN32
 
-Hooks::Hooks(HMODULE moduleHandle) noexcept
+Hooks::Hooks(HMODULE moduleHandle) noexcept : moduleHandle{ moduleHandle }
 {
     _MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON);
     _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);
-
-    this->moduleHandle = moduleHandle;
 
     // interfaces and memory shouldn't be initialized in wndProc because they show MessageBox on error which would cause deadlock
     interfaces = std::make_unique<const Interfaces>();
     memory = std::make_unique<const Memory>();
 
     window = FindWindowW(L"Valve001", nullptr);
-    originalWndProc = WNDPROC(SetWindowLongPtrW(window, GWLP_WNDPROC, LONG_PTR(wndProc)));
+    originalWndProc = WNDPROC(SetWindowLongPtrW(window, GWLP_WNDPROC, LONG_PTR(&wndProc)));
 }
 
 #else
@@ -604,41 +592,41 @@ void Hooks::install() noexcept
 #endif
 
     client.init(interfaces->client);
-    client.hookAt(37, frameStageNotify);
+    client.hookAt(37, &frameStageNotify);
 
     clientMode.init(memory->clientMode);
-    clientMode.hookAt(IS_WIN32() ? 17 : 18, shouldDrawFog);
-    clientMode.hookAt(IS_WIN32() ? 18 : 19, overrideView);
-    clientMode.hookAt(IS_WIN32() ? 24 : 25, createMove);
-    clientMode.hookAt(IS_WIN32() ? 27 : 28, shouldDrawViewModel);
-    clientMode.hookAt(IS_WIN32() ? 35 : 36, getViewModelFov);
-    clientMode.hookAt(IS_WIN32() ? 44 : 45, doPostScreenEffects);
-    clientMode.hookAt(IS_WIN32() ? 58 : 61, updateColorCorrectionWeights);
+    clientMode.hookAt(IS_WIN32() ? 17 : 18, &shouldDrawFog);
+    clientMode.hookAt(IS_WIN32() ? 18 : 19, &overrideView);
+    clientMode.hookAt(IS_WIN32() ? 24 : 25, &createMove);
+    clientMode.hookAt(IS_WIN32() ? 27 : 28, &shouldDrawViewModel);
+    clientMode.hookAt(IS_WIN32() ? 35 : 36, &getViewModelFov);
+    clientMode.hookAt(IS_WIN32() ? 44 : 45, &doPostScreenEffects);
+    clientMode.hookAt(IS_WIN32() ? 58 : 61, &updateColorCorrectionWeights);
 
     engine.init(interfaces->engine);
-    engine.hookAt(82, isPlayingDemo);
-    engine.hookAt(101, getScreenAspectRatio);
-    engine.hookAt(IS_WIN32() ? 218 : 219, getDemoPlaybackParameters);
+    engine.hookAt(82, &isPlayingDemo);
+    engine.hookAt(101, &getScreenAspectRatio);
+    engine.hookAt(IS_WIN32() ? 218 : 219, &getDemoPlaybackParameters);
 
     modelRender.init(interfaces->modelRender);
-    modelRender.hookAt(21, drawModelExecute);
+    modelRender.hookAt(21, &drawModelExecute);
 
     panoramaMarshallHelper.init(memory->panoramaMarshallHelper);
-    panoramaMarshallHelper.hookAt(5, getArgAsNumber);
-    panoramaMarshallHelper.hookAt(7, getArgAsString);
+    panoramaMarshallHelper.hookAt(5, &getArgAsNumber);
+    panoramaMarshallHelper.hookAt(7, &getArgAsString);
 
     sound.init(interfaces->sound);
-    sound.hookAt(IS_WIN32() ? 5 : 6, emitSound);
+    sound.hookAt(IS_WIN32() ? 5 : 6, &emitSound);
 
     surface.init(interfaces->surface);
-    surface.hookAt(IS_WIN32() ? 15 : 14, setDrawColor);
+    surface.hookAt(IS_WIN32() ? 15 : 14, &setDrawColor);
     
     svCheats.init(interfaces->cvar->findVar("sv_cheats"));
-    svCheats.hookAt(IS_WIN32() ? 13 : 16, svCheatsGetBool);
+    svCheats.hookAt(IS_WIN32() ? 13 : 16, &svCheatsGetBool);
 
     viewRender.init(memory->viewRender);
-    viewRender.hookAt(IS_WIN32() ? 39 : 40, render2dEffectsPreHud);
-    viewRender.hookAt(IS_WIN32() ? 41 : 42, renderSmokeOverlay);
+    viewRender.hookAt(IS_WIN32() ? 39 : 40, &render2dEffectsPreHud);
+    viewRender.hookAt(IS_WIN32() ? 41 : 42, &renderSmokeOverlay);
 
 #ifdef _WIN32
     if (DWORD oldProtection; VirtualProtect(memory->dispatchSound, 4, PAGE_EXECUTE_READWRITE, &oldProtection)) {
@@ -647,15 +635,15 @@ void Hooks::install() noexcept
         mprotect((void*)addressPageAligned, 4, PROT_READ | PROT_WRITE | PROT_EXEC) == 0) {
 #endif
         originalDispatchSound = decltype(originalDispatchSound)(uintptr_t(memory->dispatchSound + 1) + *memory->dispatchSound);
-        *memory->dispatchSound = uintptr_t(dispatchSound) - uintptr_t(memory->dispatchSound + 1);
+        *memory->dispatchSound = uintptr_t(&dispatchSound) - uintptr_t(memory->dispatchSound + 1);
 #ifdef _WIN32
         VirtualProtect(memory->dispatchSound, 4, oldProtection, nullptr);
 #endif
     }
 
 #ifdef _WIN32
-    bspQuery.hookAt(6, listLeavesInBox);
-    surface.hookAt(67, lockCursor);
+    bspQuery.hookAt(6, &listLeavesInBox);
+    surface.hookAt(67, &lockCursor);
 
     if constexpr (std::is_same_v<HookType, MinHook>)
         MH_EnableHook(MH_ALL_HOOKS);
