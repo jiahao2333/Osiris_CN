@@ -110,7 +110,7 @@ void GUI::render() noexcept
         InventoryChanger::drawGUI(false);
         Sound::drawGUI(false);
         renderStyleWindow();
-        renderMiscWindow();
+        Misc::drawGUI(false);
         renderConfigWindow();
     } else {
         renderGuiStyle2();
@@ -128,7 +128,7 @@ void GUI::updateColors() const noexcept
 
 void GUI::handleToggle() noexcept
 {
-    if (config->misc.menuKey.isPressed()) {
+    if (Misc::isMenuKeyPressed()) {
         open = !open;
         if (!open)
             interfaces->inputSystem->resetInputState();
@@ -161,7 +161,7 @@ void GUI::renderMenuBar() noexcept
         InventoryChanger::menuBarItem();
         Sound::menuBarItem();
         menuBarItem("样式", window.style);
-        menuBarItem("杂项", window.misc);
+        Misc::menuBarItem();
         menuBarItem("配置", window.config);
         ImGui::EndMainMenuBar();   
     }
@@ -919,214 +919,6 @@ void GUI::renderStyleWindow(bool contentOnly) noexcept
         ImGui::End();
 }
 
-void GUI::renderMiscWindow(bool contentOnly) noexcept
-{
-    if (!contentOnly) {
-        if (!window.misc)
-            return;
-        ImGui::SetNextWindowSize({ 580.0f, 0.0f });
-        ImGui::Begin("杂项", &window.misc, windowFlags);
-    }
-    ImGui::Columns(2, nullptr, false);
-    ImGui::SetColumnOffset(1, 230.0f);
-    ImGui::hotkey("菜单按键", config->misc.menuKey);
-    ImGui::Checkbox("反挂机踢出", &config->misc.antiAfkKick);
-    ImGui::Checkbox("自动扫射", &config->misc.autoStrafe);
-    ImGui::Checkbox("自动连跳", &config->misc.bunnyHop);
-    ImGui::Checkbox("快速下蹲", &config->misc.fastDuck);
-    ImGui::Checkbox("滑步", &config->misc.moonwalk);
-    ImGui::Checkbox("边缘跳", &config->misc.edgejump);
-    ImGui::SameLine();
-    ImGui::PushID("Edge Jump Key");
-    ImGui::hotkey("", config->misc.edgejumpkey);
-    ImGui::PopID();
-    ImGui::Checkbox("慢走", &config->misc.slowwalk);
-    ImGui::SameLine();
-    ImGui::PushID("Slowwalk Key");
-    ImGui::hotkey("", config->misc.slowwalkKey);
-    ImGui::PopID();
-    ImGuiCustom::colorPicker("狙击十字准星", config->misc.noscopeCrosshair);
-    ImGuiCustom::colorPicker("后座十字准星", config->misc.recoilCrosshair);
-    ImGui::Checkbox("自动手枪", &config->misc.autoPistol);
-    ImGui::Checkbox("自动换弹", &config->misc.autoReload);
-    ImGui::Checkbox("自动接受", &config->misc.autoAccept);
-    ImGui::Checkbox("雷达透视", &config->misc.radarHack);
-    ImGui::Checkbox("显示段位", &config->misc.revealRanks);
-    ImGui::Checkbox("显示金钱", &config->misc.revealMoney);
-    ImGui::Checkbox("揭露嫌疑人", &config->misc.revealSuspect);
-    ImGui::Checkbox("揭露投票", &config->misc.revealVotes);
-
-    ImGui::Checkbox("观看列表", &config->misc.spectatorList.enabled);
-    ImGui::SameLine();
-
-    ImGui::PushID("Spectator list");
-    if (ImGui::Button("..."))
-        ImGui::OpenPopup("");
-
-    if (ImGui::BeginPopup("")) {
-        ImGui::Checkbox("去除标题栏", &config->misc.spectatorList.noTitleBar);
-        ImGui::EndPopup();
-    }
-    ImGui::PopID();
-
-    ImGui::Checkbox("水印", &config->misc.watermark.enabled);
-    ImGuiCustom::colorPicker("显示屏幕外敌人", config->misc.offscreenEnemies, &config->misc.offscreenEnemies.enabled);
-    ImGui::SameLine();
-    ImGui::PushID("显示屏幕外敌人");
-    if (ImGui::Button("..."))
-        ImGui::OpenPopup("");
-
-    if (ImGui::BeginPopup("")) {
-        ImGui::Checkbox("血量条", &config->misc.offscreenEnemies.healthBar.enabled);
-        ImGui::SameLine();
-        ImGui::SetNextItemWidth(95.0f);
-        ImGui::Combo("类型", &config->misc.offscreenEnemies.healthBar.type, "渐变\0填充\0基于生命值\0");
-        if (config->misc.offscreenEnemies.healthBar.type == HealthBar::Solid) {
-            ImGui::SameLine();
-            ImGuiCustom::colorPicker("", static_cast<Color4&>(config->misc.offscreenEnemies.healthBar));
-        }
-        ImGui::EndPopup();
-    }
-    ImGui::PopID();
-    ImGui::Checkbox("修复动画LOD", &config->misc.fixAnimationLOD);
-    ImGui::Checkbox("修复骨骼矩阵", &config->misc.fixBoneMatrix);
-    ImGui::Checkbox("修正动作", &config->misc.fixMovement);
-    ImGui::Checkbox("禁用模型遮挡", &config->misc.disableModelOcclusion);
-    ImGui::SliderFloat("纵横比", &config->misc.aspectratio, 0.0f, 5.0f, "%.2f");
-    ImGui::NextColumn();
-    ImGui::Checkbox("禁用HUD模糊", &config->misc.disablePanoramablur);
-    ImGui::Checkbox("滚动组名标签", &config->misc.animatedClanTag);
-    ImGui::Checkbox("时钟组名标签", &config->misc.clocktag);
-    ImGui::Checkbox("自定义组名标签", &config->misc.customClanTag);
-    ImGui::SameLine();
-    ImGui::PushItemWidth(120.0f);
-    ImGui::PushID(0);
-
-    if (ImGui::InputText("", config->misc.clanTag, sizeof(config->misc.clanTag)))
-        Misc::updateClanTag(true);
-    ImGui::PopID();
-    ImGui::Checkbox("击杀消息", &config->misc.killMessage);
-    ImGui::SameLine();
-    ImGui::PushItemWidth(120.0f);
-    ImGui::PushID(1);
-    ImGui::InputText("", &config->misc.killMessageString);
-    ImGui::PopID();
-    ImGui::Checkbox("抢占名称", &config->misc.nameStealer);
-    ImGui::PushID(3);
-    ImGui::SetNextItemWidth(100.0f);
-    //ImGui::Combo("", &config->misc.banColor, "白色\0红色\0紫色\0绿色\0浅绿色\0深绿色\0浅红色\0灰色\0黄色\0灰色 2\0浅蓝色\0灰色/紫色\0蓝色\0粉色\0暗橙色\0橙色\0");
-    ImGui::PopID();
-    //ImGui::SameLine();
-    ImGui::PushID(4);
-    ImGui::InputText("", &config->misc.banText);
-    ImGui::PopID();
-    ImGui::SameLine();
-    if (ImGui::Button("自定义名称"))
-        Misc::fakeBan(true);
-    ImGui::Checkbox("快速安放", &config->misc.fastPlant);
-    ImGui::Checkbox("快速急停", &config->misc.fastStop);
-    ImGuiCustom::colorPicker("炸弹时间", config->misc.bombTimer);
-    ImGui::Checkbox("快速换弹", &config->misc.quickReload);
-    ImGui::Checkbox("自动左轮手枪", &config->misc.prepareRevolver);
-    ImGui::SameLine();
-    ImGui::PushID("Prepare revolver Key");
-    ImGui::hotkey("", config->misc.prepareRevolverKey);
-    ImGui::PopID();
-    ImGui::Combo("击中声音", &config->misc.hitSound, "无\0金属\0游戏感\0钟声\0玻璃\0自定义\0");
-    if (config->misc.hitSound == 5) {
-        ImGui::InputText("击中声音文件名称", &config->misc.customHitSound);
-        if (ImGui::IsItemHovered())
-            ImGui::SetTooltip("音频文件必须放入 csgo/sound/ 目录");
-    }
-    ImGui::PushID(5);
-    ImGui::Combo("击杀声音", &config->misc.killSound, "无\0金属\0游戏感\0钟声\0玻璃\0自定义\0");
-    if (config->misc.killSound == 5) {
-        ImGui::InputText("击杀声音文件名称", &config->misc.customKillSound);
-        if (ImGui::IsItemHovered())
-            ImGui::SetTooltip("音频文件必须放入 csgo/sound/ 目录");
-    }
-    ImGui::PopID();
-    ImGui::SetNextItemWidth(90.0f);
-    ImGui::InputInt("阻塞数据包", &config->misc.chokedPackets, 1, 5);
-    config->misc.chokedPackets = std::clamp(config->misc.chokedPackets, 0, 64);
-    ImGui::SameLine();
-    ImGui::PushID("Choked packets Key");
-    ImGui::hotkey("", config->misc.chokedPacketsKey);
-    ImGui::PopID();
-    /*
-    ImGui::Text("Quick healthshot");
-    ImGui::SameLine();
-    hotkey(config->misc.quickHealthshotKey);
-    */
-    ImGui::Checkbox("投掷物轨迹预测", &config->misc.nadePredict);
-    ImGui::Checkbox("修复平板电脑信号", &config->misc.fixTabletSignal);
-    ImGui::SetNextItemWidth(120.0f);
-    ImGui::SliderFloat("最大角度增量", &config->misc.maxAngleDelta, 0.0f, 255.0f, "%.2f");
-    ImGui::Checkbox("镜像持刀手部", &config->misc.oppositeHandKnife);
-    ImGui::Checkbox("保留击杀信息", &config->misc.preserveKillfeed.enabled);
-    ImGui::SameLine();
-
-    ImGui::PushID("Preserve Killfeed");
-    if (ImGui::Button("..."))
-        ImGui::OpenPopup("");
-
-    if (ImGui::BeginPopup("")) {
-        ImGui::Checkbox("仅爆头", &config->misc.preserveKillfeed.onlyHeadshots);
-        ImGui::EndPopup();
-    }
-    ImGui::PopID();
-
-    ImGui::Checkbox("购买列表", &config->misc.purchaseList.enabled);
-    ImGui::SameLine();
-
-    ImGui::PushID("Purchase List");
-    if (ImGui::Button("..."))
-        ImGui::OpenPopup("");
-
-    if (ImGui::BeginPopup("")) {
-        ImGui::SetNextItemWidth(75.0f);
-        ImGui::Combo("模式", &config->misc.purchaseList.mode, "详细\0简单\0");
-        ImGui::Checkbox("仅在冻结期间", &config->misc.purchaseList.onlyDuringFreezeTime);
-        ImGui::Checkbox("显示价格", &config->misc.purchaseList.showPrices);
-        ImGui::Checkbox("去除标题栏", &config->misc.purchaseList.noTitleBar);
-        ImGui::EndPopup();
-    }
-    ImGui::PopID();
-
-    ImGui::Checkbox("举报机器人", &config->misc.reportbot.enabled);
-    ImGui::SameLine();
-    ImGui::PushID("Reportbot");
-
-    if (ImGui::Button("..."))
-        ImGui::OpenPopup("");
-
-    if (ImGui::BeginPopup("")) {
-        ImGui::PushItemWidth(80.0f);
-        ImGui::Combo("目标", &config->misc.reportbot.target, "敌人\0队友\0所有\0");
-        ImGui::InputInt("延迟 (秒)", &config->misc.reportbot.delay);
-        config->misc.reportbot.delay = (std::max)(config->misc.reportbot.delay, 1);
-        ImGui::InputInt("回合", &config->misc.reportbot.rounds);
-        config->misc.reportbot.rounds = (std::max)(config->misc.reportbot.rounds, 1);
-        ImGui::PopItemWidth();
-        ImGui::Checkbox("恶意个人资料或言语骚扰", &config->misc.reportbot.textAbuse);
-        ImGui::Checkbox("骚扰", &config->misc.reportbot.griefing);
-        ImGui::Checkbox("穿墙作弊", &config->misc.reportbot.wallhack);
-        ImGui::Checkbox("自瞄作弊", &config->misc.reportbot.aimbot);
-        ImGui::Checkbox("其他作弊", &config->misc.reportbot.other);
-        if (ImGui::Button("重置"))
-            Misc::resetReportbot();
-        ImGui::EndPopup();
-    }
-    ImGui::PopID();
-
-    if (ImGui::Button("卸载"))
-        hooks->uninstall();
-
-    ImGui::Columns(1);
-    if (!contentOnly)
-        ImGui::End();
-}
-
 void GUI::renderConfigWindow(bool contentOnly) noexcept
 {
     if (!contentOnly) {
@@ -1208,7 +1000,7 @@ void GUI::renderConfigWindow(bool contentOnly) noexcept
                     case 9: InventoryChanger::resetConfig(); InventoryChanger::scheduleHudUpdate(); break;
                     case 10: Sound::resetConfig(); break;
                     case 11: config->style = { }; updateColors(); break;
-                    case 12: config->misc = { };  Misc::updateClanTag(true); break;
+                    case 12: Misc::resetConfig(); Misc::updateClanTag(true); break;
                     }
                 }
             }
@@ -1268,10 +1060,7 @@ void GUI::renderGuiStyle2() noexcept
             renderStyleWindow(true);
             ImGui::EndTabItem();
         }
-        if (ImGui::BeginTabItem("杂项")) {
-            renderMiscWindow(true);
-            ImGui::EndTabItem();
-        }
+        Misc::tabItem();
         if (ImGui::BeginTabItem("配置")) {
             renderConfigWindow(true);
             ImGui::EndTabItem();
