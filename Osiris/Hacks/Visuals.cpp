@@ -728,7 +728,7 @@ static bool windowOpen = false;
 
 void Visuals::menuBarItem() noexcept
 {
-    if (ImGui::MenuItem("Visuals")) {
+    if (ImGui::MenuItem("视觉")) {
         windowOpen = true;
         ImGui::SetWindowFocus("Visuals");
         ImGui::SetWindowPos("Visuals", { 100.0f, 100.0f });
@@ -737,7 +737,7 @@ void Visuals::menuBarItem() noexcept
 
 void Visuals::tabItem() noexcept
 {
-    if (ImGui::BeginTabItem("Visuals")) {
+    if (ImGui::BeginTabItem("视觉")) {
         drawGUI(true);
         ImGui::EndTabItem();
     }
@@ -749,73 +749,73 @@ void Visuals::drawGUI(bool contentOnly) noexcept
         if (!windowOpen)
             return;
         ImGui::SetNextWindowSize({ 680.0f, 0.0f });
-        ImGui::Begin("Visuals", &windowOpen, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize
+        ImGui::Begin("视觉", &windowOpen, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize
             | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
     }
     ImGui::Columns(2, nullptr, false);
     ImGui::SetColumnOffset(1, 280.0f);
-    ImGui::Checkbox("Disable post-processing", &visualsConfig.disablePostProcessing);
-    ImGui::Checkbox("Inverse ragdoll gravity", &visualsConfig.inverseRagdollGravity);
-    ImGui::Checkbox("No fog", &visualsConfig.noFog);
-    ImGui::Checkbox("No 3d sky", &visualsConfig.no3dSky);
-    ImGui::Checkbox("No aim punch", &visualsConfig.noAimPunch);
-    ImGui::Checkbox("No view punch", &visualsConfig.noViewPunch);
-    ImGui::Checkbox("No hands", &visualsConfig.noHands);
-    ImGui::Checkbox("No sleeves", &visualsConfig.noSleeves);
-    ImGui::Checkbox("No weapons", &visualsConfig.noWeapons);
-    ImGui::Checkbox("No smoke", &visualsConfig.noSmoke);
-    ImGui::Checkbox("No blur", &visualsConfig.noBlur);
-    ImGui::Checkbox("No scope overlay", &visualsConfig.noScopeOverlay);
-    ImGui::Checkbox("No grass", &visualsConfig.noGrass);
-    ImGui::Checkbox("No shadows", &visualsConfig.noShadows);
-    ImGui::Checkbox("Wireframe smoke", &visualsConfig.wireframeSmoke);
+    ImGui::Checkbox("禁用后处理", &visualsConfig.disablePostProcessing);
+    ImGui::Checkbox("反重力模型", &visualsConfig.inverseRagdollGravity);
+    ImGui::Checkbox("禁用雾", &visualsConfig.noFog);
+    ImGui::Checkbox("禁用3D天空", &visualsConfig.no3dSky);
+    ImGui::Checkbox("禁用射击后座", &visualsConfig.noAimPunch);
+    ImGui::Checkbox("禁用视觉后座", &visualsConfig.noViewPunch);
+    ImGui::Checkbox("去除手部", &visualsConfig.noHands);
+    ImGui::Checkbox("去除手臂", &visualsConfig.noSleeves);
+    ImGui::Checkbox("去除武器", &visualsConfig.noWeapons);
+    ImGui::Checkbox("去除烟雾", &visualsConfig.noSmoke);
+    ImGui::Checkbox("去除模糊", &visualsConfig.noBlur);
+    ImGui::Checkbox("去除开镜叠加", &visualsConfig.noScopeOverlay);
+    ImGui::Checkbox("去除草", &visualsConfig.noGrass);
+    ImGui::Checkbox("去除阴影", &visualsConfig.noShadows);
+    ImGui::Checkbox("线条型烟雾", &visualsConfig.wireframeSmoke);
     ImGui::NextColumn();
-    ImGui::Checkbox("Zoom", &visualsConfig.zoom);
+    ImGui::Checkbox("缩放", &visualsConfig.zoom);
     ImGui::SameLine();
     ImGui::PushID("Zoom Key");
     ImGui::hotkey("", visualsConfig.zoomKey);
     ImGui::PopID();
-    ImGui::Checkbox("Thirdperson", &visualsConfig.thirdperson);
+    ImGui::Checkbox("第三人称", &visualsConfig.thirdperson);
     ImGui::SameLine();
     ImGui::PushID("Thirdperson Key");
     ImGui::hotkey("", visualsConfig.thirdpersonKey);
     ImGui::PopID();
     ImGui::PushItemWidth(290.0f);
     ImGui::PushID(0);
-    ImGui::SliderInt("", &visualsConfig.thirdpersonDistance, 0, 1000, "Thirdperson distance: %d");
+    ImGui::SliderInt("", &visualsConfig.thirdpersonDistance, 0, 1000, "第三人称距离: %d");
     ImGui::PopID();
     ImGui::PushID(1);
-    ImGui::SliderInt("", &visualsConfig.viewmodelFov, -60, 60, "Viewmodel FOV: %d");
+    ImGui::SliderInt("", &visualsConfig.viewmodelFov, -60, 60, "模型距离: %d");
     ImGui::PopID();
     ImGui::PushID(2);
-    ImGui::SliderInt("", &visualsConfig.fov, -60, 60, "FOV: %d");
+    ImGui::SliderInt("", &visualsConfig.fov, -60, 60, "视野: %d");
     ImGui::PopID();
     ImGui::PushID(3);
-    ImGui::SliderInt("", &visualsConfig.farZ, 0, 2000, "Far Z: %d");
+    ImGui::SliderInt("", &visualsConfig.farZ, 0, 2000, "Z距离: %d");
     ImGui::PopID();
     ImGui::PushID(4);
-    ImGui::SliderInt("", &visualsConfig.flashReduction, 0, 100, "Flash reduction: %d%%");
+    ImGui::SliderInt("", &visualsConfig.flashReduction, 0, 100, "闪光效果: %d%%");
     ImGui::PopID();
     ImGui::PushID(5);
-    ImGui::SliderFloat("", &visualsConfig.brightness, 0.0f, 1.0f, "Brightness: %.2f");
+    ImGui::SliderFloat("", &visualsConfig.brightness, 0.0f, 1.0f, "亮度: %.2f");
     ImGui::PopID();
     ImGui::PopItemWidth();
-    ImGui::Combo("Skybox", &visualsConfig.skybox, Visuals::skyboxList.data(), Visuals::skyboxList.size());
-    ImGuiCustom::colorPicker("World color", visualsConfig.world);
-    ImGuiCustom::colorPicker("Sky color", visualsConfig.sky);
-    ImGui::Checkbox("Deagle spinner", &visualsConfig.deagleSpinner);
-    ImGui::Combo("Screen effect", &visualsConfig.screenEffect, "None\0Drone cam\0Drone cam with noise\0Underwater\0Healthboost\0Dangerzone\0");
-    ImGui::Combo("Hit effect", &visualsConfig.hitEffect, "None\0Drone cam\0Drone cam with noise\0Underwater\0Healthboost\0Dangerzone\0");
-    ImGui::SliderFloat("Hit effect time", &visualsConfig.hitEffectTime, 0.1f, 1.5f, "%.2fs");
-    ImGui::Combo("Hit marker", &visualsConfig.hitMarker, "None\0Default (Cross)\0");
-    ImGui::SliderFloat("Hit marker time", &visualsConfig.hitMarkerTime, 0.1f, 1.5f, "%.2fs");
-    ImGuiCustom::colorPicker("Bullet Tracers", visualsConfig.bulletTracers.color.data(), &visualsConfig.bulletTracers.color[3], nullptr, nullptr, &visualsConfig.bulletTracers.enabled);
-    ImGuiCustom::colorPicker("Molotov Hull", visualsConfig.molotovHull);
+    ImGui::Combo("天空", &visualsConfig.skybox, Visuals::skyboxList.data(), Visuals::skyboxList.size());
+    ImGuiCustom::colorPicker("世界颜色", visualsConfig.world);
+    ImGuiCustom::colorPicker("天空颜色", visualsConfig.sky);
+    ImGui::Checkbox("沙鹰旋转", &visualsConfig.deagleSpinner);
+    ImGui::Combo("屏幕效果", &visualsConfig.screenEffect, "无\0旧电视\0干扰的旧电视\0水里\0重甲\0危险区\0");
+    ImGui::Combo("击中效果", &visualsConfig.hitEffect, "无\0旧电视\0干扰的旧电视\0水里\0重甲\0危险区\0");
+    ImGui::SliderFloat("击中效果时间", &visualsConfig.hitEffectTime, 0.1f, 1.5f, "%.2f秒");
+    ImGui::Combo("击中标记", &visualsConfig.hitMarker, "无\0默认 (交叉)\0");
+    ImGui::SliderFloat("击中标记时间", &visualsConfig.hitMarkerTime, 0.1f, 1.5f, "%.2f秒");
+    ImGuiCustom::colorPicker("子弹轨迹", visualsConfig.bulletTracers.color.data(), &visualsConfig.bulletTracers.color[3], nullptr, nullptr, &visualsConfig.bulletTracers.enabled);
+    ImGuiCustom::colorPicker("燃烧范围", visualsConfig.molotovHull);
 
-    ImGui::Checkbox("Color correction", &visualsConfig.colorCorrection.enabled);
+    ImGui::Checkbox("颜色矫正", &visualsConfig.colorCorrection.enabled);
     ImGui::SameLine();
 
-    if (bool ccPopup = ImGui::Button("Edit"))
+    if (bool ccPopup = ImGui::Button("编辑"))
         ImGui::OpenPopup("##popup");
 
     if (ImGui::BeginPopup("##popup")) {
