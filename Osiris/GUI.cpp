@@ -22,7 +22,7 @@
 #include "Config.h"
 #include "ConfigStructs.h"
 #include "Hacks/Misc.h"
-#include "Hacks/InventoryChanger.h"
+#include "InventoryChanger/InventoryChanger.h"
 #include "Helpers.h"
 #include "Interfaces.h"
 #include "SDK/InputSystem.h"
@@ -31,6 +31,7 @@
 #include "Hacks/AntiAim.h"
 #include "Hacks/Backtrack.h"
 #include "Hacks/Sound.h"
+#include "Hacks/StreamProofESP.h"
 
 constexpr auto windowFlags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize
 | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse;
@@ -103,7 +104,7 @@ void GUI::render() noexcept
         Backtrack::drawGUI(false);
         Glow::drawGUI(false);
         renderChamsWindow();
-        renderStreamProofESPWindow();
+        StreamProofESP::drawGUI(false);
         Visuals::drawGUI(false);
         InventoryChanger::drawGUI(false);
         Sound::drawGUI(false);
@@ -154,7 +155,7 @@ void GUI::renderMenuBar() noexcept
         Backtrack::menuBarItem();
         Glow::menuBarItem();
         menuBarItem("实体", window.chams);
-        menuBarItem("ESP", window.streamProofESP);
+        StreamProofESP::menuBarItem();
         Visuals::menuBarItem();
         InventoryChanger::menuBarItem();
         Sound::menuBarItem();
@@ -485,409 +486,6 @@ void GUI::renderChamsWindow(bool contentOnly) noexcept
     }
 }
 
-void GUI::renderStreamProofESPWindow(bool contentOnly) noexcept
-{
-    if (!contentOnly) {
-        if (!window.streamProofESP)
-            return;
-        ImGui::SetNextWindowSize({ 0.0f, 0.0f });
-        ImGui::Begin("ESP", &window.streamProofESP, windowFlags);
-    }
-
-    ImGui::hotkey("切换按键", config->streamProofESP.toggleKey, 80.0f);
-    ImGui::hotkey("保持按键", config->streamProofESP.holdKey, 80.0f);
-    ImGui::Separator();
-
-    static std::size_t currentCategory;
-    static auto currentItem = "All";
-
-    constexpr auto getConfigShared = [](std::size_t category, const char* item) noexcept -> Shared& {
-        switch (category) {
-        case 0: default: return config->streamProofESP.enemies[item];
-        case 1: return config->streamProofESP.allies[item];
-        case 2: return config->streamProofESP.weapons[item];
-        case 3: return config->streamProofESP.projectiles[item];
-        case 4: return config->streamProofESP.lootCrates[item];
-        case 5: return config->streamProofESP.otherEntities[item];
-        }
-    };
-
-    constexpr auto getConfigPlayer = [](std::size_t category, const char* item) noexcept -> Player& {
-        switch (category) {
-        case 0: default: return config->streamProofESP.enemies[item];
-        case 1: return config->streamProofESP.allies[item];
-        }
-    };
-
-    if (ImGui::BeginListBox("##list", { 170.0f, 300.0f })) {
-        constexpr std::array categories{ "敌人", "队友", "武器", "投掷物", "战利品箱", "其他实体" };
-
-        for (std::size_t i = 0; i < categories.size(); ++i) {
-            if (ImGui::Selectable(categories[i], currentCategory == i && std::string_view{ currentItem } == "All")) {
-                currentCategory = i;
-                currentItem = "All";
-            }
-
-            if (ImGui::BeginDragDropSource()) {
-                switch (i) {
-                case 0: case 1: ImGui::SetDragDropPayload("Player", &getConfigPlayer(i, "All"), sizeof(Player), ImGuiCond_Once); break;
-                case 2: ImGui::SetDragDropPayload("Weapon", &config->streamProofESP.weapons["All"], sizeof(Weapon), ImGuiCond_Once); break;
-                case 3: ImGui::SetDragDropPayload("Projectile", &config->streamProofESP.projectiles["All"], sizeof(Projectile), ImGuiCond_Once); break;
-                default: ImGui::SetDragDropPayload("Entity", &getConfigShared(i, "All"), sizeof(Shared), ImGuiCond_Once); break;
-                }
-                ImGui::EndDragDropSource();
-            }
-
-            if (ImGui::BeginDragDropTarget()) {
-                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Player")) {
-                    const auto& data = *(Player*)payload->Data;
-
-                    switch (i) {
-                    case 0: case 1: getConfigPlayer(i, "All") = data; break;
-                    case 2: config->streamProofESP.weapons["All"] = data; break;
-                    case 3: config->streamProofESP.projectiles["All"] = data; break;
-                    default: getConfigShared(i, "All") = data; break;
-                    }
-                }
-
-                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Weapon")) {
-                    const auto& data = *(Weapon*)payload->Data;
-
-                    switch (i) {
-                    case 0: case 1: getConfigPlayer(i, "All") = data; break;
-                    case 2: config->streamProofESP.weapons["All"] = data; break;
-                    case 3: config->streamProofESP.projectiles["All"] = data; break;
-                    default: getConfigShared(i, "All") = data; break;
-                    }
-                }
-
-                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Projectile")) {
-                    const auto& data = *(Projectile*)payload->Data;
-
-                    switch (i) {
-                    case 0: case 1: getConfigPlayer(i, "All") = data; break;
-                    case 2: config->streamProofESP.weapons["All"] = data; break;
-                    case 3: config->streamProofESP.projectiles["All"] = data; break;
-                    default: getConfigShared(i, "All") = data; break;
-                    }
-                }
-
-                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Entity")) {
-                    const auto& data = *(Shared*)payload->Data;
-
-                    switch (i) {
-                    case 0: case 1: getConfigPlayer(i, "All") = data; break;
-                    case 2: config->streamProofESP.weapons["All"] = data; break;
-                    case 3: config->streamProofESP.projectiles["All"] = data; break;
-                    default: getConfigShared(i, "All") = data; break;
-                    }
-                }
-                ImGui::EndDragDropTarget();
-            }
-
-            ImGui::PushID(i);
-            ImGui::Indent();
-
-            const auto items = [](std::size_t category) noexcept -> std::vector<const char*> {
-                switch (category) {
-                case 0:
-                case 1: return { "可见时", "不可见时" };
-                case 2: return { "手枪", "微型冲锋枪", "步枪", "狙击步枪", "霰弹枪", "重型武器", "手雷", "近战武器", "其他" };
-                case 3: return { "闪光震撼弹", "高爆手雷", "遥控炸弹", "弹射地雷", "诱饵手雷", "燃烧瓶", "战术探测手雷", "烟雾弹", "雪球" };
-                case 4: return { "手枪盒", "闪光盒", "重型盒", "炸药盒", "工具盒", "现金行李袋" };
-                case 5: return { "拆弹器", "鸡", "已安装的 C4 炸弹", "人质", "自动哨兵", "金钱", "弹药盒", "雷达干扰器", "雪球桩", "收藏币" };
-                default: return { };
-                }
-            }(i);
-
-            const auto categoryEnabled = getConfigShared(i, "All").enabled;
-
-            for (std::size_t j = 0; j < items.size(); ++j) {
-                static bool selectedSubItem;
-                if (!categoryEnabled || getConfigShared(i, items[j]).enabled) {
-                    if (ImGui::Selectable(items[j], currentCategory == i && !selectedSubItem && std::string_view{ currentItem } == items[j])) {
-                        currentCategory = i;
-                        currentItem = items[j];
-                        selectedSubItem = false;
-                    }
-
-                    if (ImGui::BeginDragDropSource()) {
-                        switch (i) {
-                        case 0: case 1: ImGui::SetDragDropPayload("Player", &getConfigPlayer(i, items[j]), sizeof(Player), ImGuiCond_Once); break;
-                        case 2: ImGui::SetDragDropPayload("Weapon", &config->streamProofESP.weapons[items[j]], sizeof(Weapon), ImGuiCond_Once); break;
-                        case 3: ImGui::SetDragDropPayload("Projectile", &config->streamProofESP.projectiles[items[j]], sizeof(Projectile), ImGuiCond_Once); break;
-                        default: ImGui::SetDragDropPayload("Entity", &getConfigShared(i, items[j]), sizeof(Shared), ImGuiCond_Once); break;
-                        }
-                        ImGui::EndDragDropSource();
-                    }
-
-                    if (ImGui::BeginDragDropTarget()) {
-                        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Player")) {
-                            const auto& data = *(Player*)payload->Data;
-
-                            switch (i) {
-                            case 0: case 1: getConfigPlayer(i, items[j]) = data; break;
-                            case 2: config->streamProofESP.weapons[items[j]] = data; break;
-                            case 3: config->streamProofESP.projectiles[items[j]] = data; break;
-                            default: getConfigShared(i, items[j]) = data; break;
-                            }
-                        }
-
-                        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Weapon")) {
-                            const auto& data = *(Weapon*)payload->Data;
-
-                            switch (i) {
-                            case 0: case 1: getConfigPlayer(i, items[j]) = data; break;
-                            case 2: config->streamProofESP.weapons[items[j]] = data; break;
-                            case 3: config->streamProofESP.projectiles[items[j]] = data; break;
-                            default: getConfigShared(i, items[j]) = data; break;
-                            }
-                        }
-
-                        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Projectile")) {
-                            const auto& data = *(Projectile*)payload->Data;
-
-                            switch (i) {
-                            case 0: case 1: getConfigPlayer(i, items[j]) = data; break;
-                            case 2: config->streamProofESP.weapons[items[j]] = data; break;
-                            case 3: config->streamProofESP.projectiles[items[j]] = data; break;
-                            default: getConfigShared(i, items[j]) = data; break;
-                            }
-                        }
-
-                        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Entity")) {
-                            const auto& data = *(Shared*)payload->Data;
-
-                            switch (i) {
-                            case 0: case 1: getConfigPlayer(i, items[j]) = data; break;
-                            case 2: config->streamProofESP.weapons[items[j]] = data; break;
-                            case 3: config->streamProofESP.projectiles[items[j]] = data; break;
-                            default: getConfigShared(i, items[j]) = data; break;
-                            }
-                        }
-                        ImGui::EndDragDropTarget();
-                    }
-                }
-
-                if (i != 2)
-                    continue;
-
-                ImGui::Indent();
-
-                const auto subItems = [](std::size_t item) noexcept -> std::vector<const char*> {
-                    switch (item) {
-                    case 0: return { "格洛克 18 型", "P2000", "USP 消音型", "双持贝瑞塔", "P250", "Tec-9", "FN57", "CZ75", "沙漠之鹰", "R8 左轮手枪" };
-                    case 1: return { "MAC-10", "MP9", "MP7", "MP5-SD", "UMP-45", "P90", "PP-野牛" };
-                    case 2: return { "加利尔 AR", "法玛斯", "AK-47", "M4A4", "M4A1 消音型", "SG 553", "AUG" };
-                    case 3: return { "SSG 08", "AWP", "G3SG1", "SCAR-20" };
-                    case 4: return { "新星", "XM1014", "截短霰弹枪", "MAG-7" };
-                    case 5: return { "M249", "内格夫" };
-                    case 6: return { "闪光震撼弹", "高爆手雷", "烟雾弹", "燃烧瓶", "诱饵弹", "燃烧弹", "战术探测手雷", "火焰弹", "干扰型武器", "破片手雷", "雪球" };
-                    case 7: return { "斧头", "锤子", "扳手" };
-                    case 8: return { "C4 炸弹", "医疗针", "弹射地雷", "排斥装置", "防弹盾" };
-                    default: return { };
-                    }
-                }(j);
-
-                const auto itemEnabled = getConfigShared(i, items[j]).enabled;
-
-                for (const auto subItem : subItems) {
-                    auto& subItemConfig = config->streamProofESP.weapons[subItem];
-                    if ((categoryEnabled || itemEnabled) && !subItemConfig.enabled)
-                        continue;
-
-                    if (ImGui::Selectable(subItem, currentCategory == i && selectedSubItem && std::string_view{ currentItem } == subItem)) {
-                        currentCategory = i;
-                        currentItem = subItem;
-                        selectedSubItem = true;
-                    }
-
-                    if (ImGui::BeginDragDropSource()) {
-                        ImGui::SetDragDropPayload("Weapon", &subItemConfig, sizeof(Weapon), ImGuiCond_Once);
-                        ImGui::EndDragDropSource();
-                    }
-
-                    if (ImGui::BeginDragDropTarget()) {
-                        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Player")) {
-                            const auto& data = *(Player*)payload->Data;
-                            subItemConfig = data;
-                        }
-
-                        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Weapon")) {
-                            const auto& data = *(Weapon*)payload->Data;
-                            subItemConfig = data;
-                        }
-
-                        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Projectile")) {
-                            const auto& data = *(Projectile*)payload->Data;
-                            subItemConfig = data;
-                        }
-
-                        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Entity")) {
-                            const auto& data = *(Shared*)payload->Data;
-                            subItemConfig = data;
-                        }
-                        ImGui::EndDragDropTarget();
-                    }
-                }
-
-                ImGui::Unindent();
-            }
-            ImGui::Unindent();
-            ImGui::PopID();
-        }
-        ImGui::EndListBox();
-    }
-
-    ImGui::SameLine();
-
-    if (ImGui::BeginChild("##child", { 400.0f, 0.0f })) {
-        auto& sharedConfig = getConfigShared(currentCategory, currentItem);
-
-        ImGui::Checkbox("启用", &sharedConfig.enabled);
-        ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - 260.0f);
-        ImGui::SetNextItemWidth(220.0f);
-        if (ImGui::BeginCombo("字体", config->getSystemFonts()[sharedConfig.font.index].c_str())) {
-            for (size_t i = 0; i < config->getSystemFonts().size(); i++) {
-                bool isSelected = config->getSystemFonts()[i] == sharedConfig.font.name;
-                if (ImGui::Selectable(config->getSystemFonts()[i].c_str(), isSelected, 0, { 250.0f, 0.0f })) {
-                    sharedConfig.font.index = i;
-                    sharedConfig.font.name = config->getSystemFonts()[i];
-                    config->scheduleFontLoad(sharedConfig.font.name);
-                }
-                if (isSelected)
-                    ImGui::SetItemDefaultFocus();
-            }
-            ImGui::EndCombo();
-        }
-
-        ImGui::Separator();
-
-        constexpr auto spacing = 250.0f;
-        ImGuiCustom::colorPicker("追踪线", sharedConfig.snapline);
-        ImGui::SameLine();
-        ImGui::SetNextItemWidth(90.0f);
-        ImGui::Combo("##1", &sharedConfig.snapline.type, "底部\0顶部\0准星\0");
-        ImGui::SameLine(spacing);
-        ImGuiCustom::colorPicker("方框", sharedConfig.box);
-        ImGui::SameLine();
-
-        ImGui::PushID("Box");
-
-        if (ImGui::Button("..."))
-            ImGui::OpenPopup("");
-
-        if (ImGui::BeginPopup("")) {
-            ImGui::SetNextItemWidth(95.0f);
-            ImGui::Combo("类型", &sharedConfig.box.type, "2D\0" "2D 边角\0" "3D\0" "3D 边角\0");
-            ImGui::SetNextItemWidth(275.0f);
-            ImGui::SliderFloat3("尺寸", sharedConfig.box.scale.data(), 0.0f, 0.50f, "%.2f");
-            ImGuiCustom::colorPicker("填充", sharedConfig.box.fill);
-            ImGui::EndPopup();
-        }
-
-        ImGui::PopID();
-
-        ImGuiCustom::colorPicker("名称", sharedConfig.name);
-        ImGui::SameLine(spacing);
-
-        if (currentCategory < 2) {
-            auto& playerConfig = getConfigPlayer(currentCategory, currentItem);
-
-            ImGuiCustom::colorPicker("武器", playerConfig.weapon);
-            ImGuiCustom::colorPicker("闪光持续时间", playerConfig.flashDuration);
-            ImGui::SameLine(spacing);
-            ImGuiCustom::colorPicker("骨骼", playerConfig.skeleton);
-            ImGui::Checkbox("仅声音", &playerConfig.audibleOnly);
-            ImGui::SameLine(spacing);
-            ImGui::Checkbox("仅可见", &playerConfig.spottedOnly);
-
-            ImGuiCustom::colorPicker("头部方框", playerConfig.headBox);
-            ImGui::SameLine();
-
-            ImGui::PushID("Head Box");
-
-            if (ImGui::Button("..."))
-                ImGui::OpenPopup("");
-
-            if (ImGui::BeginPopup("")) {
-                ImGui::SetNextItemWidth(95.0f);
-                ImGui::Combo("类型", &playerConfig.headBox.type, "2D\0" "2D 边角\0" "3D\0" "3D 边角\0");
-                ImGui::SetNextItemWidth(275.0f);
-                ImGui::SliderFloat3("尺寸", playerConfig.headBox.scale.data(), 0.0f, 0.50f, "%.2f");
-                ImGuiCustom::colorPicker("填充", playerConfig.headBox.fill);
-                ImGui::EndPopup();
-            }
-
-            ImGui::PopID();
-        
-            ImGui::SameLine(spacing);
-            ImGui::Checkbox("血量条", &playerConfig.healthBar.enabled);
-            ImGui::SameLine();
-
-            ImGui::PushID("Health Bar");
-
-            if (ImGui::Button("..."))
-                ImGui::OpenPopup("");
-
-            if (ImGui::BeginPopup("")) {
-                ImGui::SetNextItemWidth(95.0f);
-                ImGui::Combo("类型", &playerConfig.healthBar.type, "渐变\0填充\0基于生命值\0");
-                if (playerConfig.healthBar.type == HealthBar::Solid) {
-                    ImGui::SameLine();
-                    ImGuiCustom::colorPicker("", playerConfig.healthBar.asColor4());
-                }
-                ImGui::EndPopup();
-            }
-
-            ImGui::PopID();
-        } else if (currentCategory == 2) {
-            auto& weaponConfig = config->streamProofESP.weapons[currentItem];
-            ImGuiCustom::colorPicker("子弹数", weaponConfig.ammo);
-        } else if (currentCategory == 3) {
-            auto& trails = config->streamProofESP.projectiles[currentItem].trails;
-
-            ImGui::Checkbox("轨迹", &trails.enabled);
-            ImGui::SameLine(spacing + 77.0f);
-            ImGui::PushID("Trails");
-
-            if (ImGui::Button("..."))
-                ImGui::OpenPopup("");
-
-            if (ImGui::BeginPopup("")) {
-                constexpr auto trailPicker = [](const char* name, Trail& trail) noexcept {
-                    ImGui::PushID(name);
-                    ImGuiCustom::colorPicker(name, trail);
-                    ImGui::SameLine(150.0f);
-                    ImGui::SetNextItemWidth(95.0f);
-                    ImGui::Combo("", &trail.type, "线\0圆\0实心圆\0");
-                    ImGui::SameLine();
-                    ImGui::SetNextItemWidth(95.0f);
-                    ImGui::InputFloat("时间", &trail.time, 0.1f, 0.5f, "%.1f秒");
-                    trail.time = std::clamp(trail.time, 1.0f, 60.0f);
-                    ImGui::PopID();
-                };
-
-                trailPicker("自己", trails.localPlayer);
-                trailPicker("队友", trails.allies);
-                trailPicker("敌人", trails.enemies);
-                ImGui::EndPopup();
-            }
-
-            ImGui::PopID();
-        }
-
-        ImGui::SetNextItemWidth(95.0f);
-        ImGui::InputFloat("文字消失距离", &sharedConfig.textCullDistance, 0.4f, 0.8f, "%.1f米");
-        sharedConfig.textCullDistance = std::clamp(sharedConfig.textCullDistance, 0.0f, 999.9f);
-    }
-
-    ImGui::EndChild();
-
-    if (!contentOnly)
-        ImGui::End();
-}
-
 void GUI::renderStyleWindow(bool contentOnly) noexcept
 {
     if (!contentOnly) {
@@ -1047,10 +645,7 @@ void GUI::renderGuiStyle2() noexcept
             renderChamsWindow(true);
             ImGui::EndTabItem();
         }
-        if (ImGui::BeginTabItem("ESP")) {
-            renderStreamProofESPWindow(true);
-            ImGui::EndTabItem();
-        }
+        StreamProofESP::tabItem();
         Visuals::tabItem();
         InventoryChanger::tabItem();
         Sound::tabItem();

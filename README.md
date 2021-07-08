@@ -247,7 +247,7 @@
 
 ### 先决条件
 
-为了编译 Osiris_CHS, 需要 Microsoft Visual Studio 2019 (最好是最新版本), 平台工具集v142 和 Windows SDK10.0.x.x。 如果您没有VS, 则可以在 [此处](https://visualstudio.microsoft.com/) 下载 VS (在 Visual Studio 安装过程中会安装 Windows SDK)。
+编译 Osiris 需要 Microsoft Visual Studio 2019 16.10 (或更新版本)、平台工具集 v142 和 Windows SDK 10.0.x.x。 如果你没有，你可以下载 VS [这里](https://visualstudio.microsoft.com/)(Windows SDK 在 Visual Studio 安装过程中安装)。
 
 ### 下载
 
