@@ -28,15 +28,6 @@ namespace InventoryChanger
     void updateStatTrak(GameEvent& event) noexcept;
     void onRoundMVP(GameEvent& event) noexcept;
 
-    void setStickerApplySlot(int slot) noexcept;
-    void setToolToUse(std::uint64_t itemID) noexcept;
-    void setItemToApplyTool(std::uint64_t itemID) noexcept;
-    void setStickerSlotToWear(int slot) noexcept;
-    void setItemToWearSticker(std::uint64_t itemID) noexcept;
-    void setNameTagString(const char* str) noexcept;
-    void setItemToRemoveNameTag(std::uint64_t itemID) noexcept;
-    void setStatTrakSwapItem1(std::uint64_t itemID) noexcept;
-    void setStatTrakSwapItem2(std::uint64_t itemID) noexcept;
     void deleteItem(std::uint64_t itemID) noexcept;
     void acknowledgeItem(std::uint64_t itemID) noexcept;
 
@@ -48,5 +39,8 @@ namespace InventoryChanger
     void clearInventory() noexcept;
 
     void onItemEquip(Team team, int slot, std::uint64_t itemID) noexcept;
-    void onSoUpdated(SharedObject* object, int event) noexcept;
+    void onSoUpdated(SharedObject* object) noexcept;
+    void onUserTextMsg(const void*& data, int& size) noexcept;
+    void getArgAsStringHook(const char* string, std::uintptr_t returnAddress) noexcept;
+    void getArgAsNumberHook(int number, std::uintptr_t returnAddress) noexcept;
 }

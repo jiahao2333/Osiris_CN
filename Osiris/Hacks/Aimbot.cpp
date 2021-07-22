@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <array>
+#include <cmath>
 #include <initializer_list>
 #include <memory>
 
@@ -108,7 +109,7 @@ static bool canScan(Entity* entity, const Vector& destination, const WeaponInfo*
             break;
 
         if (trace.entity == entity && trace.hitgroup > HitGroup::Generic && trace.hitgroup <= HitGroup::RightLeg) {
-            damage = HitGroup::getDamageMultiplier(trace.hitgroup) * damage * powf(weaponData->rangeModifier, trace.fraction * weaponData->range / 500.0f);
+            damage = HitGroup::getDamageMultiplier(trace.hitgroup) * damage * std::pow(weaponData->rangeModifier, trace.fraction * weaponData->range / 500.0f);
 
             if (float armorRatio{ weaponData->armorRatio / 2.0f }; HitGroup::isArmored(trace.hitgroup, trace.entity->hasHelmet()))
                 damage -= (trace.entity->armor() < damage * armorRatio / 2.0f ? trace.entity->armor() * 4.0f : damage) * (1.0f - armorRatio);
@@ -148,11 +149,11 @@ void Aimbot::run(UserCmd* cmd) noexcept
     if (localPlayer->shotsFired() > 0 && !activeWeapon->isFullAuto())
         return;
 
-    auto weaponIndex = getWeaponIndex(activeWeapon->itemDefinitionIndex2());
+    auto weaponIndex = getWeaponIndex(activeWeapon->itemDefinitionIndex());
     if (!weaponIndex)
         return;
 
-    auto weaponClass = getWeaponClass(activeWeapon->itemDefinitionIndex2());
+    auto weaponClass = getWeaponClass(activeWeapon->itemDefinitionIndex());
     if (!config->aimbot[weaponIndex].enabled)
         weaponIndex = weaponClass;
 

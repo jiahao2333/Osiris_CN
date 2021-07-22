@@ -1,5 +1,9 @@
 #pragma once
 
+#include <cstdint>
+#include <string>
+#include <vector>
+
 #include "../SDK/WeaponId.h"
 
 namespace StaticData
@@ -23,7 +27,8 @@ namespace StaticData
         Case,
         CaseKey,
         OperationPass,
-        StatTrakSwapTool
+        StatTrakSwapTool,
+        ViewerPass
     };
 
     struct GameItem {
@@ -43,6 +48,7 @@ namespace StaticData
         bool isCaseKey() const noexcept { return type == Type::CaseKey; }
         bool isOperationPass() const noexcept { return type == Type::OperationPass; }
         bool isStatTrakSwapTool() const noexcept { return type == Type::StatTrakSwapTool; }
+        bool isViewerPass() const noexcept { return type == Type::ViewerPass; }
 
         bool hasPaintKit() const noexcept { return type >= Type::Sticker && type <= Type::SealedGraffiti; }
 
@@ -72,11 +78,12 @@ namespace StaticData
 
     struct Case {
         bool willProduceStatTrak = false;
-        bool isSouvenirPackage = false;
+        std::uint32_t souvenirPackageTournamentID = 0;
         std::size_t lootBeginIdx = 0;
         std::size_t lootEndIdx = 0;
 
         bool hasLoot() const noexcept { return lootEndIdx > lootBeginIdx; }
+        bool isSouvenirPackage() const noexcept { return souvenirPackageTournamentID != 0; }
     };
 
     const std::vector<GameItem>& gameItems() noexcept;
@@ -86,4 +93,6 @@ namespace StaticData
     const std::vector<PaintKit>& paintKits() noexcept;
     const std::wstring& getWeaponNameUpper(WeaponId weaponID) noexcept;
     const std::string& getWeaponName(WeaponId weaponID) noexcept;
+
+    std::size_t getItemIndex(WeaponId weaponID, int paintKit) noexcept;
 }

@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <array>
 #include <atomic>
+#include <cassert>
 #include <cstdint>
 #include <cstring>
 #include <memory>
@@ -27,12 +28,18 @@
 #include "SDK/ModelInfo.h"
 #include "SDK/ModelRender.h"
 #include "SDK/NetworkChannel.h"
+#include "SDK/PlantedC4.h"
 #include "SDK/PlayerResource.h"
 #include "SDK/Sound.h"
 #include "SDK/Steam.h"
 #include "SDK/UtlVector.h"
 #include "SDK/WeaponId.h"
 #include "SDK/WeaponData.h"
+
+auto operator<(const BaseData& a, const BaseData& b) noexcept
+{
+    return a.distanceToLocal > b.distanceToLocal;
+}
 
 static Matrix4x4 viewMatrix;
 static LocalPlayerData localPlayerData;
@@ -164,6 +171,8 @@ void GameData::update() noexcept
                     break;
                 case ClassId::Inferno:
                     infernoData.emplace_back(entity);
+                    break;
+                default:
                     break;
                 }
             }
@@ -367,7 +376,7 @@ ProjectileData::ProjectileData(Entity* projectile) noexcept : BaseData { project
         if (thrower == localPlayer.get())
             thrownByLocalPlayer = true;
         else
-            thrownByEnemy = memory->isOtherEnemy(localPlayer.get(), thrower);
+            thrownByEnemy = localPlayer->isOtherEnemy(thrower);
     }
 
     handle = projectile->handle();
@@ -413,7 +422,7 @@ void PlayerData::update(Entity* entity) noexcept
     lastContactTime = alive ? memory->globalVars->realtime : 0.0f;
 
     if (localPlayer) {
-        enemy = memory->isOtherEnemy(entity, localPlayer.get());
+        enemy = localPlayer->isOtherEnemy(entity);
 
         if (!inViewFrustum || !alive)
             visible = false;
@@ -566,7 +575,7 @@ WeaponData::WeaponData(Entity* entity) noexcept : BaseData{ entity }
                 default: return "All";
                 }
             }
-        }(weaponInfo->type, entity->itemDefinitionIndex2());
+        }(weaponInfo->type, entity->itemDefinitionIndex());
         name = [](WeaponId weaponId) {
             switch (weaponId) {
             default: return "All";
@@ -633,7 +642,7 @@ WeaponData::WeaponData(Entity* entity) noexcept : BaseData{ entity }
             case WeaponId::ZoneRepulsor: return "排斥装置";
             case WeaponId::Shield: return "防弹盾";
             }
-        }(entity->itemDefinitionIndex2());
+        }(entity->itemDefinitionIndex());
 
         displayName = interfaces->localize->findAsUTF8(weaponInfo->name);
     }

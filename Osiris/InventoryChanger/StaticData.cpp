@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <cstring>
+#include <numeric>
 
 #include "StaticData.h"
 
@@ -19,6 +20,7 @@ public:
     static const auto& paintKits() noexcept { return instance()._paintKits; }
     static const auto& getWeaponNameUpper(WeaponId weaponID) noexcept { return instance()._weaponNamesUpper[weaponID]; }
     static const auto& getWeaponName(WeaponId weaponID) noexcept { return instance()._weaponNames[weaponID]; }
+    static auto getItemIndex_(WeaponId weaponID, int paintKit) noexcept { return instance().getItemIndex(weaponID, paintKit); }
 private:
     StaticDataImpl(const StaticDataImpl&) = delete;
 
@@ -120,31 +122,34 @@ private:
             const auto itemTypeName = std::string_view{ item->getItemTypeName() };
             const auto isCollectible = (itemTypeName == "#CSGO_Type_Collectible");
             const auto isOriginal = (item->getQuality() == 1);
+            const auto weaponID = item->getWeaponId();
 
-            if (!_weaponNames.contains(item->getWeaponId())) {
+            if (!_weaponNames.contains(weaponID)) {
                 std::wstring nameWide = interfaces->localize->findSafe(item->getItemBaseName());
                 if (isCollectible && isOriginal) {
                     nameWide += L" (";
                     nameWide += interfaces->localize->findSafe("genuine");
                     nameWide += L") ";
                 }
-                _weaponNames.emplace(item->getWeaponId(), interfaces->localize->convertUnicodeToAnsi(nameWide.c_str()));
-                _weaponNamesUpper.emplace(item->getWeaponId(), Helpers::toUpper(nameWide));
+                _weaponNames.emplace(weaponID, interfaces->localize->convertUnicodeToAnsi(nameWide.c_str()));
+                _weaponNamesUpper.emplace(weaponID, Helpers::toUpper(std::move(nameWide)));
             }
 
             const auto inventoryImage = item->getInventoryImage();
             if (!inventoryImage)
                 continue;
 
-            if (itemTypeName == "#CSGO_Type_Knife" && item->getRarity() == 6) {
-                _gameItems.emplace_back(Type::Skin, 6, item->getWeaponId(), vanillaPaintIndex, inventoryImage);
+            const auto rarity = item->getRarity();
+
+            if (itemTypeName == "#CSGO_Type_Knife" && rarity == 6) {
+                _gameItems.emplace_back(Type::Skin, 6, weaponID, vanillaPaintIndex, inventoryImage);
             } else if (isCollectible) {
                 _collectibles.emplace_back(isOriginal);
-                _gameItems.emplace_back(Type::Collectible, item->getRarity(), item->getWeaponId(), _collectibles.size() - 1, inventoryImage);
+                _gameItems.emplace_back(Type::Collectible, rarity, weaponID, _collectibles.size() - 1, inventoryImage);
             } else if (itemTypeName == "#CSGO_Tool_Name_TagTag") {
-                _gameItems.emplace_back(Type::NameTag, item->getRarity(), item->getWeaponId(), 0, inventoryImage);
+                _gameItems.emplace_back(Type::NameTag, rarity, weaponID, 0, inventoryImage);
             } else if (item->isPatchable()) {
-                _gameItems.emplace_back(Type::Agent, item->getRarity(), item->getWeaponId(), 0, inventoryImage);
+                _gameItems.emplace_back(Type::Agent, rarity, weaponID, 0, inventoryImage);
             } else if (itemTypeName == "#CSGO_Type_WeaponCase" && item->hasCrateSeries()) {
                 const auto lootListIdx = itemSchema->revolvingLootLists.find(item->getCrateSeriesNumber());
                 if (lootListIdx == -1)
@@ -152,21 +157,23 @@ private:
 
                 lootListIndices.push_back(lootListIdx);
                 Case caseData;
-                caseData.isSouvenirPackage = item->hasTournamentEventID();
+                caseData.souvenirPackageTournamentID = item->getTournamentEventID();
                 _cases.push_back(std::move(caseData));
-                _gameItems.emplace_back(Type::Case, item->getRarity(), item->getWeaponId(), _cases.size() - 1, inventoryImage);
+                _gameItems.emplace_back(Type::Case, rarity, weaponID, _cases.size() - 1, inventoryImage);
             } else if (itemTypeName == "#CSGO_Tool_WeaponCase_KeyTag") {
-                _gameItems.emplace_back(Type::CaseKey, item->getRarity(), item->getWeaponId(), 0, inventoryImage);
+                _gameItems.emplace_back(Type::CaseKey, rarity, weaponID, 0, inventoryImage);
             } else if (const auto tool = item->getEconTool()) {
                 if (std::strcmp(tool->typeName, "season_pass") == 0)
-                    _gameItems.emplace_back(Type::OperationPass, item->getRarity(), item->getWeaponId(), 0, inventoryImage);
+                    _gameItems.emplace_back(Type::OperationPass, rarity, weaponID, 0, inventoryImage);
                 else if (std::strcmp(tool->typeName, "stattrak_swap") == 0)
-                    _gameItems.emplace_back(Type::StatTrakSwapTool, item->getRarity(), item->getWeaponId(), 0, inventoryImage);
+                    _gameItems.emplace_back(Type::StatTrakSwapTool, rarity, weaponID, 0, inventoryImage);
+                else if (std::strcmp(tool->typeName, "fantoken") == 0)
+                    _gameItems.emplace_back(Type::ViewerPass, rarity, weaponID, 0, inventoryImage);
             }
         }
     }
 
-    auto findItems(WeaponId weaponID) noexcept
+    auto findItems(WeaponId weaponID) const noexcept
     {
         struct Comp {
             explicit Comp(const std::vector<GameItem>& gameItems) : gameItems{ gameItems } {}
@@ -176,8 +183,8 @@ private:
             const std::vector<GameItem>& gameItems;
         };
 
-        assert(!_skinsSorted.empty());
-        return std::equal_range(_skinsSorted.cbegin(), _skinsSorted.cend(), weaponID, Comp{ _gameItems }); // not using std::ranges::equal_range() here because it requires extra operators
+        assert(!_itemsSorted.empty());
+        return std::equal_range(_itemsSorted.cbegin(), _itemsSorted.cend(), weaponID, Comp{ _gameItems }); // not using std::ranges::equal_range() here because it requires extra operators
     }
 
     std::size_t getItemIndex(WeaponId weaponID, int paintKit) noexcept
@@ -192,22 +199,25 @@ private:
     {
         if (willProduceStatTrak)
             *willProduceStatTrak = *willProduceStatTrak || lootList->willProduceStatTrak();
+
         const auto& contents = lootList->getLootListContents();
         for (int j = 0; j < contents.size; ++j) {
             if (contents[j].stickerKit != 0) {
-                if (const auto idx = getItemIndex(WeaponId::Sticker, contents[j].stickerKit); idx != InvalidItemIdx)
+                if (auto idx = getItemIndex(WeaponId::Sticker, contents[j].stickerKit); idx != InvalidItemIdx)
+                    loot.push_back(idx);
+                else if ((idx = getItemIndex(WeaponId::Graffiti, contents[j].stickerKit)) != InvalidItemIdx)
+                    loot.push_back(idx);
+                else if ((idx = getItemIndex(WeaponId::Patch, contents[j].stickerKit)) != InvalidItemIdx)
                     loot.push_back(idx);
             } else if (contents[j].musicKit != 0) {
-                const auto it = std::ranges::find_if(std::as_const(_gameItems), [musicKit = contents[j].musicKit, this](const auto& item) { return item.isMusic() && _paintKits[item.dataIndex].id == musicKit; });
-                if (it != _gameItems.cend())
-                    loot.push_back(std::distance(_gameItems.cbegin(), it));
+                if (const auto idx = getItemIndex(WeaponId::MusicKit, contents[j].musicKit); idx != InvalidItemIdx)
+                    loot.push_back(idx);
             } else if (contents[j].isNestedList) {
                 if (const auto nestedLootList = itemSchema->getLootList(contents[j].itemDef))
                     fillLootFromLootList(itemSchema, nestedLootList, loot, willProduceStatTrak);
             } else if (contents[j].itemDef != 0) {
-                const auto it = std::ranges::find_if(std::as_const(_gameItems), [paintKit = contents[j].paintKit, weaponID = contents[j].weaponId(), this](const auto& item) { return item.weaponID == weaponID && (!item.hasPaintKit() || _paintKits[item.dataIndex].id == paintKit); });
-                if (it != _gameItems.cend())
-                    loot.push_back(std::distance(_gameItems.cbegin(), it));
+                if (const auto idx = getItemIndex(contents[j].weaponId(), contents[j].paintKit); idx != InvalidItemIdx)
+                    loot.push_back(idx);
             }
         }
     }
@@ -216,9 +226,8 @@ private:
     void rebuildMissingLootList(ItemSchema* itemSchema, int lootListID, std::vector<std::size_t>& loot) noexcept
     {
         if (lootListID == 292) { // crate_xray_p250_lootlist
-            const auto it = std::ranges::find_if(std::as_const(_gameItems), [this](const auto& item) { return item.weaponID == WeaponId::P250 && item.hasPaintKit() && _paintKits[item.dataIndex].id == 125 /* cu_xray_p250 */; });
-            if (it != _gameItems.cend())
-                loot.push_back(std::distance(_gameItems.cbegin(), it));
+            if (const auto idx = getItemIndex(WeaponId::P250, 125 /* cu_xray_p250 */); idx != InvalidItemIdx)
+                loot.push_back(idx);
         } else if (lootListID == 6 || lootListID == 13) { // crate_dhw13_promo and crate_ems14_promo
             constexpr auto dreamHack2013Collections = std::array{ "set_dust_2", "set_italy", "set_lake", "set_mirage", "set_safehouse", "set_train" }; // https://blog.counter-strike.net/index.php/2013/11/8199/
             for (const auto collection : dreamHack2013Collections) {
@@ -244,20 +253,29 @@ private:
 
     void initSortedVectors() noexcept
     {
-        for (std::size_t i = 0; i < _gameItems.size(); ++i) {
-            if (const auto& item = _gameItems[i]; item.isSticker() || item.isPatch() || item.isGraffiti())
-                _stickersSorted.push_back(i);
-            _skinsSorted.push_back(i);
-        }
+        _itemsSorted.resize(_gameItems.size());
+        std::iota(_itemsSorted.begin(), _itemsSorted.end(), 0);
 
-        std::ranges::sort(_stickersSorted, [this](std::size_t a, std::size_t b) { return _paintKits[_gameItems[a].dataIndex].id < _paintKits[_gameItems[b].dataIndex].id; });
-        std::ranges::sort(_skinsSorted, [this](std::size_t a, std::size_t b) {
+        std::ranges::sort(_itemsSorted, [this](std::size_t a, std::size_t b) {
             const auto& itemA = _gameItems[a];
             const auto& itemB = _gameItems[b];
             if (itemA.weaponID == itemB.weaponID && itemA.hasPaintKit() && itemB.hasPaintKit())
                 return _paintKits[itemA.dataIndex].id < _paintKits[itemB.dataIndex].id;
             return itemA.weaponID < itemB.weaponID;
         });
+    }
+
+    [[nodiscard]] bool isStickerCapsule(const StaticData::Case& caseData) const noexcept
+    {
+        return std::all_of(_caseLoot.begin() + caseData.lootBeginIdx, _caseLoot.begin() + caseData.lootEndIdx, [this](std::size_t itemIndex) { return _gameItems[itemIndex].isSticker(); });
+    }
+
+    void excludeTournamentStickerCapsulesFromSouvenirPackages() noexcept
+    {
+        for (auto& crate : _cases) {
+            if (isStickerCapsule(crate))
+                crate.souvenirPackageTournamentID = 0;
+        }
     }
 
     StaticDataImpl()
@@ -279,12 +297,13 @@ private:
 
         initSortedVectors();
         buildLootLists(itemSchema, lootListIndices);
+        excludeTournamentStickerCapsulesFromSouvenirPackages();
 
         _gameItems.shrink_to_fit();
         _collectibles.shrink_to_fit();
         _cases.shrink_to_fit();
         _caseLoot.shrink_to_fit();
-        _stickersSorted.shrink_to_fit();
+        _itemsSorted.shrink_to_fit();
         _paintKits.shrink_to_fit();
     }
 
@@ -298,8 +317,7 @@ private:
     std::vector<Collectible> _collectibles;
     std::vector<Case> _cases;
     std::vector<std::size_t> _caseLoot;
-    std::vector<std::size_t> _stickersSorted;
-    std::vector<std::size_t> _skinsSorted;
+    std::vector<std::size_t> _itemsSorted;
     std::vector<StaticData::PaintKit> _paintKits{ { 0, L"" } };
     static constexpr auto vanillaPaintIndex = 0;
     std::unordered_map<WeaponId, std::string> _weaponNames;
@@ -339,4 +357,17 @@ const std::wstring& StaticData::getWeaponNameUpper(WeaponId weaponID) noexcept
 const std::string& StaticData::getWeaponName(WeaponId weaponID) noexcept
 {
     return StaticDataImpl::getWeaponName(weaponID);
+}
+
+std::size_t StaticData::getItemIndex(WeaponId weaponID, int paintKit) noexcept
+{
+    return StaticDataImpl::getItemIndex_(weaponID, paintKit);
+}
+
+StaticData::GameItem::GameItem(Type type, int rarity, WeaponId weaponID, std::size_t dataIndex, std::string&& iconPath) noexcept : type{ type }, rarity{ static_cast<std::uint8_t>(rarity) }, weaponID{ weaponID }, dataIndex{ dataIndex }, iconPath{ std::move(iconPath) } {}
+
+StaticData::PaintKit::PaintKit(int id, std::wstring&& name, float wearRemapMin, float wearRemapMax) noexcept : id{ id }, wearRemapMin{ wearRemapMin }, wearRemapMax{ wearRemapMax }, nameUpperCase{ std::move(name) }
+{
+    this->name = interfaces->localize->convertUnicodeToAnsi(nameUpperCase.c_str());
+    nameUpperCase = Helpers::toUpper(std::move(nameUpperCase));
 }
