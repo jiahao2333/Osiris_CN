@@ -94,8 +94,8 @@ public:
     static const auto& cases() noexcept { return instance()._cases; }
     static const auto& caseLoot() noexcept { return instance()._caseLoot; }
     static const auto& paintKits() noexcept { return instance()._paintKits; }
-    static const auto& getWeaponNameUpper(WeaponId weaponID) noexcept { return instance()._weaponNamesUpper[weaponID]; }
-    static const auto& getWeaponName(WeaponId weaponID) noexcept { return instance()._weaponNames[weaponID]; }
+    static std::wstring_view getWeaponNameUpper(WeaponId weaponID) noexcept { return instance()._weaponNamesUpper[weaponID]; }
+    static std::string_view getWeaponName(WeaponId weaponID) noexcept { return instance()._weaponNames[weaponID]; }
     static auto getItemIndex_(WeaponId weaponID, int paintKit) noexcept { return instance().getItemIndex(weaponID, paintKit); }
 private:
     StaticDataImpl(const StaticDataImpl&) = delete;
@@ -210,8 +210,12 @@ private:
             if (itemTypeName == "#CSGO_Type_Knife" && rarity == 6) {
                 _gameItems.emplace_back(Type::Skin, 6, weaponID, vanillaPaintIndex, inventoryImage);
             } else if (isCollectible) {
-                _collectibles.emplace_back(isOriginal);
-                _gameItems.emplace_back(Type::Collectible, rarity, weaponID, _collectibles.size() - 1, inventoryImage);
+                if (item->isServiceMedal()) {
+                    _gameItems.emplace_back(Type::ServiceMedal, rarity, weaponID, 0, inventoryImage);
+                } else {
+                    _collectibles.emplace_back(isOriginal);
+                    _gameItems.emplace_back(Type::Collectible, rarity, weaponID, _collectibles.size() - 1, inventoryImage);
+                }
             } else if (itemTypeName == "#CSGO_Tool_Name_TagTag") {
                 _gameItems.emplace_back(Type::NameTag, rarity, weaponID, 0, inventoryImage);
             } else if (item->isPatchable()) {
@@ -488,12 +492,12 @@ const std::vector<StaticData::PaintKit>& StaticData::paintKits() noexcept
     return StaticDataImpl::paintKits();
 }
 
-const std::wstring& StaticData::getWeaponNameUpper(WeaponId weaponID) noexcept
+std::wstring_view StaticData::getWeaponNameUpper(WeaponId weaponID) noexcept
 {
     return StaticDataImpl::getWeaponNameUpper(weaponID);
 }
 
-const std::string& StaticData::getWeaponName(WeaponId weaponID) noexcept
+std::string_view StaticData::getWeaponName(WeaponId weaponID) noexcept
 {
     return StaticDataImpl::getWeaponName(weaponID);
 }
