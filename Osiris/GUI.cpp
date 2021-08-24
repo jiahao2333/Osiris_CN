@@ -202,7 +202,7 @@ void GUI::renderAimbotWindow(bool contentOnly) noexcept
         static int currentPistol{ 0 };
         static constexpr const char* pistols[]{ "全部", "格洛克 18 型", "P2000", "USP 消音型", "双持贝瑞塔", "P250", "Tec-9", "FN57", "CZ75", "沙漠之鹰", "R8 左轮手枪" };
 
-        ImGui::Combo("", &currentPistol, [](void* data, int idx, const char** out_text) {
+        ImGui::Combo("", &currentPistol, [](void*, int idx, const char** out_text) {
             if (config->aimbot[idx ? idx : 35].enabled) {
                 static std::string name;
                 name = pistols[idx];
@@ -220,7 +220,7 @@ void GUI::renderAimbotWindow(bool contentOnly) noexcept
         static int currentHeavy{ 0 };
         static constexpr const char* heavies[]{ "全部", "新星", "XM1014", "截短霰弹枪", "MAG-7", "M249", "内格夫" };
 
-        ImGui::Combo("", &currentHeavy, [](void* data, int idx, const char** out_text) {
+        ImGui::Combo("", &currentHeavy, [](void*, int idx, const char** out_text) {
             if (config->aimbot[idx ? idx + 10 : 36].enabled) {
                 static std::string name;
                 name = heavies[idx];
@@ -238,7 +238,7 @@ void GUI::renderAimbotWindow(bool contentOnly) noexcept
         static int currentSmg{ 0 };
         static constexpr const char* smgs[]{ "全部", "MAC-10", "MP9", "MP7", "MP5-SD", "UMP-45", "P90", "PP-野牛" };
 
-        ImGui::Combo("", &currentSmg, [](void* data, int idx, const char** out_text) {
+        ImGui::Combo("", &currentSmg, [](void*, int idx, const char** out_text) {
             if (config->aimbot[idx ? idx + 16 : 37].enabled) {
                 static std::string name;
                 name = smgs[idx];
@@ -256,7 +256,7 @@ void GUI::renderAimbotWindow(bool contentOnly) noexcept
         static int currentRifle{ 0 };
         static constexpr const char* rifles[]{ "全部", "加利尔 AR", "法玛斯", "AK-47", "M4A4", "M4A1 消音型", "SSG 08", "SG 553", "AUG", "AWP", "G3SG1", "SCAR-20" };
 
-        ImGui::Combo("", &currentRifle, [](void* data, int idx, const char** out_text) {
+        ImGui::Combo("", &currentRifle, [](void*, int idx, const char** out_text) {
             if (config->aimbot[idx ? idx + 23 : 38].enabled) {
                 static std::string name;
                 name = rifles[idx];
@@ -331,7 +331,7 @@ void GUI::renderTriggerbotWindow(bool contentOnly) noexcept
         static int currentPistol{ 0 };
         static constexpr const char* pistols[]{ "全部", "格洛克 18 型", "P2000", "USP 消音型", "双持贝瑞塔", "P250", "Tec-9", "FN57", "CZ75", "沙漠之鹰", "R8 左轮手枪" };
 
-        ImGui::Combo("", &currentPistol, [](void* data, int idx, const char** out_text) {
+        ImGui::Combo("", &currentPistol, [](void*, int idx, const char** out_text) {
             if (config->triggerbot[idx ? idx : 35].enabled) {
                 static std::string name;
                 name = pistols[idx];
@@ -349,7 +349,7 @@ void GUI::renderTriggerbotWindow(bool contentOnly) noexcept
         static int currentHeavy{ 0 };
         static constexpr const char* heavies[]{ "全部", "新星", "XM1014", "截短霰弹枪", "MAG-7", "M249", "内格夫" };
 
-        ImGui::Combo("", &currentHeavy, [](void* data, int idx, const char** out_text) {
+        ImGui::Combo("", &currentHeavy, [](void*, int idx, const char** out_text) {
             if (config->triggerbot[idx ? idx + 10 : 36].enabled) {
                 static std::string name;
                 name = heavies[idx];
@@ -367,7 +367,7 @@ void GUI::renderTriggerbotWindow(bool contentOnly) noexcept
         static int currentSmg{ 0 };
         static constexpr const char* smgs[]{ "全部", "MAC-10", "MP9", "MP7", "MP5-SD", "UMP-45", "P90", "PP-野牛" };
 
-        ImGui::Combo("", &currentSmg, [](void* data, int idx, const char** out_text) {
+        ImGui::Combo("", &currentSmg, [](void*, int idx, const char** out_text) {
             if (config->triggerbot[idx ? idx + 16 : 37].enabled) {
                 static std::string name;
                 name = smgs[idx];
@@ -385,7 +385,7 @@ void GUI::renderTriggerbotWindow(bool contentOnly) noexcept
         static int currentRifle{ 0 };
         static constexpr const char* rifles[]{ "全部", "加利尔 AR", "法玛斯", "AK-47", "M4A4", "M4A1 消音型", "SSG 08", "SG 553", "AUG", "AWP", "G3SG1", "SCAR-20" };
 
-        ImGui::Combo("", &currentRifle, [](void* data, int idx, const char** out_text) {
+        ImGui::Combo("", &currentRifle, [](void*, int idx, const char** out_text) {
             if (config->triggerbot[idx ? idx + 23 : 38].enabled) {
                 static std::string name;
                 name = rifles[idx];
@@ -554,7 +554,7 @@ void GUI::renderConfigWindow(bool contentOnly) noexcept
         *out_text = (const char*)vector[idx].c_str();
         return true;
         }, &configItems, configItems.size(), 5) && currentConfig != -1)
-            buffer = configItems[currentConfig].c_str();
+            buffer = configItems[currentConfig];
 
         ImGui::PushID(0);
         if (ImGui::InputTextWithHint("", "配置名称", &buffer, ImGuiInputTextFlags_EnterReturnsTrue)) {
@@ -613,7 +613,7 @@ void GUI::renderConfigWindow(bool contentOnly) noexcept
                 config->remove(currentConfig);
 
                 if (static_cast<std::size_t>(currentConfig) < configItems.size())
-                    buffer = configItems[currentConfig].c_str();
+                    buffer = configItems[currentConfig];
                 else
                     buffer.clear();
             }
