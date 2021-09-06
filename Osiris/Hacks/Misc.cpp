@@ -1099,10 +1099,10 @@ void Misc::onVoteStart(const void* data, int size) noexcept
 
     constexpr auto voteName = [](int index) {
         switch (index) {
-        case 0: return "Kick";
-        case 1: return "Change Level";
-        case 6: return "Surrender";
-        case 13: return "Start TimeOut";
+        case 0: return "踢出";
+        case 1: return "更改地图";
+        case 6: return "投降";
+        case 13: return "开始暂停";
         default: return "";
         }
     };
@@ -1117,19 +1117,19 @@ void Misc::onVoteStart(const void* data, int size) noexcept
     const auto isLocal = localPlayer && entity == localPlayer.get();
 
     const auto voteType = reader.readInt32(3);
-    memory->clientMode->getHudChat()->printf(0, " \x0C\u2022Osiris\u2022 %c%s\x01 call vote (\x06%s\x01)", isLocal ? '\x01' : '\x06', isLocal ? "You" : entity->getPlayerName().c_str(), voteName(voteType));
+    memory->clientMode->getHudChat()->printf(0, " \x0C\u2022Osiris\u2022 %c%s\x01 发起投票 (\x06%s\x01)", isLocal ? '\x01' : '\x06', isLocal ? "你" : entity->getPlayerName().c_str(), voteName(voteType));
 }
 
 void Misc::onVotePass() noexcept
 {
     if (miscConfig.revealVotes)
-        memory->clientMode->getHudChat()->printf(0, " \x0C\u2022Osiris\u2022\x01 Vote\x06 PASSED");
+        memory->clientMode->getHudChat()->printf(0, " \x0C\u2022Osiris\u2022\x01 投票\x06 通过");
 }
 
 void Misc::onVoteFailed() noexcept
 {
     if (miscConfig.revealVotes)
-        memory->clientMode->getHudChat()->printf(0, " \x0C\u2022Osiris\u2022\x01 Vote\x07 FAILED");
+        memory->clientMode->getHudChat()->printf(0, " \x0C\u2022Osiris\u2022\x01 投票\x07 失败");
 }
 
 // ImGui::ShadeVertsLinearColorGradientKeepAlpha() modified to do interpolation in HSV
