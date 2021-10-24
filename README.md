@@ -1,22 +1,22 @@
-# Osiris_CHS
-[![C++](https://img.shields.io/badge/language-C%2B%2B-%23f34b7d.svg?style=plastic)](https://en.wikipedia.org/wiki/C%2B%2B) 
+# Osiris_CN
+[![C++](https://img.shields.io/badge/language-C%2B%2B-%23f34b7d.svg?style=plastic)](https://zh.wikipedia.org/wiki/C++) 
 [![CS:GO](https://img.shields.io/badge/game-CS%3AGO-yellow.svg?style=plastic)](https://store.steampowered.com/app/730/CounterStrike_Global_Offensive/) 
-[![Windows](https://img.shields.io/badge/platform-Windows-0078d7.svg?style=plastic)](https://en.wikipedia.org/wiki/Microsoft_Windows) 
-[![x86](https://img.shields.io/badge/arch-x86-red.svg?style=plastic)](https://en.wikipedia.org/wiki/X86) 
-[![License](https://img.shields.io/github/license/danielkrupinski/Osiris.svg?style=plastic)](LICENSE)
-[![Issues](https://img.shields.io/github/issues/danielkrupinski/Osiris.svg?style=plastic)](https://github.com/danielkrupinski/Osiris/issues)
+[![Windows](https://img.shields.io/badge/platform-Windows-0078d7.svg?style=plastic)](https://zh.wikipedia.org/wiki/Microsoft_Windows) 
+[![x86](https://img.shields.io/badge/arch-x86-red.svg?style=plastic)](https://zh.wikipedia.org/wiki/X86) 
+[![License](https://img.shields.io/github/license/H-xiaoH/Osiris_CN.svg?style=plastic)](LICENSE)
+[![Issues](https://img.shields.io/github/issues/H-xiaoH/Osiris_CN.svg?style=plastic)](https://github.com/H-xiaoH/Osiris_CN/issues)
 [![PayPal](https://img.shields.io/badge/donate-PayPal-104098.svg?style=plastic&logo=PayPal)](https://paypal.me/DanielK19)
 <br>![Windows](https://github.com/danielkrupinski/Osiris/workflows/Windows/badge.svg?branch=master&event=push)
 ![Linux](https://github.com/danielkrupinski/Osiris/workflows/Linux/badge.svg?branch=master&event=push)
 
 免费开源的跨平台作弊软件, 适用于 **反恐精英: 全球攻势** 游戏。设计为内部作弊 - [动态链接库](https://zh.wikipedia.org/wiki/%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%BA%93) (DLL) 可加载到游戏进程中。与游戏的Steam版本兼容。适用于 Windows 和 Linux 系统。 
 
-更多使用技巧与翻译说明可点击 [此处](https://www.hxiaoh.cn/osiris_chs/) 。
+更多使用技巧与翻译说明可点击 [此处](https://blog.hxiaoh.cn/osiris-cn/) 。
 
 ## 特征
 *   **自瞄** - 辅助瞄准
 *   **自动开火** - 准星对准敌人时自动开火
-*   **回溯** - 滥用滞后补偿以使玩家回到过去
+*   **回溯** - 滥用延迟补偿以使玩家回到上一位置
 *   **发光** - 对实体渲染发光效果
 *   **实体** - 彩色玩家模型以提高可见度
 *   **ESP** - 显示有关玩家, 掉落的武器和投掷物的信息
@@ -29,35 +29,35 @@
 
 <details>
 
-*  **Aimbot** - 瞄准辅助
+*  **自动瞄准** - 瞄准辅助
     * **启用** - 打开/关闭主开关
-    * **按键绑定 \[ 按键 \]** - 瞄准器仅在按住所选键时有效
-    * **瞄准锁定** - 将您的准星对准目标 (受“平滑”影响) 。
+    * **按键绑定 \[ 按键 \]** - 自动瞄准仅在按住所选键时有效
+    * **瞄准锁定** - 将您的准星对准目标 (受"平滑"影响) 。
     * **静默** - 在屏幕上看不到自瞄 (仅限客户端) 
     * **无视队友** - 将队友视为敌人
     * **仅可见时** - 仅针对可见玩家
-    * **仅开镜时** - 自瞄仅在使用瞄准镜时才起作用 (仅适用于狙击步枪) 
-    * **忽略闪光** - 忽略闪光弹, 即在玩家被闪时也瞄准
+    * **仅开镜时** - 自动瞄准仅在使用瞄准镜时才起作用 (仅适用于狙击步枪) 
+    * **忽略闪光** - 忽略闪光弹, 即在玩家被致盲时也瞄准
     * **忽略烟雾** - 忽略烟雾, 即当目标处于烟雾中时瞄准
     * **自动开火** - 瞄准目标后自动开火
-    * **自动开镜** - 射击前自动开镜狙击步枪
-    * **部位** - 自瞄瞄准的部位
-    * **范围** - 自瞄在 \[*0*-*255*\] 的准星范围内
-    * **平滑** - 平滑的瞄准机器人运动, 看起来更像人类
-    * **最大瞄准误差** - 允许自瞄运行的最大武器误差, 例如降低此值。跳跃或奔跑时禁用自瞄
+    * **自动开镜** - 射击前自动开镜
+    * **部位** - 自动瞄准瞄准的部位
+    * **范围** - 自动瞄准在 \[*0*-*255*\] 的准星范围内
+    * **平滑** - 平滑的自动瞄准运动, 看起来更像人类
+    * **最大瞄准误差** - 允许自动瞄准运行的最大武器误差, 例如降低此值。跳跃或奔跑时禁用自瞄
 
 * **自动开火** - 当准星对准敌人时自动射击
     * **启用** - 打开/关闭主开关
     * **按键绑定 \[ 按键 \]** - 仅在按住选定键的情况下, 自动开火才起作用
     * **无视队友** - 将队友视为敌人
     * **仅开镜时** - 自动开火仅在使用开镜时有效 (仅适用于狙击步枪) 
-    * **忽略闪光** - 忽略闪光弹, 即在玩家被闪时也开火
+    * **忽略闪光** - 忽略闪光弹, 即在玩家被致盲时也开火
     * **忽略烟雾** - 忽略烟雾, 即当目标处于烟雾中时开火
     * **射击组** - 自动开火的身体部位
     * **射击延迟** - 延迟时间, 单位为毫秒 (毫秒) 
     * **最小伤害** - 最小的开火伤害。
 
-* **回溯** - 滥用滞后补偿, 以使玩家回到过去
+* **回溯** - 滥用延迟补偿, 以使玩家回到上一位置
     * **启用** - 打开/关闭主开关
     * **忽略烟雾** - 忽略烟雾, 即当目标处于烟雾中时回溯
     * **时间限制** - 限制回溯窗口 \[*1*-*200*ms\]
@@ -100,11 +100,11 @@
     * **眼睛痕迹** - 绘制玩家的眼睛踪迹 (显示玩家的外观) 
     * **方框** - 在玩家模型上绘制2D方框
     * **名称** - 显示玩家名称
-    * **健康** - 显示玩家健康
-    * **健康栏** - 绘制矩形以指示玩家健康
-    * **装甲** - 绘制玩家装甲
-    * **装甲杆** - 绘制指示玩家装甲的矩形
-    * **钱** - 显示玩家的钱
+    * **血量** - 显示玩家血量
+    * **血量条** - 绘制矩形以指示玩家血量
+    * **盔甲** - 绘制玩家盔甲
+    * **盔甲条** - 绘制指示玩家盔甲的矩形
+    * **金钱** - 显示玩家的钱
     * **头点** - 在玩家的头上画点
     * **武器** - 显示装备的武器
 
@@ -112,8 +112,8 @@
     * **禁用后处理** - 禁用后处理效果以增加FPS
     * **布娃娃反重力** - 掉落的玩家布娃娃尸体的反重力加速度 (在死亡回放中) 
     * **禁用雾** - 从地图上去除雾气以获得更好的可见性
-    * **禁用3D天空** - 从地图上删除3D天空盒-增加FPS
-    * **禁用视觉后座力** - 消除视觉后座力打孔效果
+    * **禁用3D天空** - 从地图上删除3D天空-增加FPS
+    * **禁用视觉后座力** - 消除视觉后座力效果
     * **去除手臂** - 从第一人称视角移除手臂/手的模型
     * **去除袖套** - 从第一人称视角移除袖套模型
     * **去除武器** - 从第一人称视角删除武器模型
@@ -133,7 +133,7 @@
     * **亮度** - 控制游戏亮度 \[*0.0*-*1.0*\]
     * **天空** - 更改天空 (框) 
     * **世界颜色** - 设置世界材质的环境光颜色
-    * **沙鹰旋转器** - 使用Deagle时播放“旋转”检查动画
+    * **沙鹰旋转器** - 使用沙漠之鹰时播放"旋转"检查动画
     * **屏幕效果** - 屏幕空间效果 - *旧电视, 被干扰的旧电视, 水下, 重甲, 危险区*
     * **命中效果** - 对敌人命中显示屏幕效果
     * **命中标记** - 显示敌人被击中时的交叉细节
@@ -154,9 +154,9 @@
 
     * **菜单样式** - 菜单样式切换 (*经典* **/** *悬浮窗*) 
 
-    * **菜单颜色** - 菜单颜色主题 (*深 **/** 浅 **/** 经典*) 
+    * **菜单颜色** - 菜单颜色主题 (*暗黑 **/** 明亮 **/** 经典*) 
 
-    * **反AFK踢** - 避免服务器因不活动而自动踢出
+    * **反挂机踢** - 避免服务器因不活动而自动踢出
 
     * **自动扫射** - 鼠标移动后在空中自动扫射
 
@@ -170,7 +170,7 @@
 
     * **狙击十字准星** - 使用狙击步枪时绘制十字准星
 
-    * **后座十字准星** - 后座准星
+    * **后座十字准星** - 后座力准星
 
     * **自动手枪** - 像自动步枪一样的射击手枪
 
@@ -190,7 +190,7 @@
 
     * **屏幕外敌人** - 在屏幕上绘制圆圈, 表明我们身后有敌人
 
-    * **修复动画LOD** - 修复针对本地玩家背后的玩家的目标机器人错误
+    * **修复动画LOD** - 修复针对玩家背后的玩家的自动瞄准错误
 
     * **修复骨骼矩阵** - 纠正客户端骨骼矩阵, 使其更接近服务器
 
@@ -202,7 +202,7 @@
 
     * **自定义名称** - 设置自定义名称
 
-    * **快速安放** - 按住 <kbd>LMB</kbd> or <kbd>E</kbd> 键时, 快速在炸弹边界上安放
+    * **快速安放** - 按住 <kbd>鼠标左键</kbd> or <kbd>E</kbd> 键时, 快速在炸弹边界上安放
 
     * **快速急停** - 比平常更快地停止玩家
 
@@ -222,7 +222,7 @@
 
     * **购买清单** - 显示敌人购买的装备。
 
-    * **举报机器人** - 自动报告服务器上的玩家作弊或其他侮辱性行为
+    * **举报机器人** - 自动举报服务器上的玩家作弊或其他侮辱性行为
         * **启用** - 打开/关闭主开关
         * **目标** - 举报目标 *敌人/队友/全部*
         * **延迟** - 举报之间的延迟, 以秒为单位
@@ -257,7 +257,7 @@
 
 如果您想使用纯资源并且不打算贡献仓库, 请选择此选项。 下载大小 ~3 MB。
 
-以这种方式下载源代码 [点击此处](https://github.com/H-xiaoH/Osiris_CHS/archive/refs/heads/master.zip)。
+以这种方式下载源代码 [点击此处](https://github.com/H-xiaoH/Osiris_CN/archive/refs/heads/master.zip)。
 
 #### 使用 [git](https://git-scm.com)
 
@@ -265,7 +265,7 @@
 
 打开git命令提示符并输入以下命令：
 
-    git clone --depth=1 https://github.com/H-xiaoH/Osiris_CHS.git
+    git clone --depth=1 https://github.com/H-xiaoH/Osiris_CN.git
 
 `Osiris_CHS` 文件夹应该已经成功创建, 其中包含所有源文件。 
 
@@ -294,13 +294,13 @@
 ### 我的配置文件保存在哪里？
 配置文件保存在 文档 文件夹的 Osiris 文件夹中 (%USERPROFILE%\Documents\Osiris) 。该配置采用人类可读的格式, 并且可以进行编辑 (例如, 使用记事本。)有时, 更新后需要删除并重新创建配置文件。
 
-### Osiris_CHS 使用什么挂钩方法？
+### Osiris_CN 使用什么挂钩方法？
 当前实现的挂钩方法是：
 *   MinHook - trampoline hook
 *   VmtHook - hook a function directly in a vtable
 *   VmtSwap - create a copy of a vtable and swap the pointer on the class instance
 
-挂钩实现文件位于 [Hooks](https://github.com/H-xiaoH/Osiris_CHS/tree/master/Osiris/Hooks) 目录.
+挂钩实现文件位于 [Hooks](https://github.com/H-xiaoH/Osiris_CN/tree/master/Osiris/Hooks) 目录.
 
 ## 致谢
 
