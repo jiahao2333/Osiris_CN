@@ -347,7 +347,7 @@ EntityData::EntityData(Entity* entity) noexcept : BaseData{ entity }
         case ClassId::RadarJammer: return "雷达干扰器";
         case ClassId::SnowballPile: return "雪球桩";
         case ClassId::DynamicProp: return "收藏币";
-        default: assert(false); return "unknown";
+        default: assert(false); return "未知";
         }
     }(entity);
 }
@@ -368,7 +368,7 @@ ProjectileData::ProjectileData(Entity* projectile) noexcept : BaseData { project
         case ClassId::SensorGrenadeProjectile: return "战术探测手雷";
         case ClassId::SmokeGrenadeProjectile: return "烟雾弹";
         case ClassId::SnowballProjectile: return "雪球";
-        default: assert(false); return "unknown";
+        default: assert(false); return "未知";
         }
     }(projectile);
 

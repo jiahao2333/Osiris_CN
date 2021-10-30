@@ -416,7 +416,7 @@ void GUI::renderTriggerbotWindow(bool contentOnly) noexcept
     ImGui::InputInt("最小伤害", &config->triggerbot[currentWeapon].minDamage);
     config->triggerbot[currentWeapon].minDamage = std::clamp(config->triggerbot[currentWeapon].minDamage, 0, 250);
     ImGui::Checkbox("致命射击", &config->triggerbot[currentWeapon].killshot);
-    ImGui::SliderFloat("爆发时间", &config->triggerbot[currentWeapon].burstTime, 0.0f, 0.5f, "%.3f 秒");
+    ImGui::SliderFloat("持续时间", &config->triggerbot[currentWeapon].burstTime, 0.0f, 0.5f, "%.3f 秒");
 
     if (!contentOnly)
         ImGui::End();
@@ -576,7 +576,7 @@ void GUI::renderConfigWindow(bool contentOnly) noexcept
             ImGui::OpenPopup("Config to reset");
 
         if (ImGui::BeginPopup("Config to reset")) {
-            static constexpr const char* names[]{ "Whole", "Aimbot", "Triggerbot", "Backtrack", "Anti aim", "Glow", "Chams", "ESP", "Visuals", "Inventory Changer", "Sound", "Style", "Misc" };
+            static constexpr const char* names[]{ "所有", "自动瞄准", "自动开火", "回溯", "反自瞄", "发光", "实体", "ESP", "视觉", "库存修改", "声音", "样式", "杂项" };
             for (int i = 0; i < IM_ARRAYSIZE(names); i++) {
                 if (i == 1) ImGui::Separator();
 
