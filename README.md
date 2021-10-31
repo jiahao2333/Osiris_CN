@@ -9,7 +9,7 @@
 <br>![Windows](https://github.com/danielkrupinski/Osiris/workflows/Windows/badge.svg?branch=master&event=push)
 ![Linux](https://github.com/danielkrupinski/Osiris/workflows/Linux/badge.svg?branch=master&event=push)
 
-免费开源的跨平台作弊软件, 适用于 **反恐精英: 全球攻势** 游戏。设计为内部作弊 - [动态链接库](https://zh.wikipedia.org/wiki/%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%BA%93) (DLL) 可加载到游戏进程中。与游戏的Steam版本兼容。适用于 Windows 和 Linux 系统。 
+免费开源的跨平台作弊软件, 适用于 **反恐精英: 全球攻势** 游戏。设计为内部作弊 - [动态链接库](https://zh.wikipedia.org/wiki/%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%BA%93) (DLL) 可加载到游戏进程中。与游戏的 Steam 版本兼容。适用于 Windows 系统。 
 
 更多使用技巧与翻译说明可点击 [此处](https://blog.hxiaoh.cn/osiris-cn/) 。
 
@@ -122,7 +122,7 @@
     * **去除开镜覆盖** - 范围界定时删除黑色覆盖
     * **去除草** - 在危险区域模式下从地图上移除草 (`dz_blacksite`和`dz_sirocco`地图) 
     * **禁用阴影** - 禁用动态阴影
-    * **线框烟雾** - 渲染烟雾骨架而不是粒子效果
+    * **线框烟雾** - 渲染烟雾线条而不是粒子效果
     * **缩放 \[ 按键 \]** - 启用不可缩放武器的缩放
     * **第三人称** - 第三人称视角
     * **第三人称距离** - 第三人称视角中的相机距离
@@ -136,7 +136,7 @@
     * **沙鹰旋转器** - 使用沙漠之鹰时播放"旋转"检查动画
     * **屏幕效果** - 屏幕空间效果 - *旧电视, 被干扰的旧电视, 水下, 重甲, 危险区*
     * **命中效果** - 对敌人命中显示屏幕效果
-    * **命中标记** - 显示敌人被击中时的交叉细节
+    * **命中标记** - 显示敌人被击中时的交叉显示
 
 *   **库存修改** - 在游戏中的库存中添加武器皮肤、印花、匕首、手套、勋章等
 
