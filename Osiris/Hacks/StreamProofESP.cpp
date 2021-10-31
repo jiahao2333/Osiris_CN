@@ -537,7 +537,7 @@ void StreamProofESP::render() noexcept
         auto& playerConfig = player.enemy ? config->streamProofESP.enemies : config->streamProofESP.allies;
 
         if (!renderPlayerEsp(player, playerConfig["All"]))
-            renderPlayerEsp(player, playerConfig[player.visible ? "Visible" : "Occluded"]);
+            renderPlayerEsp(player, playerConfig[player.visible ? "可见时" : "不可见时"]);
     }
 }
 
