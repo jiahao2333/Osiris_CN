@@ -62,6 +62,10 @@ struct DynamicServiceMedalData {
     std::uint32_t issueDateTimestamp = 0;
 };
 
+struct DynamicTournamentCoinData {
+    std::uint32_t dropsAwarded = 0;
+};
+
 struct InventoryItem {
 private:
     std::size_t itemIndex;
@@ -101,6 +105,7 @@ public:
 namespace Inventory
 {
     constexpr auto InvalidDynamicDataIdx = static_cast<std::size_t>(-1);
+    constexpr auto BASE_ITEMID = 1152921504606746975;
 
     std::vector<InventoryItem>& get() noexcept;
     void addItemUnacknowledged(std::size_t gameItemIndex, std::size_t dynamicDataIdx) noexcept;
@@ -120,6 +125,7 @@ namespace Inventory
     DynamicMusicData& dynamicMusicData(std::size_t index) noexcept;
     DynamicSouvenirPackageData& dynamicSouvenirPackageData(std::size_t index) noexcept;
     DynamicServiceMedalData& dynamicServiceMedalData(std::size_t index) noexcept;
+    DynamicTournamentCoinData& dynamicTournamentCoinData(std::size_t index) noexcept;
 
     std::size_t emplaceDynamicData(DynamicSkinData&& data) noexcept;
     std::size_t emplaceDynamicData(DynamicGloveData&& data) noexcept;
@@ -127,4 +133,5 @@ namespace Inventory
     std::size_t emplaceDynamicData(DynamicMusicData&& data) noexcept;
     std::size_t emplaceDynamicData(DynamicSouvenirPackageData&& data) noexcept;
     std::size_t emplaceDynamicData(DynamicServiceMedalData&& data) noexcept;
+    std::size_t emplaceDynamicData(DynamicTournamentCoinData&& data) noexcept;
 }
