@@ -99,10 +99,10 @@ struct MiscConfig {
     bool revealMoney{ false };
     bool revealSuspect{ false };
     bool revealVotes{ false };
-    bool fixAnimationLOD{ false };
-    bool fixBoneMatrix{ false };
-    bool fixMovement{ false };
-    bool disableModelOcclusion{ false };
+    bool fixAnimationLOD{ true };
+    bool fixBoneMatrix{ true };
+    bool fixMovement{ true };
+    bool disableModelOcclusion{ true };
     bool nameStealer{ false };
     bool disablePanoramablur{ false };
     bool killMessage{ false };
