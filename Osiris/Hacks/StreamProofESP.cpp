@@ -878,7 +878,7 @@ void StreamProofESP::drawGUI(bool contentOnly) noexcept
             ImGuiCustom::colorPicker("闪光持续时间", playerConfig.flashDuration);
             ImGui::SameLine(spacing);
             ImGuiCustom::colorPicker("骨骼", playerConfig.skeleton);
-            ImGui::Checkbox("仅声音", &playerConfig.audibleOnly);
+            ImGui::Checkbox("仅听见", &playerConfig.audibleOnly);
             ImGui::SameLine(spacing);
             ImGui::Checkbox("仅可见", &playerConfig.spottedOnly);
 
