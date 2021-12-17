@@ -316,7 +316,7 @@ void Misc::spectatorList() noexcept
         ImGui::PushStyleColor(ImGuiCol_TitleBg, ImGui::GetColorU32(ImGuiCol_TitleBgActive));
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowTitleAlign, { 0.5f, 0.5f });
-    ImGui::Begin("Spectator list", nullptr, windowFlags);
+    ImGui::Begin("观看列表", nullptr, windowFlags);
     ImGui::PopStyleVar();
 
     if (!gui->isOpen())
@@ -911,7 +911,7 @@ void Misc::purchaseList(GameEvent* event) noexcept
             windowFlags |= ImGuiWindowFlags_NoTitleBar;
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowTitleAlign, { 0.5f, 0.5f });
-        ImGui::Begin("Purchases", nullptr, windowFlags);
+        ImGui::Begin("购买列表", nullptr, windowFlags);
         ImGui::PopStyleVar();
 
         if (miscConfig.purchaseList.mode == PurchaseList::Details) {
@@ -942,7 +942,7 @@ void Misc::purchaseList(GameEvent* event) noexcept
 
             if (miscConfig.purchaseList.showPrices && totalCost > 0) {
                 ImGui::Separator();
-                ImGui::TextWrapped("Total: $%d", totalCost);
+                ImGui::TextWrapped("全部: $%d", totalCost);
             }
         }
         ImGui::End();
