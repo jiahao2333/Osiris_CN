@@ -147,7 +147,7 @@ static void menuBarItem(const char* name, bool& enabled) noexcept
 void GUI::renderMenuBar() noexcept
 {
     if (ImGui::BeginMainMenuBar()) {
-        menuBarItem("自瞄", window.aimbot);
+        menuBarItem("自动瞄准", window.aimbot);
         AntiAim::menuBarItem();
         menuBarItem("自动开火", window.triggerbot);
         Backtrack::menuBarItem();
@@ -170,7 +170,7 @@ void GUI::renderAimbotWindow(bool contentOnly) noexcept
         if (!window.aimbot)
             return;
         ImGui::SetNextWindowSize({ 600.0f, 0.0f });
-        ImGui::Begin("自瞄", &window.aimbot, windowFlags);
+        ImGui::Begin("自动瞄准", &window.aimbot, windowFlags);
     }
     ImGui::Checkbox("绑定按键", &config->aimbotOnKey);
     ImGui::SameLine();
@@ -278,11 +278,11 @@ void GUI::renderAimbotWindow(bool contentOnly) noexcept
     ImGui::SetColumnOffset(1, 220.0f);
     ImGui::Checkbox("瞄准锁定", &config->aimbot[currentWeapon].aimlock);
     ImGui::Checkbox("静默", &config->aimbot[currentWeapon].silent);
-    ImGui::Checkbox("无视队友", &config->aimbot[currentWeapon].friendlyFire);
+    ImGui::Checkbox("忽略队友", &config->aimbot[currentWeapon].friendlyFire);
     ImGui::Checkbox("仅可见时", &config->aimbot[currentWeapon].visibleOnly);
     ImGui::Checkbox("仅开镜时", &config->aimbot[currentWeapon].scopedOnly);
-    ImGui::Checkbox("无视闪光", &config->aimbot[currentWeapon].ignoreFlash);
-    ImGui::Checkbox("无视烟雾", &config->aimbot[currentWeapon].ignoreSmoke);
+    ImGui::Checkbox("忽略闪光", &config->aimbot[currentWeapon].ignoreFlash);
+    ImGui::Checkbox("忽略烟雾", &config->aimbot[currentWeapon].ignoreSmoke);
     ImGui::Checkbox("自动开火", &config->aimbot[currentWeapon].autoShot);
     ImGui::Checkbox("自动开镜", &config->aimbot[currentWeapon].autoScope);
     ImGui::Combo("部位", &config->aimbot[currentWeapon].bone, "最近\0最佳伤害\0头部\0脖子\0肩膀\0胸部\0胃部\0腹部\0");
@@ -295,7 +295,7 @@ void GUI::renderAimbotWindow(bool contentOnly) noexcept
     ImGui::InputInt("最小伤害", &config->aimbot[currentWeapon].minDamage);
     config->aimbot[currentWeapon].minDamage = std::clamp(config->aimbot[currentWeapon].minDamage, 0, 250);
     ImGui::Checkbox("致命射击", &config->aimbot[currentWeapon].killshot);
-    ImGui::Checkbox("两次射击之间", &config->aimbot[currentWeapon].betweenShots);
+    ImGui::Checkbox("持续射击", &config->aimbot[currentWeapon].betweenShots);
     ImGui::Columns(1);
     if (!contentOnly)
         ImGui::End();
@@ -405,12 +405,12 @@ void GUI::renderTriggerbotWindow(bool contentOnly) noexcept
     ImGui::Checkbox("启用", &config->triggerbot[currentWeapon].enabled);
     ImGui::Separator();
     ImGui::hotkey("保持按键", config->triggerbotHoldKey);
-    ImGui::Checkbox("无视队友", &config->triggerbot[currentWeapon].friendlyFire);
+    ImGui::Checkbox("忽略队友", &config->triggerbot[currentWeapon].friendlyFire);
     ImGui::Checkbox("仅开镜时", &config->triggerbot[currentWeapon].scopedOnly);
-    ImGui::Checkbox("无视闪光", &config->triggerbot[currentWeapon].ignoreFlash);
-    ImGui::Checkbox("无视烟雾", &config->triggerbot[currentWeapon].ignoreSmoke);
+    ImGui::Checkbox("忽略闪光", &config->triggerbot[currentWeapon].ignoreFlash);
+    ImGui::Checkbox("忽略烟雾", &config->triggerbot[currentWeapon].ignoreSmoke);
     ImGui::SetNextItemWidth(85.0f);
-    ImGui::Combo("命中组", &config->triggerbot[currentWeapon].hitgroup, "全部\0头部\0胸部\0胃部\0左肩\0右肩\0左腿\0右腿\0");
+    ImGui::Combo("部位", &config->triggerbot[currentWeapon].hitgroup, "全部\0头部\0胸部\0胃部\0左肩\0右肩\0左腿\0右腿\0");
     ImGui::PushItemWidth(220.0f);
     ImGui::SliderInt("射击延迟", &config->triggerbot[currentWeapon].shotDelay, 0, 250, "%d 毫秒");
     ImGui::InputInt("最小伤害", &config->triggerbot[currentWeapon].minDamage);
@@ -476,7 +476,7 @@ void GUI::renderChamsWindow(bool contentOnly) noexcept
     ImGui::Combo("材质", &chams.material, "普通\0扁平\0变换\0铂金\0玻璃\0铬合金\0水晶\0银色\0金色\0塑料\0辉光\0珠光\0金属\0");
     ImGui::Checkbox("线框", &chams.wireframe);
     ImGui::Checkbox("覆盖", &chams.cover);
-    ImGui::Checkbox("忽略Z值", &chams.ignorez);
+    ImGui::Checkbox("忽略渲染距离", &chams.ignorez);
     ImGuiCustom::colorPicker("颜色", chams);
 
     if (!contentOnly) {
@@ -628,7 +628,7 @@ void GUI::renderGuiStyle2() noexcept
     ImGui::Begin("Osiris", nullptr, windowFlags | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize);
 
     if (ImGui::BeginTabBar("TabBar", ImGuiTabBarFlags_Reorderable | ImGuiTabBarFlags_FittingPolicyScroll | ImGuiTabBarFlags_NoTooltip)) {
-        if (ImGui::BeginTabItem("自瞄")) {
+        if (ImGui::BeginTabItem("自动瞄准")) {
             renderAimbotWindow(true);
             ImGui::EndTabItem();
         }
