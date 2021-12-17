@@ -1317,7 +1317,7 @@ void Misc::drawGUI(bool contentOnly) noexcept
     ImGui::SetColumnOffset(1, 230.0f);
     ImGui::hotkey("菜单按键", miscConfig.menuKey);
     ImGui::Checkbox("反挂机踢出", &miscConfig.antiAfkKick);
-    ImGui::Checkbox("自动扫射", &miscConfig.autoStrafe);
+    ImGui::Checkbox("自动加速", &miscConfig.autoStrafe);
     ImGui::Checkbox("自动连跳", &miscConfig.bunnyHop);
     ImGui::Checkbox("快速下蹲", &miscConfig.fastDuck);
     ImGui::Checkbox("滑步", &miscConfig.moonwalk);
@@ -1494,7 +1494,7 @@ void Misc::drawGUI(bool contentOnly) noexcept
         ImGui::Combo("目标", &miscConfig.reportbot.target, "敌人\0队友\0所有\0");
         ImGui::InputInt("延迟 (秒)", &miscConfig.reportbot.delay);
         miscConfig.reportbot.delay = (std::max)(miscConfig.reportbot.delay, 1);
-        ImGui::InputInt("回合", &miscConfig.reportbot.rounds);
+        ImGui::InputInt("次数", &miscConfig.reportbot.rounds);
         miscConfig.reportbot.rounds = (std::max)(miscConfig.reportbot.rounds, 1);
         ImGui::PopItemWidth();
         ImGui::Checkbox("恶意个人资料或言语骚扰", &miscConfig.reportbot.textAbuse);
@@ -1502,7 +1502,7 @@ void Misc::drawGUI(bool contentOnly) noexcept
         ImGui::Checkbox("穿墙作弊", &miscConfig.reportbot.wallhack);
         ImGui::Checkbox("自瞄作弊", &miscConfig.reportbot.aimbot);
         ImGui::Checkbox("其他作弊", &miscConfig.reportbot.other);
-        if (ImGui::Button("重置"))
+        if (ImGui::Button("重设"))
             Misc::resetReportbot();
         ImGui::EndPopup();
     }
