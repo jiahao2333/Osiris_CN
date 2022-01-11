@@ -62,12 +62,12 @@ void ImGuiCustom::colorPicker(const char* name, float color[3], float* alpha, bo
 
                 if (rounding) {
                     ImGui::InputFloat("圆角", rounding, 0.1f, 0.0f, "%.1f");
-                    *rounding = std::max(*rounding, 0.0f);
+                    *rounding = (std::max)(*rounding, 0.0f);
                 }
 
                 if (thickness) {
                     ImGui::InputFloat("厚度", thickness, 0.1f, 0.0f, "%.1f");
-                    *thickness = std::max(*thickness, 1.0f);
+                    *thickness = (std::max)(*thickness, 1.0f);
                 }
 
                 ImGui::PopItemWidth();
