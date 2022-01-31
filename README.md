@@ -309,7 +309,7 @@
 
 ## 许可
 
-> 版权所有 (c) 2018-2021 Daniel Krupiński
+> Copyright (c) 2018-2022 Daniel Krupiński
 
 该项目已获得 [MIT 许可](https://opensource.org/licenses/mit-license.php) - 请参阅 [LICENSE](https://github.com/danielkrupinski/Osiris/blob/master/LICENSE) 文件以了解详细信息。 
 
