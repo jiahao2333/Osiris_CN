@@ -42,19 +42,19 @@ std::pair<StaticData::ItemIndex, std::size_t> ItemGenerator::generateItemFromCon
 {
     assert(caseItem.isCase());
 
-    const auto& caseData = StaticData::cases()[caseItem.get().dataIndex];
+    const auto& caseData = StaticData::getCase(caseItem.get());
     assert(caseData.hasLoot());
 
     const auto unlockedItemIdx = getRandomItemIndexFromContainer(caseData);
     std::size_t dynamicDataIdx = Inventory::InvalidDynamicDataIdx;
 
-    if (const auto& item = StaticData::gameItems()[unlockedItemIdx]; caseData.willProduceStatTrak && item.isMusic()) {
+    if (const auto& item = StaticData::getGameItem(unlockedItemIdx); caseData.willProduceStatTrak && item.isMusic()) {
         DynamicMusicData dynamicData;
         dynamicData.statTrak = 0;
         dynamicDataIdx = Inventory::emplaceDynamicData(std::move(dynamicData));
     } else if (item.isSkin()) {
         DynamicSkinData dynamicData;
-        const auto& staticData = StaticData::paintKits()[item.dataIndex];
+        const auto& staticData = StaticData::getPaintKit(item);
         dynamicData.wear = std::lerp(staticData.wearRemapMin, staticData.wearRemapMax, generateWear());
         dynamicData.seed = Helpers::random(1, 1000);
 
@@ -127,7 +127,7 @@ constexpr auto operator<=>(TournamentMap a, TournamentMap b) noexcept
     return dynamicData;
 }
 
-[[nodiscard]] static std::time_t tmToUTCTimestamp(std::tm& tm) noexcept
+[[nodiscard]] std::time_t tmToUTCTimestamp(std::tm& tm) noexcept
 {
 #ifdef _WIN32
     return _mkgmtime(&tm);
@@ -136,7 +136,7 @@ constexpr auto operator<=>(TournamentMap a, TournamentMap b) noexcept
 #endif
 }
 
-[[nodiscard]] static std::time_t getStartOfYearTimestamp(std::uint16_t year) noexcept
+[[nodiscard]] std::time_t getStartOfYearTimestamp(std::uint16_t year) noexcept
 {
     assert(year >= 1900);
     std::tm tm{};
@@ -145,7 +145,7 @@ constexpr auto operator<=>(TournamentMap a, TournamentMap b) noexcept
     return tmToUTCTimestamp(tm);
 }
 
-[[nodiscard]] static std::time_t getEndOfYearTimestamp(std::uint16_t year) noexcept
+[[nodiscard]] std::time_t getEndOfYearTimestamp(std::uint16_t year) noexcept
 {
     assert(year >= 1900);
     std::tm tm{};
@@ -174,18 +174,18 @@ std::size_t ItemGenerator::createDefaultDynamicData(StaticData::ItemIndex gameIt
 {
     std::size_t index = Inventory::InvalidDynamicDataIdx;
 
-    if (const auto& item = StaticData::gameItems()[gameItemIndex]; item.isSkin()) {
-        const auto& staticData = StaticData::paintKits()[item.dataIndex];
+    if (const auto& item = StaticData::getGameItem(gameItemIndex); item.isSkin()) {
+        const auto& staticData = StaticData::getPaintKit(item);
         DynamicSkinData dynamicData;
         dynamicData.wear = std::lerp(staticData.wearRemapMin, staticData.wearRemapMax, Helpers::random(0.0f, 0.07f));
         dynamicData.seed = Helpers::random(1, 1000);
 
-        if (Helpers::isMP5LabRats(item.weaponID, StaticData::paintKits()[item.dataIndex].id))
+        if (Helpers::isMP5LabRats(item.weaponID, StaticData::getPaintKit(item).id))
             dynamicData.stickers[3].stickerID = 28;
 
         index = Inventory::emplaceDynamicData(std::move(dynamicData));
     } else if (item.isGlove()) {
-        const auto& staticData = StaticData::paintKits()[item.dataIndex];
+        const auto& staticData = StaticData::getPaintKit(item);
         DynamicGloveData dynamicData;
         dynamicData.wear = std::lerp(staticData.wearRemapMin, staticData.wearRemapMax, Helpers::random(0.0f, 0.07f));
         dynamicData.seed = Helpers::random(1, 1000);
@@ -195,7 +195,7 @@ std::size_t ItemGenerator::createDefaultDynamicData(StaticData::ItemIndex gameIt
     } else if (item.isMusic()) {
         index = Inventory::emplaceDynamicData(DynamicMusicData{});
     } else if (item.isCase()) {
-        if (const auto& staticData = StaticData::cases()[item.dataIndex]; staticData.isSouvenirPackage())
+        if (const auto& staticData = StaticData::getCase(item); staticData.isSouvenirPackage())
             index = Inventory::emplaceDynamicData(generateSouvenirPackageData(staticData));
     } else if (item.isServiceMedal()) {
         DynamicServiceMedalData dynamicData;
