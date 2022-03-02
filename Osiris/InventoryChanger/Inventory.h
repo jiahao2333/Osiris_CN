@@ -2,11 +2,14 @@
 
 #include <array>
 #include <cassert>
+#include <optional>
 #include <string>
 #include <vector>
 
 #include "../SDK/ItemSchema.h"
 #include "StaticData.h"
+
+#include "GameItems/Item.h"
 
 enum class Team;
 
@@ -68,20 +71,21 @@ struct DynamicTournamentCoinData {
 
 struct InventoryItem {
 private:
-    std::size_t itemIndex;
+    std::optional<std::reference_wrapper<const game_items::Item>> item;
     std::size_t dynamicDataIndex = static_cast<std::size_t>(-1);
+    bool toDelete = false;
 public:
-    explicit InventoryItem(std::size_t itemIndex, std::size_t dynamicDataIndex) noexcept : itemIndex{ itemIndex }, dynamicDataIndex{ dynamicDataIndex } {}
+    explicit InventoryItem(const game_items::Item& item, std::size_t dynamicDataIndex) noexcept : item{ item }, dynamicDataIndex{ dynamicDataIndex } {}
 
-    void markAsDeleted() noexcept { itemIndex = static_cast<std::size_t>(-1); }
-    bool isDeleted() const noexcept { return itemIndex == static_cast<std::size_t>(-1); }
-    void markToDelete() noexcept { itemIndex = static_cast<std::size_t>(-2); }
-    bool shouldDelete() const noexcept { return itemIndex == static_cast<std::size_t>(-2); }
+    void markAsDeleted() noexcept { item.reset(); }
+    bool isDeleted() const noexcept { return !item.has_value(); }
+    void markToDelete() noexcept { toDelete = true; }
+    bool shouldDelete() const noexcept { return toDelete; }
     bool isValid() const noexcept { return !isDeleted() && !shouldDelete(); }
 
     bool isSticker() const noexcept { return isValid() && get().isSticker(); }
     bool isSkin() const noexcept { return isValid() && get().isSkin(); }
-    bool isGlove() const noexcept { return isValid() && get().isGlove(); }
+    bool isGlove() const noexcept { return isValid() && get().isGloves(); }
     bool isMusic() const noexcept { return isValid() && get().isMusic(); }
     bool isAgent() const noexcept { return isValid() && get().isAgent(); }
     bool isCollectible() const noexcept { return isValid() && get().isCollectible(); }
@@ -99,7 +103,7 @@ public:
 
     std::size_t getDynamicDataIndex() const noexcept { assert(dynamicDataIndex != static_cast<std::size_t>(-1)); return dynamicDataIndex; }
 
-    const StaticData::GameItem& get() const noexcept { assert(isValid()); return StaticData::getGameItem(itemIndex); }
+    const game_items::Item& get() const noexcept { assert(isValid()); return item.value(); }
 };
 
 namespace Inventory
@@ -108,9 +112,9 @@ namespace Inventory
     constexpr auto BASE_ITEMID = 1152921504606746975;
 
     std::vector<InventoryItem>& get() noexcept;
-    void addItemUnacknowledged(std::size_t gameItemIndex, std::size_t dynamicDataIdx) noexcept;
-    void addItemAcknowledged(std::size_t gameItemIndex, std::size_t dynamicDataIdx) noexcept;
-    std::uint64_t addItemNow(std::size_t gameItemIndex, std::size_t dynamicDataIdx, bool asUnacknowledged) noexcept;
+    void addItemUnacknowledged(const game_items::Item& gameItem, std::size_t dynamicDataIdx) noexcept;
+    void addItemAcknowledged(const game_items::Item& gameItem, std::size_t dynamicDataIdx) noexcept;
+    std::uint64_t addItemNow(const game_items::Item& gameItem, std::size_t dynamicDataIdx, bool asUnacknowledged) noexcept;
     void deleteItemNow(std::uint64_t itemID) noexcept;
     void runFrame() noexcept;
     InventoryItem* getItem(std::uint64_t itemID) noexcept;

@@ -36,14 +36,14 @@ public:
         return instance().inventory;
     }
 
-    static void addItem(std::size_t gameItemIndex, std::size_t dynamicDataIdx, bool asUnacknowledged) noexcept
+    static void addItem(const game_items::Item& gameItem, std::size_t dynamicDataIdx, bool asUnacknowledged) noexcept
     {
-        instance().toAdd.emplace_back(gameItemIndex, dynamicDataIdx, asUnacknowledged);
+        instance().toAdd.emplace_back(gameItem, dynamicDataIdx, asUnacknowledged);
     }
 
-    static std::uint64_t addItemNow(std::size_t gameItemIndex, std::size_t dynamicDataIdx, bool asUnacknowledged) noexcept
+    static std::uint64_t addItemNow(const game_items::Item& gameItem, std::size_t dynamicDataIdx, bool asUnacknowledged) noexcept
     {
-        return instance()._addItem(gameItemIndex, dynamicDataIdx, asUnacknowledged);
+        return instance()._addItem(gameItem, dynamicDataIdx, asUnacknowledged);
     }
 
     static void deleteItemNow(std::uint64_t itemID) noexcept
@@ -102,7 +102,7 @@ private:
         econItem.setPaintKit(static_cast<float>(paintKit));
 
         const auto& dynamicData = dynamicSkinData[inventoryItem.getDynamicDataIndex()];
-        const auto isMP5LabRats = Helpers::isMP5LabRats(inventoryItem.get().weaponID, paintKit);
+        const auto isMP5LabRats = Helpers::isMP5LabRats(inventoryItem.get().getWeaponID(), paintKit);
         if (dynamicData.isSouvenir() || isMP5LabRats) {
             econItem.quality = 12;
         } else {
@@ -163,12 +163,18 @@ private:
         econItem->inventory = asUnacknowledged ? 0 : baseInvID + inventory.size();
 
         const auto& item = inventoryItem.get();
-        econItem->rarity = item.rarity;
+        econItem->rarity = static_cast<std::uint16_t>(item.getRarity());
         econItem->quality = 4;
-        econItem->weaponId = item.weaponID;
+        econItem->weaponId = item.getWeaponID();
 
-        if (item.isSticker() || item.isPatch() || item.isGraffiti() || item.isSealedGraffiti()) {
+        if (item.isSticker()) {
             econItem->setStickerID(0, StaticData::getStickerID(item));
+        } else if (item.isPatch()) {
+            econItem->setStickerID(0, StaticData::getPatchID(item));
+        } else if (item.isGraffiti()) {
+            econItem->setStickerID(0, StaticData::getGraffitiID(item));
+        } else if (item.isSealedGraffiti()) {
+            econItem->setStickerID(0, StaticData::getSealedGraffitiID(item));
         } else if (item.isMusic()) {
             econItem->setMusicID(StaticData::getMusicID(item));
             const auto& dynamicData = dynamicMusicData[inventoryItem.getDynamicDataIndex()];
@@ -179,7 +185,7 @@ private:
             }
         } else if (item.isSkin()) {
             initSkinEconItem(inventoryItem, *econItem);
-        } else if (item.isGlove()) {
+        } else if (item.isGloves()) {
             econItem->quality = 3;
             econItem->setPaintKit(static_cast<float>(StaticData::getPaintKit(item).id));
 
@@ -255,9 +261,9 @@ private:
         item->markAsDeleted();
     }
 
-    std::uint64_t _addItem(std::size_t gameItemIndex, std::size_t dynamicDataIdx, bool asUnacknowledged) noexcept
+    std::uint64_t _addItem(const game_items::Item& gameItem, std::size_t dynamicDataIdx, bool asUnacknowledged) noexcept
     {
-        return _createSOCItem(inventory.emplace_back(gameItemIndex, dynamicDataIdx != InvalidDynamicDataIdx ? dynamicDataIdx : ItemGenerator::createDefaultDynamicData(gameItemIndex)), asUnacknowledged);
+        return _createSOCItem(inventory.emplace_back(gameItem, dynamicDataIdx != InvalidDynamicDataIdx ? dynamicDataIdx : ItemGenerator::createDefaultDynamicData(gameItem)), asUnacknowledged);
     }
 
     std::uint64_t _recreateItem(std::uint64_t itemID) noexcept
@@ -287,8 +293,8 @@ private:
 
     void _addItems() noexcept
     {
-        for (const auto [index, dynamicDataIndex, asUnacknowledged] : toAdd)
-            _addItem(index, dynamicDataIndex, asUnacknowledged);
+        for (const auto [gameItem, dynamicDataIndex, asUnacknowledged] : toAdd)
+            _addItem(gameItem, dynamicDataIndex, asUnacknowledged);
         toAdd.clear();
     }
 
@@ -334,7 +340,7 @@ private:
         return inventory;
     }
 
-    std::vector<std::tuple<std::size_t, std::size_t, bool>> toAdd;
+    std::vector<std::tuple<std::reference_wrapper<const game_items::Item>, std::size_t, bool>> toAdd;
     std::vector<ToEquip> toEquip;
     std::vector<InventoryItem> inventory;
 };
@@ -421,19 +427,19 @@ std::vector<InventoryItem>& Inventory::get() noexcept
     return InventoryImpl::get();
 }
 
-void Inventory::addItemUnacknowledged(std::size_t gameItemIndex, std::size_t dynamicDataIdx) noexcept
+void Inventory::addItemUnacknowledged(const game_items::Item& gameItem, std::size_t dynamicDataIdx) noexcept
 {
-    InventoryImpl::addItem(gameItemIndex, dynamicDataIdx, true);
+    InventoryImpl::addItem(gameItem, dynamicDataIdx, true);
 }
 
-void Inventory::addItemAcknowledged(std::size_t gameItemIndex, std::size_t dynamicDataIdx) noexcept
+void Inventory::addItemAcknowledged(const game_items::Item& gameItem, std::size_t dynamicDataIdx) noexcept
 {
-    InventoryImpl::addItem(gameItemIndex, dynamicDataIdx, false);
+    InventoryImpl::addItem(gameItem, dynamicDataIdx, false);
 }
 
-std::uint64_t Inventory::addItemNow(std::size_t gameItemIndex, std::size_t dynamicDataIdx, bool asUnacknowledged) noexcept
+std::uint64_t Inventory::addItemNow(const game_items::Item& gameItem, std::size_t dynamicDataIdx, bool asUnacknowledged) noexcept
 {
-    return InventoryImpl::addItemNow(gameItemIndex, dynamicDataIdx, asUnacknowledged);
+    return InventoryImpl::addItemNow(gameItem, dynamicDataIdx, asUnacknowledged);
 }
 
 void Inventory::deleteItemNow(std::uint64_t itemID) noexcept
