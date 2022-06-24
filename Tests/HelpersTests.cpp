@@ -3,7 +3,7 @@
 
 #include <gtest/gtest.h>
 
-#include <Helpers.h>
+#include "../Osiris/Helpers.h"
 
 struct ValuesPair {
     long double degrees;

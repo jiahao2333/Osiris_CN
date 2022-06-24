@@ -1,315 +1,318 @@
-# Osiris 
-[![C++](https://img.shields.io/badge/language-C%2B%2B-%23f34b7d.svg?style=plastic)](https://en.wikipedia.org/wiki/C%2B%2B) 
+# Osiris_CN
+[![C++](https://img.shields.io/badge/language-C%2B%2B-%23f34b7d.svg?style=plastic)](https://zh.wikipedia.org/wiki/C++) 
 [![CS:GO](https://img.shields.io/badge/game-CS%3AGO-yellow.svg?style=plastic)](https://store.steampowered.com/app/730/CounterStrike_Global_Offensive/) 
-[![Windows](https://img.shields.io/badge/platform-Windows-0078d7.svg?style=plastic)](https://en.wikipedia.org/wiki/Microsoft_Windows) 
-[![x86](https://img.shields.io/badge/arch-x86-red.svg?style=plastic)](https://en.wikipedia.org/wiki/X86) 
-[![License](https://img.shields.io/github/license/danielkrupinski/Osiris.svg?style=plastic)](LICENSE)
-[![Issues](https://img.shields.io/github/issues/danielkrupinski/Osiris.svg?style=plastic)](https://github.com/danielkrupinski/Osiris/issues)
+[![Windows](https://img.shields.io/badge/platform-Windows-0078d7.svg?style=plastic)](https://zh.wikipedia.org/wiki/Microsoft_Windows) 
+[![x86](https://img.shields.io/badge/arch-x86-red.svg?style=plastic)](https://zh.wikipedia.org/wiki/X86) 
+[![License](https://img.shields.io/github/license/H-xiaoH/Osiris_CN.svg?style=plastic)](LICENSE)
+[![Issues](https://img.shields.io/github/issues/H-xiaoH/Osiris_CN.svg?style=plastic)](https://github.com/H-xiaoH/Osiris_CN/issues)
 [![PayPal](https://img.shields.io/badge/donate-PayPal-104098.svg?style=plastic&logo=PayPal)](https://paypal.me/DanielK19)
 <br>![Windows](https://github.com/danielkrupinski/Osiris/workflows/Windows/badge.svg?branch=master&event=push)
 ![Linux](https://github.com/danielkrupinski/Osiris/workflows/Linux/badge.svg?branch=master&event=push)
 
-Free open-source cross-platform cheat software for **Counter-Strike: Global Offensive** game. Designed as an internal cheat - [Dynamic-link library](https://en.wikipedia.org/wiki/Dynamic-link_library) (DLL) loadable into game process. Compatible with the Steam version of the game. Available for Windows and Linux systems.
+免费开源的跨平台作弊软件, 适用于 **反恐精英: 全球攻势** 游戏。设计为内部作弊 - [动态链接库](https://zh.wikipedia.org/wiki/%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%BA%93) (DLL) 可加载到游戏进程中。与游戏的 Steam 版本兼容。适用于 Windows 系统。 
 
-## Features
-*   **Aimbot** - aim assistance
-*   **Triggerbot** - automatically fires when crosshair is on enemy
-*   **Backtrack** - abuse lag compensation to move players back in time
-*   **Glow** - render glow effect on entities
-*   **Chams** - color player models to improve visibility
-*   **Stream Proof ESP** - show information about players, dropped weapons and projectiles
-*   **Visuals** - miscellaneous visual options
-*   [**Inventory Changer**](Source/InventoryChanger/) - add weapon skins, stickers, knives, gloves, medals and more to your in-game inventory
-*   **Sound** - modify volume of certain sound effects
-*   **Style** - select menu window layout and colors
-*   **Misc** - miscellaneous features
-*   **Config** - JSON-based configuration system
+更多使用技巧与翻译说明可点击 [此处](https://blog.hxiaoh.cn/osiris-cn/) 。
+
+## 特征
+*   **自瞄** - 辅助瞄准
+*   **自动开火** - 准星对准敌人时自动开火
+*   **回溯** - 滥用延迟补偿以使玩家回到上一位置
+*   **发光** - 对实体渲染发光效果
+*   **实体** - 彩色玩家模型以提高可见度
+*   **ESP** - 显示有关玩家, 掉落的武器和投掷物的信息
+*   **视觉** - 其他视觉选择
+*   **库存修改** - 在游戏中的库存中添加武器皮肤、印花、匕首、手套、勋章等
+*   **声音** - 修改某些声音效果的音量
+*   **样式** - 选择菜单窗口的布局和颜色
+*   **杂项** - 杂项功能
+*   **配置** - 基于 JSON 的配置系统
 
 <details>
 
-*   **Aimbot** - aim assistance
-    *   **Enabled** - on / off master switch
-    *   **On key \[ key \]** - aimbot works only when chosen key is being held
-    *   **Aimlock** - brings your aim to the target (affected by Smooth).
-    *   **Silent** - aimbot is not visible on your screen (client-sided only)
-    *   **Friendly fire** - treat allies as enemies
-    *   **Visible only** - aim only on visible players
-    *   **Scoped only** - aimbot works only when using scope (applies only to sniper rifles)
-    *   **Ignore flash** - ignore flashbang i.e. aim when local player is flashed
-    *   **Ignore smoke** - ignore smoke i.e. aim when target is in smoke
-    *   **Auto shot** - shoot automatically when target found
-    *   **Auto scope** - automatically scopes sniper rifle before shooting
-    *   **Bone** - bone which aimbot aims at
-    *   **Fov** - field-of-view which aimbot operates \[*0*-*255*\]
-    *   **Smooth** - smooth aimbot movement in order to seem more human-like
-    *   **Max aim inaccuracy** - maximum weapon inaccuracy allowing aimbot to run, lowering this value will e.g. disable aimbot while jumping or running
+*  **自动瞄准** - 瞄准辅助
+    * **启用** - 打开/关闭主开关
+    * **按键绑定 \[ 按键 \]** - 自动瞄准仅在按住所选键时有效
+    * **瞄准锁定** - 将您的准星对准目标 (受"平滑"影响) 。
+    * **静默** - 在屏幕上看不到自瞄 (仅限客户端) 
+    * **无视队友** - 将队友视为敌人
+    * **仅可见时** - 仅针对可见玩家
+    * **仅开镜时** - 自动瞄准仅在使用瞄准镜时才起作用 (仅适用于狙击步枪) 
+    * **忽略闪光** - 忽略闪光弹, 即在玩家被致盲时也瞄准
+    * **忽略烟雾** - 忽略烟雾, 即当目标处于烟雾中时瞄准
+    * **自动开火** - 瞄准目标后自动开火
+    * **自动开镜** - 射击前自动开镜
+    * **部位** - 自动瞄准瞄准的部位
+    * **范围** - 自动瞄准在 \[*0*-*255*\] 的准星范围内
+    * **平滑** - 平滑的自动瞄准运动, 看起来更像人类
+    * **最大瞄准误差** - 允许自动瞄准运行的最大武器误差, 例如降低此值。跳跃或奔跑时禁用自瞄
 
-*   **Triggerbot** - automatically fires when crosshair is on enemy
-    *   **Enabled** - on / off master switch
-    *   **On key \[ key \]** - triggerbot works only when chosen key is being held
-    *   **Friendly fire** - treat allies as enemies
-    *   **Scoped only** - triggerbot works only when using scope (applies only to sniper rifles)
-    *   **Ignore flash** - ignore flashbang i.e. shoot when local player is flashed
-    *   **Ignore smoke** - ignore smoke i.e. shoot when target is in smoke
-    *   **Hitgroup** - body parts on which triggerbot works
-    *   **Shot delay** - delay time in ms (milliseconds)
-    *   **Min damage** - minimal damage to fire.
+* **自动开火** - 当准星对准敌人时自动射击
+    * **启用** - 打开/关闭主开关
+    * **按键绑定 \[ 按键 \]** - 仅在按住选定键的情况下, 自动开火才起作用
+    * **无视队友** - 将队友视为敌人
+    * **仅开镜时** - 自动开火仅在使用开镜时有效 (仅适用于狙击步枪) 
+    * **忽略闪光** - 忽略闪光弹, 即在玩家被致盲时也开火
+    * **忽略烟雾** - 忽略烟雾, 即当目标处于烟雾中时开火
+    * **射击组** - 自动开火的身体部位
+    * **射击延迟** - 延迟时间, 单位为毫秒 (毫秒) 
+    * **最小伤害** - 最小的开火伤害。
 
-*   **Backtrack** - abuse lag compensation in order to move players back in time
-    *   **Enabled** - on / off master switch
-    *   **Ignore smoke** - ignore smoke i.e. backtrack when target is in smoke
-    *   **Time limit** - limit the backtracking window \[*1*-*200*ms\]
+* **回溯** - 滥用延迟补偿, 以使玩家回到上一位置
+    * **启用** - 打开/关闭主开关
+    * **忽略烟雾** - 忽略烟雾, 即当目标处于烟雾中时回溯
+    * **时间限制** - 限制回溯窗口 \[*1*-*200*ms\]
 
-*   **Glow** - render glow effect on entities
+* **发光** - 对实体渲染发光效果
 
-    *Allies, Enemies, Planting (player planting bomb), Defusing (player defusing bomb), Local player, Weapons (dropped weapons), C4, Planted C4, Chickens, Defuse kits, Projectiles, Hostages, Ragdolls* **/** *All, Visible, Occluded*
+    *队友, 敌人, 正在安防 (玩家安防炸弹) , 正在拆除 (玩家拆除炸弹) , 玩家, 武器 (掉落的武器) , C4, 已安放的C4, 鸡, 拆弹器, 投掷物, 人质, 布娃娃* **/** *全部, 可见, 不可见*
 
-    *   **Enabled** - on / off master switch
-    *   **Health based** - color is based on player's hp
-    *   **Color** - glow color in rgba format
-    *   **Style** - glow style { `Default`, `Rim3d`, `Edge`, `Edge Pulse` }
+    * **启用** - 打开/关闭主开关
+    * **基于健康** - 颜色基于玩家的生命值
+    * **颜色** - RGB格式的发光颜色
+    * **样式** - 发光样式 { `默认`, `边缘3D`, `边缘`, `边缘脉冲`}
 
-*   **Chams** - color player models to improve visibility
+* **实体** - 上色玩家可提高可见度
 
-    *Allies, Enemies, Planting (player planting bomb), Defusing (player defusing bomb), Local player, Weapons (dropped weapons), Hands (view model hands), Backtrack (requires backtrack to be enabled), Sleeves (view model)* **/** *All, Visible, Occluded*
-    *   **Enabled** - on / off master switch
-    *   **Health based** - color is based on player's hp
-    *   **Blinking** - change transparency frequently
-    *   **Material** - material applied to model { `Normal`, `Flat`, `Animated`, `Platinum`, `Glass`, `Chrome`, `Crystal`, `Silver`, `Gold`, `Plastic`, `Glow` }
-    *   **Wireframe** - render triangle mesh instead of solid material
-    *   **Cover** - draw chams material on top of the original material instead of overriding it
-    *   **Ignore-Z** - draw material through walls
+    *队友, 敌人, 正在安防 (玩家安放炸弹) , 正在拆除 (玩家拆除炸弹) , 玩家, 武器 (掉落的武器) , 手 (查看模型手) , 回溯 (需要启用回溯) , 袖子 (查看模型) * **/** *全部, 可见, 不可见*
+    * **启用** - 打开/关闭主开关
+    * **基于健康** - 颜色基于玩家的生命值
+    * **闪烁** - 经常更改透明度
+    * **材料** - 适用于模型的材料{`普通`, `扁平`, `变换`, `白金`, `玻璃`, `铬合金`, `水晶`, `银色`, `金色`, `塑料`, `发光`}
+    * **线框** - 渲染三角形网格而不是实体材料
+    * **覆盖** - 在原始材质的顶部绘制斜边材质, 而不是覆盖它
+    * **忽略Z值** - 通过墙壁拉制材料
 
-*   **ESP** - show additional information about players and game world
-    1.  *Allies, Enemies*
-        *   *All, Visible, Occluded*
+* **ESP** - 显示有关玩家和游戏世界的其他信息
+    1. *队友, 敌人*
+        * *全部, 可见, 不可见*
 
-    2.  *Weapons*
+    2. *武器*
 
-    3.  *Projectiles*
-        *   *Flashbang, HE Grenade, Breach Charge, Bump Mine, Decoy Grenade, Molotov, TA Grenade, Smoke Grenade, Snowball*
+    3. *投掷物*
+        * *闪光弹, HE手榴弹, 遥控炸弹, 爆破地雷, 诱饵手榴弹, 燃烧瓶, TA手榴弹, 烟雾弹, 雪球*
 
-    4.  *Danger Zone*
-        *   *Sentries, Drones, Cash, Cash Dufflebag, Pistol Case, Light Case, Heavy Case, Explosive Case, Tools Case, Full Armor, Armor, Helmet, Parachute, Briefcase, Tablet Upgrade, ExoJump, Ammobox, Radar Jammer*
+    4. *危险区域*
+        * *自动哨兵, 无人机, 现金, 现金行李袋, 手枪箱, 轻型箱, 重型箱, 爆炸物箱, 工具箱, 全套装甲, 装甲, 头盔, 降落伞, 公文包, 平板电脑升级, ExoJump, 弹药箱, 雷达干扰器*
 
-    *   **Enabled** - on / off master switch
-    *   **Font** - esp text font
-    *   **Snaplines** - draw snapline to player
-    *   **Eye traces** - draw player eye traces (shows where player looks)
-    *   **Box** - draw 2D box over player model
-    *   **Name** - draw player name
-    *   **Health** - draw player health
-    *   **Health bar** - draw rectangle indicating player health
-    *   **Armor** - draw player armor
-    *   **Armor bar** - draw rectangle indicating player armor
-    *   **Money** - draw player money
-    *   **Head dot** - draw dot on player's head
-    *   **Active Weapon** - draw player equipped weapon
+    * **启用** - 打开/关闭主开关
+    * **字体** - ESP文字字体
+    * **捕捉线** - 向玩家绘制捕捉线
+    * **眼睛痕迹** - 绘制玩家的眼睛踪迹 (显示玩家的外观) 
+    * **方框** - 在玩家模型上绘制2D方框
+    * **名称** - 显示玩家名称
+    * **血量** - 显示玩家血量
+    * **血量条** - 绘制矩形以指示玩家血量
+    * **盔甲** - 绘制玩家盔甲
+    * **盔甲条** - 绘制指示玩家盔甲的矩形
+    * **金钱** - 显示玩家的钱
+    * **头点** - 在玩家的头上画点
+    * **武器** - 显示装备的武器
 
-*   **Visuals** - miscellaneous visual options
-    *   **Disable post-processing** - disable post-processing effects in order to increase FPS
-    *   **Inverse ragdoll gravity** - inverse gravitational acceleration on falling player ragdoll corpse (during death sequence)
-    *   **No fog** - remove fog from map for better visibility
-    *   **No 3d sky** - remove 3d skybox from map - increases FPS
-    *   **No visual recoil** - remove visual recoil punch effect
-    *   **No hands** - remove arms / hands model from first-person view
-    *   **No sleeves** - remove sleeves model from first-person view
-    *   **No weapons** - remove weapons model from first-person view
-    *   **No smoke** - remove smoke grenade effect
-    *   **No blur** - remove blur
-    *   **No scope overlay** - remove black overlay while scoping
-    *   **No grass** - remove grass from map in Danger Zone mode (`dz_blacksite` and `dz_sirocco` maps)
-    *   **No shadows** - disable dynamic shadows
-    *   **Wireframe smoke** - render smoke skeleton instead of particle effect
-    *   **Zoom \[ key \]** - enable zoom on unzoomable weapons
-    *   **Thirdperson** - thirdperson view
-    *   **Thirdperson distance** - camera distance in thirdperson view
-    *   **View model FOV** - change view model FOV \[*-60*-*0*-*60*\] (0 - actual view model, negative values - decreased view model, positive values - increased view model)
-    *   **FOV** - change view FOV \[*-60*-*0*-*60*\] (0 - actual view fov, negative values - decreased, positive values - increased)
-    *   **Far Z** - far clipping range, useful after disabling fog on large maps (e.g `dz_sirocco`) to render distant buildings
-    *   **Flash reduction** - reduces flashbang grenade effect \[*0*-*100*%\] (0 - full flash, 100 - no flash)
-    *   **Brightness** - control game brightness \[*0.0*-*1.0*\]
-    *   **Skybox** - change sky(box)
-    *   **World color** - set world material ambient light color
-    *   **Deagle spinner** - play "spinning" inspect animation when holding Deagle
-    *   **Screen effect** - screenspace effect - *Drone cam, Drone cam with noise, Underwater, Healthboost, Dangerzone*
-    *   **Hit effect** - show screen effect on enemy hit
-    *   **Hit marker** - show a cross detail on enemy hit
+* **视觉效果** - 其他视觉效果选项
+    * **禁用后处理** - 禁用后处理效果以增加FPS
+    * **布娃娃反重力** - 掉落的玩家布娃娃尸体的反重力加速度 (在死亡回放中) 
+    * **禁用雾** - 从地图上去除雾气以获得更好的可见性
+    * **禁用3D天空** - 从地图上删除3D天空-增加FPS
+    * **禁用视觉后座力** - 消除视觉后座力效果
+    * **去除手臂** - 从第一人称视角移除手臂/手的模型
+    * **去除袖套** - 从第一人称视角移除袖套模型
+    * **去除武器** - 从第一人称视角删除武器模型
+    * **去除烟雾** - 消除烟雾弹的效果
+    * **去除模糊** - 消除模糊
+    * **去除开镜覆盖** - 范围界定时删除黑色覆盖
+    * **去除草** - 在危险区域模式下从地图上移除草 (`dz_blacksite`和`dz_sirocco`地图) 
+    * **禁用阴影** - 禁用动态阴影
+    * **线框烟雾** - 渲染烟雾线条而不是粒子效果
+    * **缩放 \[ 按键 \]** - 启用不可缩放武器的缩放
+    * **第三人称** - 第三人称视角
+    * **第三人称距离** - 第三人称视角中的相机距离
+    * **视图模型FOV** - 更改视图模型FOV \[*-60*-*0*-*60*\] (0-实际视图模型, 负值-减少的视图模型, 正值-增加的视图模型) 
+    * **FOV** - 更改视图FOV \[*-60*-*0*-*60*\] (0-实际视图fov, 负值-减少, 正值-增加) 
+    * **Z距离** - 较远的渲染范围, 在禁用大型地图上的雾 (例如`dz_sirocco`) 以渲染远处的建筑物后很有用
+    * **减少闪光** - 减少闪光弹手榴弹效果 \[*0*-*100*％\] (0 - 完全闪光, 100 - 无闪光) 
+    * **亮度** - 控制游戏亮度 \[*0.0*-*1.0*\]
+    * **天空** - 更改天空 (框) 
+    * **世界颜色** - 设置世界材质的环境光颜色
+    * **沙鹰旋转器** - 使用沙漠之鹰时播放"旋转"检查动画
+    * **屏幕效果** - 屏幕空间效果 - *旧电视, 被干扰的旧电视, 水下, 重甲, 危险区*
+    * **命中效果** - 对敌人命中显示屏幕效果
+    * **命中标记** - 显示敌人被击中时的交叉显示
 
-*   **Inventory Changer** - add weapon skins, stickers, knives, gloves, medals and more to your in-game inventory
+*   **库存修改** - 在游戏中的库存中添加武器皮肤、印花、匕首、手套、勋章等
 
-*   **Sound** - modify volume of certain sound effects
-    *   **Chicken volume** - volume of chicken sounds
+* **声音** - 修改某些声音效果的音量
+    * **鸡的音量** - 鸡的声音的音量
 
-    *Local player, Allies, Enemies*
-    *   **Master volume** - overall volume of sounds emitted by player
-    *   **Headshot volume** - volume of headshot sound (when player gets headshoted)
-    *   **Weapon volume** - volume of player weapon shots
-    *   **Footstep volume** - volume of player footsteps
+    *玩家, 队友, 敌人*
+    * **主音量** - 播放器发出的声音的总音量
+    * **爆头音量** - 爆头声音的音量 (当玩家被爆头时) 
+    * **武器音量** - 玩家武器射击音量
+    * **脚步音量** - 玩家脚步声的音量
 
-*   **Misc** - miscellaneous features
-    *   **Menu key \[ key \]** - menu toggle key
+* **其他** - 其他功能
+    * **菜单键 \[ 按键 \]** - 菜单切换键
 
-    *   **Menu style** - menu style toggle (*Classic* **/** *One window*)
+    * **菜单样式** - 菜单样式切换 (*经典* **/** *悬浮窗*) 
 
-    *   **Menu colors** - menu color theme (*Dark **/** Light **/** Classic*)
+    * **菜单颜色** - 菜单颜色主题 (*暗黑 **/** 明亮 **/** 经典*) 
 
-    *   **Anti AFK kick** - avoid auto-kick by server for inactivity
+    * **反挂机踢出** - 避免服务器因不活动而自动踢出
 
-    *   **Auto strafe** - automatically strafe in air following mouse movement
+    * **自动扫射** - 鼠标移动后在空中自动扫射
 
-    *   **Bunny hop** - automatically simulate space bar press / release while jump button is being held; increases movement speed
+    * **自动连跳** - 按住跳跃按钮时自动模拟空格键的按下/释放；增加运动速度
 
-    *   **Clan tag** - set custom clan tag
+    * **自定义组名** - 设置自定义组名标签
 
-    *   **Animated clan tag** - animate clan tag
+    * **滚动组名** - 滚动组名标签
 
-    *   **Fast duck** - remove crouch delay
+    * **快速下蹲** - 消除蹲伏延迟
 
-    *   **Sniper crosshair** - draw crosshair while holding sniper rifle
+    * **狙击十字准星** - 使用狙击步枪时绘制十字准星
 
-    *   **Recoil crosshair** - crosshair follows recoil pattern
+    * **后座十字准星** - 后座力准星
 
-    *   **Auto pistol** - fire pistols like automatic rifles
+    * **自动手枪** - 像自动步枪一样的射击手枪
 
-    *   **Auto reload** - automatically reload if weapon has empty clip
+    * **自动换弹** - 如果武器有空夹, 则自动重新换弹
 
-    *   **Auto accept** - automatically accept competitive match
+    * **自动接受** - 自动接受竞技比赛
 
-    *   **Radar hack** - show enemies positions on radar
+    * **雷达透视** - 在雷达上显示敌人的位置
 
-    *   **Reveal ranks** - show player ranks in scoreboard in competitive modes
+    * **显示段位** - 在竞技模式的记分牌中显示玩家段位
 
-    *   **Reveal money** - show enemies' money in scoreboard
+    * **显示金钱** - 在记分牌中显示敌人的金钱
 
-    *   **Spectator list** - show nicknames of players spectating you
+    * **观众名单** - 显示观战玩家的昵称
 
-    *   **Watermark** - show cheat name in the upper-left screen corner and fps & ping in the upper-right corner
+    * **水印** - 在屏幕左上角显示作弊名称, 在屏幕右上角显示 FPS 和 Ping
 
-    *   **Offscreen Enemies** - draw circles on the screen indicating that there are enemies behind us
+    * **屏幕外敌人** - 在屏幕上绘制圆圈, 表明我们身后有敌人
 
-    *   **Fix animation LOD** - fix aimbot inaccuracy for players behind local player
+    * **修复动画LOD** - 修复针对玩家背后的玩家的自动瞄准错误
 
-    *   **Fix bone matrix** - correct client bone matrix to be closer to server one
+    * **修复骨骼矩阵** - 纠正客户端骨骼矩阵, 使其更接近服务器
 
-    *   **Disable model occlusion** - draw player models even if they are behind thick walls
+    * **禁用模型遮挡** - 即使玩家模型位于厚壁后面, 也要绘制它们
 
-    *   **Kill message** - print message to chat after killing an enemy
+    * **击杀消息** - 杀死敌人后发送印消息到聊天
 
-    *   **Name stealer** - mimic other players names
+    * **抢占名称** - 模仿其他玩家的名字
 
-    *   **Custom clantag** - set a custom clantag
+    * **自定义名称** - 设置自定义名称
 
-    *   **Fast plant** - plants bomb on bombsite border, when holding <kbd>LMB</kbd> or <kbd>E</kbd> key
+    * **快速安放** - 按住 <kbd>鼠标左键</kbd> or <kbd>E</kbd> 键时, 快速在炸弹边界上安放
 
-    *   **Fast Stop** - stops the player faster than normal
+    * **快速急停** - 比平常更快地停止玩家
 
-    *   **Quick reload** - perform quick weapon switch during reload for faster reload
+    * **快速换弹** - 在装弹期间执行快速武器切换, 以加快装弹速度
 
-    *   **Prepare revolver \[ key \]** - keep revolver cocked, optionally on key
+    * **准备左轮手枪 \[ 按键 \]** - 保持左轮手枪的扳动, 可以绑定按键上
 
-    *   **Fix tablet signal** - allow use tablet on underground (dangerzone)
+    * **修正平板电脑信号** - 允许在地下使用平板电脑 (危险区域) 
 
-    *   **Hit Sound** - sound emitted when hurting enemy
+    * **击中声音** - 伤害敌人时发出声音
 
-    *   **Chocked packets** - length of sequence of chocked ticks
+    * **阻塞的数据包** - 阻塞的数据包序列的长度
 
-    *   **Max angle delta** - maximum viewangles change per tick
+    * **最大角度增量** - 每个刻度的最大视角变化
 
-    *   **Aspect Ratio** - allows you to change the aspect ratio
+    * **纵横比** - 允许您更改纵横比
 
-    *   **Purchase List** - show the purchased equipment by enemies.
+    * **购买清单** - 显示敌人购买的装备。
 
-    *   **Reportbot** - automatically report players on server for cheating or other abusive actions
-        *   **Enabled** - on / off master switch
-        *   **Target** - report target *Enemies/Allies/All*
-        *   **Delay** - delay between reports, in seconds
-        *   **Aimbot** - report for aim assistance
-        *   **Wallhack** - report for visual assistance
-        *   **Other** - report for other assistance
-        *   **Griefing** - report for griefing
-        *   **Abusive Communications** - report for abusive communications
+    * **举报机器人** - 自动举报服务器上的玩家作弊或其他侮辱性行为
+        * **启用** - 打开/关闭主开关
+        * **目标** - 举报目标 *敌人/队友/全部*
+        * **延迟** - 举报之间的延迟, 以秒为单位
+        * **自瞄作弊** - 举报自瞄作弊
+        * **视觉作弊** - 举报穿墙作弊
+        * **其他作弊** - 举报其他作弊
+        * **恶意个人资料或言语骚扰** - 举报恶意个人资料或言语骚扰
+        * **骚扰** - 举报骚扰
 
-    *   **Unhook** - unload cheat
+    * **卸载** - 卸载作弊
 
-*   **Config** - JSON-based configuration system
-    *   **Create config** - create new configuration file
-    *   **Reset config** - restore default configuration settings (does not touch saved configuration)
-    *   **Load selected** - load selected configuration file
-    *   **Save selected** - save selected configuration file
-    *   **Delete selected** - delete selected configuration file
-    *   **Reload configs** - reload configs list
+* **配置** - 基于JSON的配置系统
+    * **创建配置** - 创建新的配置文件
+    * **重置配置** - 恢复默认配置设置 (不选择已保存的配置) 
+    * **加载选定** - 加载选定的配置文件
+    * **保存选定** - 保存选定的配置文件
+    * **删除选定** - 删除选定的配置文件
+    * **重新加载配置** - 重新加载配置列表
 </details>
 
-## Getting started
+## 入门
 
-### Prerequisites
-Microsoft Visual Studio 2019 16.10 (or newer), platform toolset v142 and Windows SDK 10.0.x.x are required in order to compile Osiris. If you don't have ones, you can download VS [here](https://visualstudio.microsoft.com/) (Windows SDK is installed during Visual Studio Setup).
+### 先决条件
 
-### Downloading
+编译 Osiris 需要 Microsoft Visual Studio 2019 16.10 (或更新版本)、平台工具集 v142 和 Windows SDK 10.0.x.x。 如果你没有，你可以下载 VS [这里](https://visualstudio.microsoft.com/)(Windows SDK 在 Visual Studio 安装过程中安装)。
 
-There are two options of downloading the source code:
+### 下载
 
-#### Without [git](https://git-scm.com)
+有两种下载源代码的选项：
 
-Choose this option if you want pure source and you're not going to contribute to the repo. Download size ~600 kB.
+#### 没有 [git](https://git-scm.com)
 
-To download source code this way [click here](https://github.com/danielkrupinski/Osiris/archive/master.zip).
+如果您想使用纯资源并且不打算贡献仓库, 请选择此选项。
 
-#### With [git](https://git-scm.com)
+以这种方式下载源代码 [点击此处](https://github.com/H-xiaoH/Osiris_CN/archive/refs/heads/master.zip)。
 
-Choose this option if you're going to contribute to the repo or you want to use version control system. Download size ~4 MB. Git is required to step further, if not installed download it [here](https://git-scm.com).
+#### 使用 [git](https://git-scm.com)
 
-Open git command prompt and enter following command:
+如果您要为仓库做贡献或要使用版本控制系统, 请选择此选项。如果未安装Git, 则需要进一步进行操作, 请在 [此处](https://git-scm.com) 下载。
 
-    git clone --depth=1 https://github.com/danielkrupinski/Osiris.git
+打开git命令提示符并输入以下命令：
 
-`Osiris` folder should have been successfully created, containing all the source files.
+    git clone --depth=1 https://github.com/H-xiaoH/Osiris_CN.git
 
-### Compiling from source
+`Osiris_CN` 文件夹应该已经成功创建, 其中包含所有源文件。 
 
-When you have equipped a copy of the source code, next step is opening **Osiris.sln** in Microsoft Visual Studio 2019.
+### 从源代码编译
 
-Then change build configuration to `Release | x86` and simply press **Build solution**.
+配备源代码副本后, 下一步是在 Microsoft Visual Studio 2019 中打开 **Osiris.sln**。
 
-If everything went right you should receive `Osiris.dll`  binary file.
+然后将构建配置更改为 `Release | x86` , 然后只需按 **生成解决方案** 即可。
 
-### Loading / Injecting into game process
+如果一切顺利, 您应该得到 `Osiris.dll` 二进制文件。 
 
-Open your favorite [DLL injector](https://en.wikipedia.org/wiki/DLL_injection) and just inject `Osiris.dll` into `csgo.exe` process.
+### 加载/注入游戏
 
-When injected, menu is openable under `INSERT` key.
+打开您喜欢的 [DLL注入](https://zh.wikipedia.org/wiki/DLL%E6%B3%A8%E5%85%A5) 然后将 `Osiris.dll` 注入到 `csgo.exe` 进程中。
 
-### Further optimizations
-If your CPU supports AVX / AVX2 / AVX-512 instruction set, you can enable it in project settings. This should result in more performant code, optimized for your CPU. Currently SSE2 instructions are selected in project settings.
+注入后, 可以按下 `INSERT` 键打开菜单。 
 
-## FAQ
+### 进一步优化
+如果您的CPU支持 AVX / AVX2 / AVX-512 指令集, 则可以在项目设置中启用它。 这将产生更多性能更好的代码, 并为您的 CPU 优化。 当前在项目设置中选择了 AVX2 指令集。
 
-### How do I open menu?
-Press <kbd>INSERT</kbd> while focused on CS:GO window.
+## 常问问题
 
-### Where is my config file saved?
-Configuration files are saved inside `Osiris` folder in your `Documents` folder (`%USERPROFILE%\Documents\Osiris`). The config is in human readable format and can be edited (e.g, using notepad). Sometimes after updates configuration file needs to be deleted and recreated.
+### 如何打开菜单？
+在 CS:GO 窗口中, 按 <kbd>INSERT</kbd> 键。
 
-### What hooking methods Osiris uses?
-Currently implemented hooking methods are:
+### 我的配置文件保存在哪里？
+配置文件保存在 文档 文件夹的 Osiris 文件夹中 (%USERPROFILE%\Documents\Osiris) 。该配置采用人类可读的格式, 并且可以进行编辑 (例如, 使用记事本。)有时, 更新后需要删除并重新创建配置文件。
+
+### Osiris_CN 使用什么挂钩方法？
+当前实现的挂钩方法是：
 *   MinHook - trampoline hook
 *   VmtHook - hook a function directly in a vtable
 *   VmtSwap - create a copy of a vtable and swap the pointer on the class instance
 
-Hooking implementation files are located in [Hooks](https://github.com/danielkrupinski/Osiris/tree/master/Osiris/Hooks) directory.
+挂钩实现文件位于 [Hooks](https://github.com/H-xiaoH/Osiris_CN/tree/master/Osiris/Hooks) 目录.
 
-## Acknowledgments
+## 致谢
 
-*   [ocornut](https://github.com/ocornut) and [contributors](https://github.com/ocornut/imgui/graphs/contributors) for creating and maintaining an amazing GUI library - [Dear imgui](https://github.com/ocornut/imgui).
-*   [Zer0Mem0ry](https://github.com/Zer0Mem0ry) - for great tutorials on reverse engineering and game hacking
+*   [ocornut](https://github.com/ocornut) 和 [contributors](https://github.com/ocornut/imgui/graphs/contributors) 创建和维护出色的 GUI 库 - [Dear imgui](https://github.com/ocornut/imgui).
+*   [Zer0Mem0ry](https://github.com/Zer0Mem0ry) - 有关逆向工程和游戏黑客的出色教程
 
-## License
+## 许可
 
 > Copyright (c) 2018-2022 Daniel Krupiński
 
-This project is licensed under the [MIT License](https://opensource.org/licenses/mit-license.php) - see the [LICENSE](https://github.com/danielkrupinski/Osiris/blob/master/LICENSE) file for details.
+该项目已获得 [MIT 许可](https://opensource.org/licenses/mit-license.php) - 请参阅 [LICENSE](https://github.com/danielkrupinski/Osiris/blob/master/LICENSE) 文件以了解详细信息。 
 
-## See also
-*   [Anubis](https://github.com/danielkrupinski/Anubis) - free and open source cheat for CS:GO
-*   [GOESP](https://github.com/danielkrupinski/GOESP) - free and open source cross-platform streamproof ESP hack for Counter-Strike: Global Offensive, written in modern C++
+## 也可以看看
+*   [Anubis](https://github.com/danielkrupinski/Anubis) - 免费和开源的 CS:GO 作弊
+*   [GOESP](https://github.com/danielkrupinski/GOESP) - 免费和开源的跨平台ESP作弊, 适用于 《反恐精英:全球攻势》, 以现代C++编写

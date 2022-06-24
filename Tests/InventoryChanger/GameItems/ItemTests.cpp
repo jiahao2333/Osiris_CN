@@ -1,147 +1,224 @@
-#include <limits>
-
 #include <gtest/gtest.h>
 
-#include <InventoryChanger/GameItems/Item.h>
-#include <SDK/ItemSchema.h>
+#include "../../../Osiris/InventoryChanger/GameItems/Item.h"
+#include "../../../Osiris/SDK/ItemSchema.h"
 
-namespace inventory_changer::game_items
-{
-namespace
-{
+class ItemRarityTest : public testing::TestWithParam<EconRarity> {};
 
-class RarityTest : public testing::TestWithParam<EconRarity> {};
-
-TEST_P(RarityTest, CreatedItemHasCorrectRarity) {
-    const auto item = Item{ Item::Type::Skin, GetParam(), WeaponId::None, 0, {} };
-    ASSERT_EQ(item.getRarity(), GetParam());
+TEST(Item, CreatedStickerIsSticker) {
+    ASSERT_TRUE(game_items::Item::sticker(EconRarity::Default, 0, {}).isSticker());
 }
 
-INSTANTIATE_TEST_SUITE_P(GameItemTest, RarityTest, testing::Values(EconRarity::Default, EconRarity::Blue, EconRarity::Gold));
-
-class WeaponIdTest : public testing::TestWithParam<WeaponId> {};
-
-TEST_P(WeaponIdTest, CreatedItemHasCorrectWeaponID) {
-    const auto item = Item{ Item::Type::Skin, EconRarity::Blue, GetParam(), 0, {} };
-    ASSERT_EQ(item.getWeaponID(), GetParam());
+TEST(Item, CreatedStickerHasCorrectWeaponID) {
+    ASSERT_EQ(game_items::Item::sticker(EconRarity::Default, 0, {}).getWeaponID(), WeaponId::Sticker);
 }
 
-INSTANTIATE_TEST_SUITE_P(GameItemTest, WeaponIdTest, testing::Values(WeaponId::Deagle, WeaponId::Ak47));
-
-class DataIndexTest : public testing::TestWithParam<std::size_t> {};
-
-TEST_P(DataIndexTest, CreatedItemHasCorrectDataIndex) {
-    const auto item = Item{ Item::Type::Skin, EconRarity::Blue, WeaponId::None, GetParam(), {} };
-    ASSERT_EQ(item.getDataIndex(), GetParam());
+TEST_P(ItemRarityTest, CreatedStickerHasCorrectRarity) {
+    ASSERT_EQ(game_items::Item::sticker(GetParam(), 0, {}).getRarity(), GetParam());
 }
 
-INSTANTIATE_TEST_SUITE_P(GameItemTest, DataIndexTest, testing::Values(0, 123, std::numeric_limits<std::size_t>::max()));
-
-class IconPathTest : public testing::TestWithParam<std::string_view> {};
-
-TEST_P(IconPathTest, CreatedItemHasCorrectIconPath) {
-    const auto item = Item{ Item::Type::Skin, EconRarity::Blue, WeaponId::None, 0, GetParam() };
-    ASSERT_EQ(item.getIconPath(), GetParam());
+TEST(Item, CreatedSkinIsSkin) {
+    ASSERT_TRUE(game_items::Item::skin(EconRarity::Default, WeaponId::None, 0, {}).isSkin());
 }
 
-INSTANTIATE_TEST_SUITE_P(GameItemTest, IconPathTest, testing::Values(std::string_view{}, "image.png"));
-
-[[nodiscard]] constexpr Item createItemOfType(Item::Type type) noexcept
-{
-    return Item{ type, EconRarity::Blue, WeaponId::None, 0, {} };
+TEST(Item, CreatedSkinHasCorrectWeaponID) {
+    ASSERT_EQ(game_items::Item::skin(EconRarity::Default, WeaponId::Ak47, 0, {}).getWeaponID(), WeaponId::Ak47);
 }
 
-class TypeTest : public testing::TestWithParam<Item::Type> {};
-
-TEST_P(TypeTest, CreatedItemIsSticker) {
-    ASSERT_EQ(createItemOfType(GetParam()).isSticker(), GetParam() == Item::Type::Sticker);
+TEST_P(ItemRarityTest, CreatedSkinHasCorrectRarity) {
+    ASSERT_EQ(game_items::Item::skin(GetParam(), WeaponId::Ak47, 0, {}).getRarity(), GetParam());
 }
 
-TEST_P(TypeTest, CreatedItemIsSkin) {
-    ASSERT_EQ(createItemOfType(GetParam()).isSkin(), GetParam() == Item::Type::Skin);
+TEST(Item, CreatedGlovesAreGloves) {
+    ASSERT_TRUE(game_items::Item::gloves(EconRarity::Default, WeaponId::None, 0, {}).isGloves());
 }
 
-TEST_P(TypeTest, CreatedItemIsGloves) {
-    ASSERT_EQ(createItemOfType(GetParam()).isGloves(), GetParam() == Item::Type::Gloves);
+TEST(Item, CreatedGlovesHaveCorrectWeaponID) {
+    ASSERT_EQ(game_items::Item::gloves(EconRarity::Default, WeaponId::GloveMotorcycle, 0, {}).getWeaponID(), WeaponId::GloveMotorcycle);
 }
 
-TEST_P(TypeTest, CreatedItemIsMusic) {
-    ASSERT_EQ(createItemOfType(GetParam()).isMusic(), GetParam() == Item::Type::Music);
+TEST_P(ItemRarityTest, CreatedGlovesHaveCorrectRarity) {
+    ASSERT_EQ(game_items::Item::gloves(GetParam(), WeaponId::GloveMotorcycle, 0, {}).getRarity(), GetParam());
 }
 
-TEST_P(TypeTest, CreatedItemIsCollectible) {
-    ASSERT_EQ(createItemOfType(GetParam()).isCollectible(), GetParam() == Item::Type::Collectible);
+TEST(Item, CreatedMusicKitIsMusicKit) {
+    ASSERT_TRUE(game_items::Item::musicKit(EconRarity::Default, 0, {}).isMusic());
 }
 
-TEST_P(TypeTest, CreatedItemIsNameTag) {
-    ASSERT_EQ(createItemOfType(GetParam()).isNameTag(), GetParam() == Item::Type::NameTag);
+TEST(Item, CreatedMusicKitHasCorrectWeaponID) {
+    ASSERT_EQ(game_items::Item::musicKit(EconRarity::Default, 0, {}).getWeaponID(), WeaponId::MusicKit);
 }
 
-TEST_P(TypeTest, CreatedItemIsPatch) {
-    ASSERT_EQ(createItemOfType(GetParam()).isPatch(), GetParam() == Item::Type::Patch);
+TEST_P(ItemRarityTest, CreatedMusicKitHasCorrectRarity) {
+    ASSERT_EQ(game_items::Item::musicKit(GetParam(), 0, {}).getRarity(), GetParam());
 }
 
-TEST_P(TypeTest, CreatedItemIsGraffiti) {
-    ASSERT_EQ(createItemOfType(GetParam()).isGraffiti(), GetParam() == Item::Type::Graffiti);
+TEST(Item, CreatedCollectibleIsCollectible) {
+    ASSERT_TRUE(game_items::Item::collectible(EconRarity::Default, WeaponId::None, 0, {}).isCollectible());
 }
 
-TEST_P(TypeTest, CreatedItemIsAgent) {
-    ASSERT_EQ(createItemOfType(GetParam()).isAgent(), GetParam() == Item::Type::Agent);
+TEST(Item, CreatedCollectibleHasCorrectWeaponID) {
+    ASSERT_EQ(game_items::Item::collectible(EconRarity::Default, WeaponId::BronzeOperationHydraCoin, 0, {}).getWeaponID(), WeaponId::BronzeOperationHydraCoin);
 }
 
-TEST_P(TypeTest, CreatedItemIsCase) {
-    ASSERT_EQ(createItemOfType(GetParam()).isCase(), GetParam() == Item::Type::Case);
+TEST_P(ItemRarityTest, CreatedCollectibleHasCorrectRarity) {
+    ASSERT_EQ(game_items::Item::collectible(GetParam(), WeaponId::BronzeOperationHydraCoin, 0, {}).getRarity(), GetParam());
 }
 
-TEST_P(TypeTest, CreatedItemIsCaseKey) {
-    ASSERT_EQ(createItemOfType(GetParam()).isCaseKey(), GetParam() == Item::Type::CaseKey);
+TEST(Item, CreatedNameTagIsNameTag) {
+    ASSERT_TRUE(game_items::Item::nameTag(EconRarity::Default, WeaponId::None, 0, {}).isNameTag());
 }
 
-TEST_P(TypeTest, CreatedItemIsOperationPass) {
-    ASSERT_EQ(createItemOfType(GetParam()).isOperationPass(), GetParam() == Item::Type::OperationPass);
+TEST(Item, CreatedNameTagHasCorrectWeaponID) {
+    ASSERT_EQ(game_items::Item::nameTag(EconRarity::Default, WeaponId::NameTag, 0, {}).getWeaponID(), WeaponId::NameTag);
 }
 
-TEST_P(TypeTest, CreatedItemIsStatTrakSwapTool) {
-    ASSERT_EQ(createItemOfType(GetParam()).isStatTrakSwapTool(), GetParam() == Item::Type::StatTrakSwapTool);
+TEST_P(ItemRarityTest, CreatedNameTagHasCorrectRarity) {
+    ASSERT_EQ(game_items::Item::nameTag(GetParam(), WeaponId::NameTag, 0, {}).getRarity(), GetParam());
 }
 
-TEST_P(TypeTest, CreatedItemIsViewerPass) {
-    ASSERT_EQ(createItemOfType(GetParam()).isViewerPass(), GetParam() == Item::Type::ViewerPass);
+TEST(Item, CreatedPatchIsPatch) {
+    ASSERT_TRUE(game_items::Item::patch(EconRarity::Default, 0, {}).isPatch());
 }
 
-TEST_P(TypeTest, CreatedItemIsServiceMedal) {
-    ASSERT_EQ(createItemOfType(GetParam()).isServiceMedal(), GetParam() == Item::Type::ServiceMedal);
+TEST(Item, CreatedPatchHasCorrectWeaponID) {
+    ASSERT_EQ(game_items::Item::patch(EconRarity::Default, 0, {}).getWeaponID(), WeaponId::Patch);
 }
 
-TEST_P(TypeTest, CreatedItemIsSouvenirToken) {
-    ASSERT_EQ(createItemOfType(GetParam()).isSouvenirToken(), GetParam() == Item::Type::SouvenirToken);
+TEST_P(ItemRarityTest, CreatedPatchHasCorrectRarity) {
+    ASSERT_EQ(game_items::Item::patch(GetParam(), 0, {}).getRarity(), GetParam());
 }
 
-TEST_P(TypeTest, CreatedItemIsTournamentCoin) {
-    ASSERT_EQ(createItemOfType(GetParam()).isTournamentCoin(), GetParam() == Item::Type::TournamentCoin);
+TEST(Item, CreatedGraffitiIsGraffiti) {
+    ASSERT_TRUE(game_items::Item::graffiti(EconRarity::Default, 0, {}).isGraffiti());
 }
 
-INSTANTIATE_TEST_SUITE_P(GameItemTest, TypeTest,
-    testing::Values(
-        Item::Type::Gloves,
-        Item::Type::Skin,
-        Item::Type::Patch,
-        Item::Type::Sticker,
-        Item::Type::Music,
-        Item::Type::Graffiti,
-        Item::Type::Collectible,
-        Item::Type::NameTag,
-        Item::Type::Agent,
-        Item::Type::Case,
-        Item::Type::CaseKey,
-        Item::Type::OperationPass,
-        Item::Type::StatTrakSwapTool,
-        Item::Type::ViewerPass,
-        Item::Type::ServiceMedal,
-        Item::Type::SouvenirToken,
-        Item::Type::TournamentCoin
-    )
-);
+TEST(Item, CreatedGraffitiHasCorrectWeaponID) {
+    ASSERT_EQ(game_items::Item::graffiti(EconRarity::Default, 0, {}).getWeaponID(), WeaponId::Graffiti);
+}
 
+TEST_P(ItemRarityTest, CreatedGraffitiHasCorrectRarity) {
+    ASSERT_EQ(game_items::Item::graffiti(GetParam(), 0, {}).getRarity(), GetParam());
 }
+
+TEST(Item, CreatedSealedGraffitiiIsSealedGraffiti) {
+    ASSERT_TRUE(game_items::Item::sealedGraffiti(EconRarity::Default, 0, {}).isSealedGraffiti());
 }
+
+TEST(Item, CreatedSealedGraffitiHasCorrectWeaponID) {
+    ASSERT_EQ(game_items::Item::sealedGraffiti(EconRarity::Default, 0, {}).getWeaponID(), WeaponId::SealedGraffiti);
+}
+
+TEST_P(ItemRarityTest, CreatedSealedGraffitiHasCorrectRarity) {
+    ASSERT_EQ(game_items::Item::sealedGraffiti(GetParam(), 0, {}).getRarity(), GetParam());
+}
+
+TEST(Item, CreatedAgentIsAgent) {
+    ASSERT_TRUE(game_items::Item::agent(EconRarity::Default, WeaponId::None, 0, {}).isAgent());
+}
+
+TEST(Item, CreatedAgentHasCorrectWeaponID) {
+    ASSERT_EQ(game_items::Item::agent(EconRarity::Default, WeaponId::None, 0, {}).getWeaponID(), WeaponId::None);
+}
+
+TEST_P(ItemRarityTest, CreatedAgentHasCorrectRarity) {
+    ASSERT_EQ(game_items::Item::agent(GetParam(), WeaponId::None, 0, {}).getRarity(), GetParam());
+}
+
+TEST(Item, CreatedCaseIsCase) {
+    ASSERT_TRUE(game_items::Item::crate(EconRarity::Default, WeaponId::None, 0, {}).isCase());
+}
+
+TEST(Item, CreatedCaseHasCorrectWeaponID) {
+    ASSERT_EQ(game_items::Item::crate(EconRarity::Default, WeaponId::None, 0, {}).getWeaponID(), WeaponId::None);
+}
+
+TEST_P(ItemRarityTest, CreatedCaseHasCorrectRarity) {
+    ASSERT_EQ(game_items::Item::crate(GetParam(), WeaponId::None, 0, {}).getRarity(), GetParam());
+}
+
+TEST(Item, CreatedCaseKeyIsCaseKey) {
+    ASSERT_TRUE(game_items::Item::caseKey(EconRarity::Default, WeaponId::None, 0, {}).isCaseKey());
+}
+
+TEST(Item, CreatedCaseKeyHasCorrectWeaponID) {
+    ASSERT_EQ(game_items::Item::caseKey(EconRarity::Default, WeaponId::None, 0, {}).getWeaponID(), WeaponId::None);
+}
+
+TEST_P(ItemRarityTest, CreatedCaseKeyHasCorrectRarity) {
+    ASSERT_EQ(game_items::Item::caseKey(GetParam(), WeaponId::None, 0, {}).getRarity(), GetParam());
+}
+
+TEST(Item, CreatedOperationPassIsOperationPass) {
+    ASSERT_TRUE(game_items::Item::operationPass(EconRarity::Default, WeaponId::None, 0, {}).isOperationPass());
+}
+
+TEST(Item, CreatedOperationPassHasCorrectWeaponID) {
+    ASSERT_EQ(game_items::Item::operationPass(EconRarity::Default, WeaponId::None, 0, {}).getWeaponID(), WeaponId::None);
+}
+
+TEST_P(ItemRarityTest, CreatedOperationPassHasCorrectRarity) {
+    ASSERT_EQ(game_items::Item::operationPass(GetParam(), WeaponId::None, 0, {}).getRarity(), GetParam());
+}
+
+TEST(Item, CreatedStatTrakSwapToolIsStatTrakSwapTool) {
+    ASSERT_TRUE(game_items::Item::statTrakSwapTool(EconRarity::Default, WeaponId::None, 0, {}).isStatTrakSwapTool());
+}
+
+TEST(Item, CreatedStatTrakSwapToolHasCorrectWeaponID) {
+    ASSERT_EQ(game_items::Item::statTrakSwapTool(EconRarity::Default, WeaponId::None, 0, {}).getWeaponID(), WeaponId::None);
+}
+
+TEST_P(ItemRarityTest, CreatedStatTrakSwapToolHasCorrectRarity) {
+    ASSERT_EQ(game_items::Item::statTrakSwapTool(GetParam(), WeaponId::None, 0, {}).getRarity(), GetParam());
+}
+
+TEST(Item, CreatedViewerPassIsViewerPass) {
+    ASSERT_TRUE(game_items::Item::viewerPass(EconRarity::Default, WeaponId::None, 0, {}).isViewerPass());
+}
+
+TEST(Item, CreatedViewerPassHasCorrectWeaponID) {
+    ASSERT_EQ(game_items::Item::viewerPass(EconRarity::Default, WeaponId::None, 0, {}).getWeaponID(), WeaponId::None);
+}
+
+TEST_P(ItemRarityTest, CreatedViewerPassHasCorrectRarity) {
+    ASSERT_EQ(game_items::Item::viewerPass(GetParam(), WeaponId::None, 0, {}).getRarity(), GetParam());
+}
+
+TEST(Item, CreatedServiceMedalIsServiceMedal) {
+    ASSERT_TRUE(game_items::Item::serviceMedal(EconRarity::Default, WeaponId::None, 0, {}).isServiceMedal());
+}
+
+TEST(Item, CreatedServiceMedalHasCorrectWeaponID) {
+    ASSERT_EQ(game_items::Item::serviceMedal(EconRarity::Default, WeaponId::None, 0, {}).getWeaponID(), WeaponId::None);
+}
+
+TEST_P(ItemRarityTest, CreatedServiceMedalHasCorrectRarity) {
+    ASSERT_EQ(game_items::Item::serviceMedal(GetParam(), WeaponId::None, 0, {}).getRarity(), GetParam());
+}
+
+TEST(Item, CreatedSouvenirTokenIsSouvenirToken) {
+    ASSERT_TRUE(game_items::Item::souvenirToken(EconRarity::Default, WeaponId::None, 0, {}).isSouvenirToken());
+}
+
+TEST(Item, CreatedSouvenirTokenHasCorrectWeaponID) {
+    ASSERT_EQ(game_items::Item::souvenirToken(EconRarity::Default, WeaponId::None, 0, {}).getWeaponID(), WeaponId::None);
+}
+
+TEST_P(ItemRarityTest, CreatedSouvenirTokenHasCorrectRarity) {
+    ASSERT_EQ(game_items::Item::souvenirToken(GetParam(), WeaponId::None, 0, {}).getRarity(), GetParam());
+}
+
+TEST(Item, CreatedTournamentCoinIsTournamentCoin) {
+    ASSERT_TRUE(game_items::Item::tournamentCoin(EconRarity::Default, WeaponId::None, 0, {}).isTournamentCoin());
+}
+
+TEST(Item, CreatedTournamentCoinHasCorrectWeaponID) {
+    ASSERT_EQ(game_items::Item::tournamentCoin(EconRarity::Default, WeaponId::None, 0, {}).getWeaponID(), WeaponId::None);
+}
+
+TEST_P(ItemRarityTest, CreatedTournamentCoinHasCorrectWeaponID) {
+    ASSERT_EQ(game_items::Item::tournamentCoin(GetParam(), WeaponId::None, 0, {}).getRarity(), GetParam());
+}
+
+INSTANTIATE_TEST_SUITE_P(, ItemRarityTest, testing::Values(EconRarity::Default, EconRarity::Red));
