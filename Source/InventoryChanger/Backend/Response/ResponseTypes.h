@@ -3,6 +3,7 @@
 #include <cstdint>
 
 #include <InventoryChanger/Backend/Item.h>
+#include <InventoryChanger/ItemId.h>
 
 enum class Team;
 
@@ -26,20 +27,20 @@ struct ItemModified {
 using ItemMovedToFront = ItemModified<struct ItemMovedToFrontTag>;
 using ItemUpdated = ItemModified<struct ItemUpdatedTag>;
 using ItemHidden = ItemModified<struct ItemHiddenTag>;
-using ItemUnhidden = ItemModified<struct ItemUnhiddenTag>;
+using TradabilityUpdated = ItemModified<struct TradabilityUpdatedTag>;
 
 struct ItemEquipped {
-    ItemEquipped(ItemIterator item, std::uint8_t slot, Team team) : item{ item }, slot{ slot }, team{ team } {}
+    ItemEquipped(ItemIterator item, std::uint8_t slot, csgo::Team team) : item{ item }, slot{ slot }, team{ team } {}
 
     ItemIterator item;
     std::uint8_t slot;
-    Team team;
+    csgo::Team team;
 };
 
 struct ItemRemoved {
-    explicit ItemRemoved(std::uint64_t itemID) : itemID{ itemID } {}
+    explicit ItemRemoved(ItemId itemID) : itemID{ itemID } {}
 
-    std::uint64_t itemID;
+    ItemId itemID;
 };
 
 template <typename Tag>
@@ -132,6 +133,40 @@ struct XRayItemClaimed {
     explicit XRayItemClaimed(ItemIterator item) : item{ item } {}
 
     ItemIterator item;
+};
+
+struct StorageUnitNamed {
+    explicit StorageUnitNamed(ItemIterator storageUnit) : storageUnit{ storageUnit } {}
+
+    ItemIterator storageUnit;
+};
+
+struct StorageUnitModified {
+    explicit StorageUnitModified(ItemIterator storageUnit) : storageUnit{ storageUnit } {}
+
+    ItemIterator storageUnit;
+};
+
+struct ItemBoundToStorageUnit {
+    ItemBoundToStorageUnit(ItemIterator item, ItemIterator storageUnit)
+        : item{ item }, storageUnit { storageUnit } {}
+
+    ItemIterator item;
+    ItemIterator storageUnit;
+};
+
+struct ItemAddedToStorageUnit {
+    explicit ItemAddedToStorageUnit(ItemIterator storageUnit) : storageUnit{ storageUnit } {}
+
+    ItemIterator storageUnit;
+};
+
+struct ItemRemovedFromStorageUnit {
+    ItemRemovedFromStorageUnit(ItemIterator item, ItemIterator storageUnit)
+        : item{ item }, storageUnit{ storageUnit } {}
+
+    ItemIterator item;
+    ItemIterator storageUnit;
 };
 
 }

@@ -1,24 +1,27 @@
+#include <cstring>
+
 #include "Items.h"
 #include "Misc.h"
 
 #include <Interfaces.h>
+#include <SDK/ItemSchema.h>
 
 namespace inventory_changer::game_integration
 {
 
-void Items::getMusicKits(game_items::Storage& storage)
+void Items::getMusicKits(const Interfaces& interfaces, game_items::Storage& storage)
 {
     for (const auto& node : itemSchema.musicKits) {
         const auto musicKit = node.value;
         if (musicKit->id == 1 || musicKit->id == 2)
             continue;
 
-        const auto musicName = interfaces->localize->findSafe(musicKit->nameLocalized);
+        const auto musicName = interfaces.localize->findSafe(musicKit->nameLocalized);
         storage.addMusic(musicKit->id, game_items::ItemName{ toUtf8.convertUnicodeToAnsi(musicName), toUpperConverter.toUpper(musicName) }, musicKit->inventoryImage);
     }
 }
 
-void Items::getStickers(game_items::Storage& storage)
+void Items::getStickers(const Interfaces& interfaces, game_items::Storage& storage)
 {
     const auto& stickerMap = itemSchema.stickerKits;
     for (const auto& node : stickerMap) {
@@ -33,13 +36,13 @@ void Items::getStickers(game_items::Storage& storage)
 
         if (isSticker) {
             const auto isGolden = name.ends_with("gold");
-            const auto stickerName = interfaces->localize->findSafe(stickerKit->id != 242 ? stickerKit->itemName.data() : "StickerKit_dhw2014_teamdignitas_gold");
-            storage.addSticker(stickerKit->id, game_items::ItemName{ toUtf8.convertUnicodeToAnsi(stickerName), toUpperConverter.toUpper(stickerName) }, static_cast<EconRarity>(stickerKit->rarity), stickerKit->inventoryImage.data(), stickerKit->tournamentID, static_cast<TournamentTeam>(stickerKit->tournamentTeamID), stickerKit->tournamentPlayerID, isGolden);
+            const auto stickerName = interfaces.localize->findSafe(stickerKit->id != 242 ? stickerKit->itemName.data() : "StickerKit_dhw2014_teamdignitas_gold");
+            storage.addSticker(static_cast<csgo::StickerId>(stickerKit->id), game_items::ItemName{ toUtf8.convertUnicodeToAnsi(stickerName), toUpperConverter.toUpper(stickerName) }, static_cast<EconRarity>(stickerKit->rarity), stickerKit->inventoryImage.data(), static_cast<csgo::Tournament>(stickerKit->tournamentID), static_cast<csgo::TournamentTeam>(stickerKit->tournamentTeamID), stickerKit->tournamentPlayerID, isGolden);
         } else if (isPatch) {
-            const auto patchName = interfaces->localize->findSafe(stickerKit->itemName.data());
+            const auto patchName = interfaces.localize->findSafe(stickerKit->itemName.data());
             storage.addPatch(stickerKit->id, game_items::ItemName{ toUtf8.convertUnicodeToAnsi(patchName), toUpperConverter.toUpper(patchName) }, static_cast<EconRarity>(stickerKit->rarity), stickerKit->inventoryImage.data());
         } else if (isGraffiti) {
-            const auto paintName = interfaces->localize->findSafe(stickerKit->itemName.data());
+            const auto paintName = interfaces.localize->findSafe(stickerKit->itemName.data());
             storage.addGraffiti(stickerKit->id, game_items::ItemName{ toUtf8.convertUnicodeToAnsi(paintName), toUpperConverter.toUpper(paintName) }, static_cast<EconRarity>(stickerKit->rarity), stickerKit->inventoryImage.data());
         }
     }
@@ -71,7 +74,7 @@ struct KitWeapon {
 
 }
 
-void Items::getSkinsAndGloves(game_items::Storage& storage)
+void Items::getSkinsAndGloves(const Interfaces& interfaces, game_items::Storage& storage)
 {
     const auto kitsWeapons = getKitsWeapons(itemSchema.alternateIcons);
 
@@ -81,7 +84,7 @@ void Items::getSkinsAndGloves(game_items::Storage& storage)
         if (paintKit->id == 0 || paintKit->id == 9001) // ignore workshop_default
             continue;
 
-        const auto paintKitName = interfaces->localize->findSafe(paintKit->itemName.data());
+        const auto paintKitName = interfaces.localize->findSafe(paintKit->itemName.data());
         storage.addPaintKit(paintKit->id, game_items::ItemName{ toUtf8.convertUnicodeToAnsi(paintKitName), toUpperConverter.toUpper(paintKitName) }, paintKit->wearRemapMin, paintKit->wearRemapMax);
 
         const auto isGlove = (paintKit->id >= 10000);
@@ -119,7 +122,7 @@ void Items::getOtherItems(game_items::Storage& storage)
             if (item->isServiceMedal()) {
                 storage.addServiceMedal(rarity, item->getServiceMedalYear(), weaponID, inventoryImage);
             } else if (item->isTournamentCoin()) {
-                storage.addTournamentCoin(rarity, weaponID, static_cast<std::uint8_t>(item->getTournamentEventID()), static_cast<std::uint16_t>(item->getStickerID()), inventoryImage);
+                storage.addTournamentCoin(rarity, weaponID, static_cast<csgo::Tournament>(item->getTournamentEventID()), static_cast<std::uint16_t>(item->getStickerID()), inventoryImage);
             } else {
                 storage.addCollectible(rarity, weaponID, isOriginal, inventoryImage);
             }
@@ -129,7 +132,7 @@ void Items::getOtherItems(game_items::Storage& storage)
             storage.addAgent(rarity, weaponID, inventoryImage);
         } else if (itemTypeName == "#CSGO_Type_WeaponCase" && item->hasCrateSeries()) {
             const auto baseName = std::string_view{ item->getItemBaseName() };
-            storage.addCase(rarity, weaponID, static_cast<std::uint16_t>(item->getCrateSeriesNumber()), static_cast<std::uint8_t>(item->getTournamentEventID()), getTournamentMapOfSouvenirPackage(baseName), baseName.find("promo") != std::string_view::npos, inventoryImage);
+            storage.addCrate(rarity, weaponID, static_cast<std::uint16_t>(item->getCrateSeriesNumber()), static_cast<csgo::Tournament>(item->getTournamentEventID()), getTournamentMapOfSouvenirPackage(baseName), baseName.find("promo") != std::string_view::npos, inventoryImage);
         } else if (itemTypeName == "#CSGO_Tool_WeaponCase_KeyTag") {
             storage.addCaseKey(rarity, weaponID, inventoryImage);
         } else if (const auto tool = item->getEconTool()) {
@@ -138,10 +141,14 @@ void Items::getOtherItems(game_items::Storage& storage)
             else if (std::strcmp(tool->typeName, "stattrak_swap") == 0)
                 storage.addStatTrakSwapTool(rarity, weaponID, inventoryImage);
             else if (std::strcmp(tool->typeName, "fantoken") == 0) {
-                if (Helpers::isSouvenirToken(weaponID))
-                    storage.addSouvenirToken(rarity, weaponID, item->getTournamentEventID(), inventoryImage);
+                const auto baseName = std::string_view{ item->getItemBaseName() };
+
+                if (baseName.ends_with("charge"))
+                    storage.addSouvenirToken(rarity, weaponID, static_cast<csgo::Tournament>(item->getTournamentEventID()), inventoryImage);
                 else
-                    storage.addViewerPass(rarity, weaponID, item->getTournamentEventID(), inventoryImage);
+                    storage.addViewerPass(rarity, weaponID, static_cast<csgo::Tournament>(item->getTournamentEventID()), baseName.ends_with("pack"), inventoryImage);
+            } else if (std::strcmp(tool->typeName, "casket") == 0) {
+                storage.addStorageUnit(rarity, weaponID, inventoryImage);
             }
         } else if (item->isPaintable()) {
             storage.addVanillaSkin(weaponID, inventoryImage);
@@ -149,12 +156,12 @@ void Items::getOtherItems(game_items::Storage& storage)
     }
 }
 
-game_items::Storage createGameItemStorage(Items& items)
+game_items::Storage createGameItemStorage(const Interfaces& interfaces, Items& items)
 {
     game_items::Storage storage;
-    items.getStickers(storage);
-    items.getMusicKits(storage);
-    items.getSkinsAndGloves(storage);
+    items.getStickers(interfaces, storage);
+    items.getMusicKits(interfaces, storage);
+    items.getSkinsAndGloves(interfaces, storage);
     items.getOtherItems(storage);
     return storage;
 }

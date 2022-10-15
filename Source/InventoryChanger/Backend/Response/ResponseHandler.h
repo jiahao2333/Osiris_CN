@@ -3,6 +3,7 @@
 #include <variant>
 
 #include <InventoryChanger/Backend/ItemIDMap.h>
+#include <InventoryChanger/Backend/StorageUnitManager.h>
 #include <InventoryChanger/GameItems/Storage.h>
 
 #include "ResponseTypes.h"
@@ -12,10 +13,8 @@ namespace inventory_changer::backend
 
 template <typename GameInventory>
 struct ResponseHandler {
-    explicit ResponseHandler(const game_items::Storage& gameItemStorage, ItemIDMap& itemIDMap, GameInventory& gameInventory)
-        : gameItemStorage{ gameItemStorage }, itemIDMap{ itemIDMap }, gameInventory{ gameInventory } {}
-
-    void operator()(std::monostate) const { /* Empty response, this should never be called */ }
+    explicit ResponseHandler(const game_items::Storage& gameItemStorage, ItemIDMap& itemIDMap, StorageUnitManager& storageUnitManager, GameInventory& gameInventory)
+        : gameItemStorage{ gameItemStorage }, itemIDMap{ itemIDMap }, storageUnitManager{ storageUnitManager }, gameInventory{ gameInventory } {}
 
     void operator()(const response::ItemAdded& response) const
     {
@@ -25,8 +24,17 @@ struct ResponseHandler {
 
     void operator()(const response::ItemMovedToFront& response) const
     {
-        if (const auto itemID = getItemID(response.item); itemID.has_value())
-            itemIDMap.update(*itemID, gameInventory.assingNewItemID(*itemID));
+        if (const auto itemID = getItemID(response.item); itemID.has_value()) {
+            const auto newItemID = gameInventory.assingNewItemID(*itemID);
+            itemIDMap.update(*itemID, newItemID);
+
+            if (response.item->gameItem().isStorageUnit()) {
+                storageUnitManager.forEachItemInStorageUnit(response.item, [this, storageUnitItemID = newItemID](auto itemInStorageUnit) {
+                    if (const auto itemIdInStorageUnit = getItemID(itemInStorageUnit); itemIdInStorageUnit.has_value())
+                        gameInventory.addItemToStorageUnit(*itemIdInStorageUnit, storageUnitItemID);
+                });
+            }
+        }
     }
 
     void operator()(const response::ItemUpdated& response) const
@@ -39,12 +47,6 @@ struct ResponseHandler {
     {
         if (const auto itemID = getItemID(response.item); itemID.has_value())
             gameInventory.hideItem(*itemID);
-    }
-
-    void operator()(const response::ItemUnhidden& response) const
-    {
-        if (const auto itemID = getItemID(response.item); itemID.has_value())
-            gameInventory.unhideItem(*itemID);
     }
 
     void operator()(const response::ItemEquipped& response) const
@@ -61,7 +63,7 @@ struct ResponseHandler {
     void operator()(const response::StickerApplied& response) const
     {
         if (const auto itemID = getItemID(response.skinItem); itemID.has_value()) {
-            if (const auto skin = response.skinItem->get<inventory::Skin>())
+            if (const auto skin = get<inventory::Skin>(*response.skinItem))
                 gameInventory.applySticker(*itemID, skin->stickers[response.stickerSlot].stickerID, response.stickerSlot);
         }
     }
@@ -69,7 +71,7 @@ struct ResponseHandler {
     void operator()(const response::StickerScraped& response) const
     {
         if (const auto itemID = getItemID(response.skinItem); itemID.has_value()) {
-            if (const auto skin = response.skinItem->get<inventory::Skin>())
+            if (const auto skin = get<inventory::Skin>(*response.skinItem))
                 gameInventory.updateStickerWear(*itemID, response.stickerSlot, skin->stickers[response.stickerSlot].wear);
         }
     }
@@ -95,7 +97,7 @@ struct ResponseHandler {
     void operator()(const response::NameTagAdded& response) const
     {
         if (const auto itemID = getItemID(response.skinItem); itemID.has_value()) {
-            if (const auto skin = response.skinItem->get<inventory::Skin>())
+            if (const auto skin = get<inventory::Skin>(*response.skinItem))
                 gameInventory.addNameTag(*itemID, skin->nameTag.c_str());
         }
     }
@@ -115,7 +117,7 @@ struct ResponseHandler {
     void operator()(const response::PatchApplied& response) const
     {
         if (const auto itemID = getItemID(response.agentItem); itemID.has_value()) {
-            if (const auto agent = response.agentItem->get<inventory::Agent>())
+            if (const auto agent = get<inventory::Agent>(*response.agentItem))
                 gameInventory.applyPatch(*itemID, agent->patches[response.patchSlot].patchID, response.patchSlot);
         }
     }
@@ -129,7 +131,7 @@ struct ResponseHandler {
     void operator()(const response::SouvenirTokenActivated& response) const
     {
         if (const auto itemID = getItemID(response.tournamentCoin); itemID.has_value()) {
-            if (const auto tournamentCoin = response.tournamentCoin->get<inventory::TournamentCoin>())
+            if (const auto tournamentCoin = get<inventory::TournamentCoin>(*response.tournamentCoin))
                 gameInventory.souvenirTokenActivated(*itemID, tournamentCoin->dropsAwarded);
         }
     }
@@ -169,6 +171,51 @@ struct ResponseHandler {
             gameInventory.xRayItemClaimed(*itemID);
     }
 
+    void operator()(const response::StorageUnitNamed& response) const
+    {
+        if (const auto itemID = getItemID(response.storageUnit); itemID.has_value()) {
+            if (const auto storageUnit = get<inventory::StorageUnit>(*response.storageUnit))
+                gameInventory.nameStorageUnit(*itemID, storageUnit->name.c_str());
+        }
+    }
+
+    void operator()(const response::StorageUnitModified& response) const
+    {
+        if (const auto itemID = getItemID(response.storageUnit); itemID.has_value()) {
+            if (const auto storageUnit = get<inventory::StorageUnit>(*response.storageUnit))
+                gameInventory.storageUnitModified(*itemID, storageUnit->modificationDateTimestamp, storageUnit->itemCount);
+        }
+    }
+
+    void operator()(const response::ItemBoundToStorageUnit& response) const
+    {
+        if (const auto itemID = getItemID(response.item); itemID.has_value()) {
+            if (const auto storageUnitItemID = getItemID(response.storageUnit); storageUnitItemID.has_value())
+                gameInventory.addItemToStorageUnit(*itemID, *storageUnitItemID);
+        }
+    }
+
+    void operator()(const response::ItemAddedToStorageUnit& response) const
+    {
+        if (const auto storageUnitItemID = getItemID(response.storageUnit); storageUnitItemID.has_value()) {
+            gameInventory.itemAddedToStorageUnit(*storageUnitItemID);
+        }
+    }
+
+    void operator()(const response::ItemRemovedFromStorageUnit& response) const
+    {
+        if (const auto itemID = getItemID(response.item); itemID.has_value()) {
+            if (const auto storageUnitItemID = getItemID(response.storageUnit); storageUnitItemID.has_value())
+                gameInventory.removeItemFromStorageUnit(*itemID, *storageUnitItemID);
+        }
+    }
+
+    void operator()(const response::TradabilityUpdated& response) const
+    {
+        if (const auto itemID = getItemID(response.item); itemID.has_value())
+            gameInventory.updateTradableAfterDate(*itemID, response.item->getProperties().common.tradableAfterDate);
+    }
+
 private:
     [[nodiscard]] auto getItemID(ItemIterator item) const
     {
@@ -177,6 +224,7 @@ private:
 
     const game_items::Storage& gameItemStorage;
     ItemIDMap& itemIDMap;
+    StorageUnitManager& storageUnitManager;
     GameInventory& gameInventory;
 };
 

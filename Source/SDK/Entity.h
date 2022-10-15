@@ -13,6 +13,8 @@
 
 #include "../Netvars.h"
 
+class Memory;
+
 class EconItemView;
 
 class matrix3x4;
@@ -37,12 +39,17 @@ enum class ObsMode {
     Roaming
 };
 
+namespace csgo
+{
+
 enum class Team {
     None = 0,
     Spectators,
     TT,
     CT
 };
+
+}
 
 class Collideable {
 public:
@@ -75,7 +82,7 @@ public:
     VIRTUAL_METHOD(const Vector&, getAbsOrigin, WIN32_LINUX(10, 12), (), (this))
     VIRTUAL_METHOD(void, setModelIndex, WIN32_LINUX(75, 111), (int index), (this, index))
     VIRTUAL_METHOD(bool, getAttachment, WIN32_LINUX(84, 122), (int index, Vector& origin), (this, index, std::ref(origin)))
-    VIRTUAL_METHOD(Team, getTeamNumber, WIN32_LINUX(88, 128), (), (this))
+    VIRTUAL_METHOD(csgo::Team, getTeamNumber, WIN32_LINUX(88, 128), (), (this))
     VIRTUAL_METHOD(int, health, WIN32_LINUX(122, 167), (), (this))
     VIRTUAL_METHOD(bool, isAlive, WIN32_LINUX(156, 208), (), (this))
     VIRTUAL_METHOD(bool, isPlayer, WIN32_LINUX(158, 210), (), (this))
@@ -129,11 +136,11 @@ public:
         return false;
     }
 
-    bool setupBones(matrix3x4* out, int maxBones, int boneMask, float currentTime) noexcept;
-    Vector getBonePosition(int bone) noexcept;
+    bool setupBones(const Memory& memory, matrix3x4* out, int maxBones, int boneMask, float currentTime) noexcept;
+    Vector getBonePosition(const Memory& memory, int bone) noexcept;
 
-    bool isVisible(const Vector& position = { }) noexcept;
-    bool isOtherEnemy(Entity* other) noexcept;
+    bool isVisible(const EngineTrace& engineTrace, const Memory& memory, const Vector& position = { }) noexcept;
+    bool isOtherEnemy(const Memory& memory, Entity* other) noexcept;
 
     VarMap& getVarMap() noexcept
     {
@@ -156,19 +163,19 @@ public:
         return *reinterpret_cast<bool*>(uintptr_t(&clip()) + WIN32_LINUX(0x41, 0x45));
     }
 
-    int getUserId() noexcept;
-    std::uint64_t getSteamId() noexcept;
+    int getUserId(const Engine& engine) noexcept;
+    std::uint64_t getSteamId(const Engine& engine) noexcept;
 
-    void getPlayerName(char(&out)[128]) noexcept;
-    [[nodiscard]] std::string getPlayerName() noexcept
+    void getPlayerName(const Interfaces& interfaces, const Memory& memory, char(&out)[128]) noexcept;
+    [[nodiscard]] std::string getPlayerName(const Interfaces& interfaces, const Memory& memory) noexcept
     {
         char name[128];
-        getPlayerName(name);
+        getPlayerName(interfaces, memory, name);
         return name;
     }
 
-    bool canSee(Entity* other, const Vector& pos) noexcept;
-    bool visibleTo(Entity* other) noexcept;
+    bool canSee(const EngineTrace& engineTrace, const Memory& memory, Entity* other, const Vector& pos) noexcept;
+    bool visibleTo(const EngineInterfaces& engineInterfaces, const Memory& memory, Entity* other) noexcept;
 
     NETVAR(body, "CBaseAnimating", "m_nBody", int)
     NETVAR(hitboxSet, "CBaseAnimating", "m_nHitboxSet", int)
@@ -179,6 +186,7 @@ public:
     NETVAR(simulationTime, "CBaseEntity", "m_flSimulationTime", float)
     NETVAR(ownerEntity, "CBaseEntity", "m_hOwnerEntity", int)
     NETVAR(spotted, "CBaseEntity", "m_bSpotted", bool)
+    NETVAR(spottedByMask, "CBaseEntity", "m_bSpottedByMask", std::uint32_t)
 
     NETVAR(weapons, "CBaseCombatCharacter", "m_hMyWeapons", int[64])
     PNETVAR(wearables, "CBaseCombatCharacter", "m_hMyWearables", int)

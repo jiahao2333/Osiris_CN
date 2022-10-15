@@ -22,7 +22,7 @@ template <typename ResponseType>
     else if constexpr (std::is_same_v<ResponseType, response::ItemUpdated>)
         return response::ItemUpdated{ item };
     else if constexpr (std::is_same_v<ResponseType, response::ItemEquipped>)
-        return response::ItemEquipped{ item, 0, Team::None };
+        return response::ItemEquipped{ item, 0, csgo::Team::None };
     else if constexpr (std::is_same_v<ResponseType, response::StickerApplied>)
         return response::StickerApplied{ item, 0 };
     else if constexpr (std::is_same_v<ResponseType, response::StickerScraped>)
@@ -53,8 +53,6 @@ template <typename ResponseType>
         return response::StatTrakUpdated{ item, 123 };
     else if constexpr (std::is_same_v<ResponseType, response::ItemHidden>)
         return response::ItemHidden{ item };
-    else if constexpr (std::is_same_v<ResponseType, response::ItemUnhidden>)
-        return response::ItemUnhidden{ item };
     else if constexpr (std::is_same_v<ResponseType, response::XRayItemClaimed>)
         return response::XRayItemClaimed{ item };
     else if constexpr (std::is_same_v<ResponseType, response::XRayScannerUsed>)
@@ -79,20 +77,12 @@ const ItemIterator item1{ itemList.begin() };
 const ItemIterator item2{ std::next(item1) };
 const ItemIterator item3{ std::next(item2) };
 
-TEST(InventoryChanger_Backend_ItemInResponse_NeverInResponseTest, MonostateNeverContainsItem) {
-    ASSERT_FALSE(ItemInResponse{ item1 }(std::monostate{}));
-}
-
-TEST(InventoryChanger_Backend_ItemInResponse_NeverInResponseTest, ResponseContainsItemReturnsFalseForMonostate) {
-    ASSERT_FALSE(responseContainsItem(std::monostate{}, item1));
-}
-
 TEST(InventoryChanger_Backend_ItemInResponse_NeverInResponseTest, ItemRemovedResponseNeverContainsItem) {
-    ASSERT_FALSE(ItemInResponse{ item1 }(response::ItemRemoved{ 0 }));
+    ASSERT_FALSE(ItemInResponse{ item1 }(response::ItemRemoved{ ItemId{} }));
 }
 
 TEST(InventoryChanger_Backend_ItemInResponse_NeverInResponseTest, ResponseContainsItemReturnsFalseForItemRemoved) {
-    ASSERT_FALSE(responseContainsItem(response::ItemRemoved{ 0 }, item1));
+    ASSERT_FALSE(responseContainsItem(response::ItemRemoved{ ItemId{} }, item1));
 }
 
 TEST(InventoryChanger_Backend_ItemInResponse_NeverInResponseTest, PickEmUpdatedResponseNeverContainsItem) {
@@ -113,7 +103,6 @@ using ResponseTypes = testing::Types<
     response::ItemEquipped,
     response::ItemHidden,
     response::ItemMovedToFront,
-    response::ItemUnhidden,
     response::ItemUpdated,
     response::NameTagAdded,
     response::NameTagRemoved,
