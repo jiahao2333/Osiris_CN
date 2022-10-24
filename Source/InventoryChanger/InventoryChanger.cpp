@@ -416,7 +416,7 @@ static bool windowOpen = false;
 
 void InventoryChanger::menuBarItem() noexcept
 {
-    if (ImGui::MenuItem("Inventory Changer")) {
+    if (ImGui::MenuItem("库存修改器")) {
         windowOpen = true;
         ImGui::SetWindowFocus("Inventory Changer");
         ImGui::SetWindowPos("Inventory Changer", { 100.0f, 100.0f });
@@ -552,7 +552,7 @@ namespace ImGui
             const auto cursorPosBackup = window->DC.CursorPos.y;
 
             window->DC.CursorPos.y += (size.y - GetFrameHeight()) * 0.5f;
-            pressed = Button("Add");
+            pressed = Button("添加");
 
             window->DC.CursorPosPrevLine.y = cursorPosBackup;
             window->DC.CursorPos.y = cursorPosNext;
@@ -693,7 +693,7 @@ void InventoryChanger::drawGUI(const Interfaces& interfaces, const Memory& memor
         if (!windowOpen)
             return;
         ImGui::SetNextWindowSize({ 700.0f, 400.0f });
-        if (!ImGui::Begin("Inventory Changer", &windowOpen, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse)) {
+        if (!ImGui::Begin("库存修改器", &windowOpen, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse)) {
             ImGui::End();
             return;
         }
@@ -703,12 +703,12 @@ void InventoryChanger::drawGUI(const Interfaces& interfaces, const Memory& memor
 
     static bool isInAddMode = false;
 
-    if (!isInAddMode && ImGui::Button("Add items.."))
+    if (!isInAddMode && ImGui::Button("添加物品"))
         isInAddMode = true;
 
     if (!isInAddMode) {
         ImGui::SameLine();
-        if (ImGui::Button("Force Update"))
+        if (ImGui::Button("强制更新"))
             scheduleHudUpdate(interfaces);
     }
 
@@ -727,15 +727,15 @@ void InventoryChanger::drawGUI(const Interfaces& interfaces, const Memory& memor
     };
 
     if (isInAddMode) {
-        if (ImGui::Button("Back")) {
+        if (ImGui::Button("返回")) {
             isInAddMode = false;
         }
 
         ImGui::SameLine();
         ImGui::SetNextItemWidth(550.0f);
-        const bool filterChanged = ImGui::InputTextWithHint("##search", "Search weapon skins, stickers, knives, gloves, music kits..", &filter);
+        const bool filterChanged = ImGui::InputTextWithHint("##搜索", "搜索武器皮肤、贴纸、刀具、手套、音乐包....", &filter);
         ImGui::SameLine();
-        const bool addingAll = ImGui::Button("Add all in list");
+        const bool addingAll = ImGui::Button("添加所有进库存");
 
         constexpr auto passesFilter = []<typename... Strings>(std::wstring_view filter, Strings&&... strings) {
             for (const auto filterWord : ranges::views::split(filter, L' ')) {
